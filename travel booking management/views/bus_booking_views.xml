@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bus_booking_form" model="ir.ui.view">
+        <field name="name">travel.bus.booking.form</field>
+        <field name="model">travel.bus.booking</field>
+        <field name="arch" type="xml">
+            <form string="Bus Booking">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_done" string="Done" type="object" class="oe_highlight" invisible="state != 'confirmed'"/>
+                    <button name="action_cancel" string="Cancel" type="object" invisible="state in ('done', 'cancelled')"/>
+                    <button name="action_draft" string="Reset to Draft" type="object" invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group string="Booking">
+                            <field name="billing_company_id"/>
+                            <field name="booking_date"/>
+                            <field name="booking_executive"/>
+                            <field name="employee_code"/>
+                            <field name="document_number"/>
+                            <field name="confirmed_by"/>
+                        </group>
+                        <group string="Bus Info">
+                            <field name="operator_name"/>
+                            <field name="bus_type"/>
+                            <field name="pnr_number"/>
+                            <field name="seat_numbers"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Journey Details">
+                            <field name="boarding_point"/>
+                            <field name="dropping_point"/>
+                            <field name="departure_date"/>
+                            <field name="arrival_date"/>
+                            <field name="passenger_names" placeholder="Enter one passenger name per line..."/>
+                            <field name="num_passengers"/>
+                        </group>
+                        <group string="Payment">
+                            <field name="total_amount"/>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                            <field name="mode_of_payment"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Notes"><field name="notes"/></page>
+                        <page string="Cancellation" invisible="not cancellation_id">
+                            <field name="cancellation_id"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_bus_booking_list" model="ir.ui.view">
+        <field name="name">travel.bus.booking.list</field>
+        <field name="model">travel.bus.booking</field>
+        <field name="arch" type="xml">
+            <list string="Bus Bookings">
+                <field name="name"/>
+                <field name="billing_company_id"/>
+                <field name="booking_executive"/>
+                <field name="operator_name"/>
+                <field name="booking_date"/>
+                <field name="departure_date"/>
+                <field name="arrival_date"/>
+                <field name="boarding_point"/>
+                <field name="dropping_point"/>
+                <field name="bus_type"/>
+                <field name="num_passengers"/>
+                <field name="total_amount"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_bus_booking_search" model="ir.ui.view">
+        <field name="name">travel.bus.booking.search</field>
+        <field name="model">travel.bus.booking</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="billing_company_id"/>
+                <field name="operator_name"/>
+                <field name="pnr_number"/>
+                <field name="booking_executive"/>
+                <field name="employee_code"/>
+                <filter string="Today's Departures" name="today_departures" domain="[('departure_date', '&gt;=', context_today().strftime('%%Y-%%m-%%d 00:00:00')), ('departure_date', '&lt;=', context_today().strftime('%%Y-%%m-%%d 23:59:59'))]"/>
+                <separator/>
+                <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('state','=','confirmed')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Billing Company" name="group_customer" context="{'group_by': 'billing_company_id'}"/>
+                    <filter string="Booking Executive" name="group_executive" context="{'group_by': 'booking_executive'}"/>
+                    <filter string="Booking Date" name="group_booking_date" context="{'group_by': 'booking_date:day'}"/>
+                    <filter string="Bus Type" name="group_type" context="{'group_by': 'bus_type'}"/>
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_bus_booking" model="ir.actions.act_window">
+        <field name="name">Bus Bookings</field>
+        <field name="res_model">travel.bus.booking</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_bus_booking_export_selected" model="ir.actions.server">
+        <field name="name">Export to Excel</field>
+        <field name="model_id" ref="model_travel_bus_booking"/>
+        <field name="binding_model_id" ref="model_travel_bus_booking"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+action = {
+    'type': 'ir.actions.act_window',
+    'name': 'Export Bus Bookings',
+    'res_model': 'travel.bus.booking.export',
+    'view_mode': 'form',
+    'target': 'new',
+    'context': {'active_ids': env.context.get('active_ids', []), 'active_model': 'travel.bus.booking'},
+}
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_hotel_booking" model="ir.sequence">
+            <field name="name">Hotel Booking</field>
+            <field name="code">travel.hotel.booking</field>
+            <field name="prefix">HTL/%(year)s/</field>
+            <field name="padding">5</field>
+        </record>
+        <record id="seq_domestic_flight_booking" model="ir.sequence">
+            <field name="name">Domestic Flight Booking</field>
+            <field name="code">travel.domestic.flight.booking</field>
+            <field name="prefix">DFL/%(year)s/</field>
+            <field name="padding">5</field>
+        </record>
+        <record id="seq_international_flight_booking" model="ir.sequence">
+            <field name="name">International Flight Booking</field>
+            <field name="code">travel.international.flight.booking</field>
+            <field name="prefix">IFL/%(year)s/</field>
+            <field name="padding">5</field>
+        </record>
+        <record id="seq_train_booking" model="ir.sequence">
+            <field name="name">Train Booking</field>
+            <field name="code">travel.train.booking</field>
+            <field name="prefix">TRN/%(year)s/</field>
+            <field name="padding">5</field>
+        </record>
+        <record id="seq_bus_booking" model="ir.sequence">
+            <field name="name">Bus Booking</field>
+            <field name="code">travel.bus.booking</field>
+            <field name="prefix">BUS/%(year)s/</field>
+            <field name="padding">5</field>
+        </record>
+        <record id="seq_car_booking" model="ir.sequence">
+            <field name="name">Car Booking</field>
+            <field name="code">travel.car.booking</field>
+            <field name="prefix">CAR/%(year)s/</field>
+            <field name="padding">5</field>
+        </record>
+        <record id="seq_insurance_booking" model="ir.sequence">
+            <field name="name">Insurance Booking</field>
+            <field name="code">travel.insurance.booking</field>
+            <field name="prefix">INS/%(year)s/</field>
+            <field name="padding">5</field>
+        </record>
+        <record id="seq_visa_booking" model="ir.sequence">
+            <field name="name">Visa Booking</field>
+            <field name="code">travel.visa.booking</field>
+            <field name="prefix">VSA/%(year)s/</field>
+            <field name="padding">5</field>
+        </record>
+        <record id="seq_package_tour_booking" model="ir.sequence">
+            <field name="name">Package Tour Booking</field>
+            <field name="code">travel.package.tour.booking</field>
+            <field name="prefix">PKG/%(year)s/</field>
+            <field name="padding">5</field>
+        </record>
+        <record id="seq_event_booking" model="ir.sequence">
+            <field name="name">Event Booking</field>
+            <field name="code">travel.event.booking</field>
+            <field name="prefix">EVT/%(year)s/</field>
+            <field name="padding">5</field>
+        </record>
+        <record id="seq_booking_cancellation" model="ir.sequence">
+            <field name="name">Booking Cancellation</field>
+            <field name="code">travel.booking.cancellation</field>
+            <field name="prefix">CXL/%(year)s/</field>
+            <field name="padding">5</field>
+        </record>
+    </data>
+</odoo>

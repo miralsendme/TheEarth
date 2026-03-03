@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_cancellation_form" model="ir.ui.view">
+        <field name="name">travel.booking.cancellation.form</field>
+        <field name="model">travel.booking.cancellation</field>
+        <field name="arch" type="xml">
+            <form string="Booking Cancellation">
+                <header>
+                    <button name="action_confirm" string="Confirm Cancellation" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_refund" string="Mark Refunded" type="object" class="oe_highlight" invisible="state != 'confirmed'"/>
+                    <button name="action_reject" string="Reject" type="object" invisible="state != 'draft'"/>
+                    <button name="action_draft" string="Reset to Draft" type="object" invisible="state not in ('rejected',)"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,refunded"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group string="Booking Info">
+                            <field name="booking_type"/>
+                            <field name="booking_ref" readonly="1"/>
+                            <field name="partner_id"/>
+                        </group>
+                        <group string="Cancellation Details">
+                            <field name="cancellation_date"/>
+                            <field name="reason"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Linked Booking">
+                            <field name="hotel_booking_id" invisible="booking_type != 'hotel'"/>
+                            <field name="domestic_flight_booking_id" invisible="booking_type != 'domestic_flight'"/>
+                            <field name="international_flight_booking_id" invisible="booking_type != 'international_flight'"/>
+                            <field name="train_booking_id" invisible="booking_type != 'train'"/>
+                            <field name="bus_booking_id" invisible="booking_type != 'bus'"/>
+                            <field name="car_booking_id" invisible="booking_type != 'car'"/>
+                            <field name="insurance_booking_id" invisible="booking_type != 'insurance'"/>
+                            <field name="visa_booking_id" invisible="booking_type != 'visa'"/>
+                            <field name="package_tour_booking_id" invisible="booking_type != 'package_tour'"/>
+                            <field name="event_booking_id" invisible="booking_type != 'event'"/>
+                        </group>
+                        <group string="Refund">
+                            <field name="booking_amount"/>
+                            <field name="cancellation_charge"/>
+                            <field name="refund_amount"/>
+                            <field name="refund_mode"/>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Reason Details">
+                            <field name="reason_details"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_cancellation_list" model="ir.ui.view">
+        <field name="name">travel.booking.cancellation.list</field>
+        <field name="model">travel.booking.cancellation</field>
+        <field name="arch" type="xml">
+            <list string="Cancellations">
+                <field name="name"/>
+                <field name="booking_type"/>
+                <field name="booking_ref"/>
+                <field name="partner_id"/>
+                <field name="cancellation_date"/>
+                <field name="reason"/>
+                <field name="booking_amount"/>
+                <field name="refund_amount"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_cancellation_search" model="ir.ui.view">
+        <field name="name">travel.booking.cancellation.search</field>
+        <field name="model">travel.booking.cancellation</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="booking_ref"/>
+                <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('state','=','confirmed')]"/>
+                <filter string="Refunded" name="refunded" domain="[('state','=','refunded')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Booking Type" name="group_type" context="{'group_by': 'booking_type'}"/>
+                    <filter string="Customer" name="group_customer" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Reason" name="group_reason" context="{'group_by': 'reason'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_cancellation" model="ir.actions.act_window">
+        <field name="name">Cancellations</field>
+        <field name="res_model">travel.booking.cancellation</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

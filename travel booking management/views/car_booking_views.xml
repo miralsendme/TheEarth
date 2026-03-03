@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_car_booking_form" model="ir.ui.view">
+        <field name="name">travel.car.booking.form</field>
+        <field name="model">travel.car.booking</field>
+        <field name="arch" type="xml">
+            <form string="Car Booking">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_done" string="Done" type="object" class="oe_highlight" invisible="state != 'confirmed'"/>
+                    <button name="action_cancel" string="Cancel" type="object" invisible="state in ('done', 'cancelled')"/>
+                    <button name="action_draft" string="Reset to Draft" type="object" invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group string="Booking">
+                            <field name="billing_company_id"/>
+                            <field name="booking_date"/>
+                            <field name="booking_executive"/>
+                            <field name="employee_code"/>
+                            <field name="document_number"/>
+                            <field name="confirmed_by"/>
+                            <field name="reference_number"/>
+                        </group>
+                        <group string="Vehicle Info">
+                            <field name="car_type"/>
+                            <field name="rental_type"/>
+                            <field name="cab_vendor"/>
+                            <field name="vehicle_number"/>
+                            <field name="driver_name"/>
+                            <field name="driver_phone"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Route &amp; Schedule">
+                            <field name="pickup_location"/>
+                            <field name="drop_location"/>
+                            <field name="pickup_date"/>
+                            <field name="drop_date"/>
+                        </group>
+                        <group string="Passenger Details">
+                            <field name="passenger_names" placeholder="Enter one passenger name per line..."/>
+                            <field name="num_passengers"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Payment">
+                            <field name="total_amount"/>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                            <field name="mode_of_payment"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description"><field name="description"/></page>
+                        <page string="Notes"><field name="notes"/></page>
+                        <page string="Cancellation" invisible="not cancellation_id">
+                            <field name="cancellation_id"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="view_car_booking_list" model="ir.ui.view">
+        <field name="name">travel.car.booking.list</field>
+        <field name="model">travel.car.booking</field>
+        <field name="arch" type="xml">
+            <list string="Car Bookings">
+                <field name="name"/>
+                <field name="billing_company_id"/>
+                <field name="booking_executive"/>
+                <field name="cab_vendor"/>
+                <field name="car_type"/>
+                <field name="rental_type"/>
+                <field name="pickup_location"/>
+                <field name="drop_location"/>
+                <field name="booking_date"/>
+                <field name="pickup_date"/>
+                <field name="num_passengers"/>
+                <field name="total_amount"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_car_booking_search" model="ir.ui.view">
+        <field name="name">travel.car.booking.search</field>
+        <field name="model">travel.car.booking</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="billing_company_id"/>
+                <field name="cab_vendor"/>
+                <field name="booking_executive"/>
+                <field name="employee_code"/>
+                <field name="reference_number"/>
+                <filter string="Today's Pickups" name="today_pickups" domain="[('pickup_date', '&gt;=', context_today().strftime('%%Y-%%m-%%d 00:00:00')), ('pickup_date', '&lt;=', context_today().strftime('%%Y-%%m-%%d 23:59:59'))]"/>
+                <separator/>
+                <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('state','=','confirmed')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Billing Company" name="group_customer" context="{'group_by': 'billing_company_id'}"/>
+                    <filter string="Booking Executive" name="group_executive" context="{'group_by': 'booking_executive'}"/>
+                    <filter string="Booking Date" name="group_booking_date" context="{'group_by': 'booking_date:day'}"/>
+                    <filter string="Car Type" name="group_type" context="{'group_by': 'car_type'}"/>
+                    <filter string="Rental Type" name="group_rental" context="{'group_by': 'rental_type'}"/>
+                    <filter string="Cab Vendor" name="group_vendor" context="{'group_by': 'cab_vendor'}"/>
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="action_car_booking" model="ir.actions.act_window">
+        <field name="name">Car Bookings</field>
+        <field name="res_model">travel.car.booking</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

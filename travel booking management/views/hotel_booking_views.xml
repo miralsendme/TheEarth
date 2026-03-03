@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hotel_booking_form" model="ir.ui.view">
+        <field name="name">travel.hotel.booking.form</field>
+        <field name="model">travel.hotel.booking</field>
+        <field name="arch" type="xml">
+            <form string="Hotel Booking">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_done" string="Done" type="object" class="oe_highlight" invisible="state != 'confirmed'"/>
+                    <button name="action_cancel" string="Cancel" type="object" invisible="state in ('done', 'cancelled')"/>
+                    <button name="action_draft" string="Reset to Draft" type="object" invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group string="Customer">
+                            <field name="billing_company_id"/>
+                        </group>
+                        <group string="Hotel Info">
+                            <field name="hotel_name"/>
+                            <field name="location"/>
+                            <field name="country_id"/>
+                            <field name="room_type"/>
+                            <field name="num_rooms"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Stay Details">
+                            <field name="checkin_date"/>
+                            <field name="checkout_date"/>
+                            <field name="num_nights"/>
+                            <field name="meal_plan"/>
+                        </group>
+                        <group string="Payment">
+                            <field name="total_amount"/>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Special Requests">
+                            <field name="special_requests"/>
+                        </page>
+                        <page string="Cancellation" invisible="not cancellation_id">
+                            <field name="cancellation_id"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_hotel_booking_calendar" model="ir.ui.view">
+        <field name="name">travel.hotel.booking.calendar</field>
+        <field name="model">travel.hotel.booking</field>
+        <field name="arch" type="xml">
+            <calendar string="Hotel Bookings"
+                      date_start="checkin_date"
+                      date_stop="checkout_date"
+                      color="billing_company_id"
+                      mode="month">
+                <field name="hotel_name"/>
+                <field name="billing_company_id"/>
+            </calendar>
+        </field>
+    </record>
+
+    <record id="action_hotel_booking" model="ir.actions.act_window">
+        <field name="name">Hotel Bookings</field>
+        <field name="res_model">travel.hotel.booking</field>
+        <field name="view_mode">list,form,calendar</field>
+    </record>
+
+    <record id="action_hotel_booking_export_selected" model="ir.actions.server">
+        <field name="name">Export to Excel</field>
+        <field name="model_id" ref="model_travel_hotel_booking"/>
+        <field name="binding_model_id" ref="model_travel_hotel_booking"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+action = {
+    'type': 'ir.actions.act_window',
+    'name': 'Export Hotel Bookings',
+    'res_model': 'travel.hotel.booking.export',
+    'view_mode': 'form',
+    'target': 'new',
+    'context': {'active_ids': env.context.get('active_ids', []), 'active_model': 'travel.hotel.booking'},
+}
+        </field>
+    </record>
+</odoo>

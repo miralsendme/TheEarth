@@ -1,0 +1,15 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hotel_booking,travel.hotel.booking,model_travel_hotel_booking,base.group_user,1,1,1,1
+access_domestic_flight_booking,travel.domestic.flight.booking,model_travel_domestic_flight_booking,base.group_user,1,1,1,1
+access_international_flight_booking,travel.international.flight.booking,model_travel_international_flight_booking,base.group_user,1,1,1,1
+access_train_booking,travel.train.booking,model_travel_train_booking,base.group_user,1,1,1,1
+access_bus_booking,travel.bus.booking,model_travel_bus_booking,base.group_user,1,1,1,1
+access_car_booking,travel.car.booking,model_travel_car_booking,base.group_user,1,1,1,1
+access_insurance_booking,travel.insurance.booking,model_travel_insurance_booking,base.group_user,1,1,1,1
+access_visa_booking,travel.visa.booking,model_travel_visa_booking,base.group_user,1,1,1,1
+access_package_tour_booking,travel.package.tour.booking,model_travel_package_tour_booking,base.group_user,1,1,1,1
+access_event_booking,travel.event.booking,model_travel_event_booking,base.group_user,1,1,1,1
+access_booking_cancellation,travel.booking.cancellation,model_travel_booking_cancellation,base.group_user,1,1,1,1
+access_hotel_booking_export,travel.hotel.booking.export,model_travel_hotel_booking_export,base.group_user,1,1,1,1
+access_bus_booking_export,travel.bus.booking.export,model_travel_bus_booking_export,base.group_user,1,1,1,1
+access_train_booking_export,travel.train.booking.export,model_travel_train_booking_export,base.group_user,1,1,1,1

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Root Menu -->
+    <menuitem id="menu_travel_booking_root" name="Travel Booking" sequence="50"
+              web_icon="travel_booking,static/description/icon.png"/>
+
+    <!-- Bookings Parent -->
+    <menuitem id="menu_bookings" name="Bookings" parent="menu_travel_booking_root" sequence="10"/>
+
+    <menuitem id="menu_hotel_booking" name="Hotel" parent="menu_bookings" sequence="10"
+              action="action_hotel_booking"/>
+    <menuitem id="menu_domestic_flight_booking" name="Domestic Flight" parent="menu_bookings" sequence="20"
+              action="action_domestic_flight_booking"/>
+    <menuitem id="menu_intl_flight_booking" name="International Flight" parent="menu_bookings" sequence="30"
+              action="action_intl_flight_booking"/>
+    <menuitem id="menu_train_booking" name="Train" parent="menu_bookings" sequence="40"
+              action="action_train_booking"/>
+    <menuitem id="menu_bus_booking" name="Bus" parent="menu_bookings" sequence="50"
+              action="action_bus_booking"/>
+    <menuitem id="menu_car_booking" name="Car" parent="menu_bookings" sequence="60"
+              action="action_car_booking"/>
+    <menuitem id="menu_insurance_booking" name="Insurance" parent="menu_bookings" sequence="70"
+              action="action_insurance_booking"/>
+    <menuitem id="menu_visa_booking" name="Visa" parent="menu_bookings" sequence="80"
+              action="action_visa_booking"/>
+    <menuitem id="menu_package_tour_booking" name="Package Tours" parent="menu_bookings" sequence="90"
+              action="action_package_tour_booking"/>
+    <menuitem id="menu_event_booking" name="Event" parent="menu_bookings" sequence="100"
+              action="action_event_booking"/>
+
+    <!-- Cancellations -->
+    <menuitem id="menu_cancellations" name="Cancellations" parent="menu_travel_booking_root" sequence="20"
+              action="action_cancellation"/>
+
+    <!-- Reports / Export -->
+    <menuitem id="menu_reports" name="Reports" parent="menu_travel_booking_root" sequence="30"/>
+    <menuitem id="menu_hotel_export" name="Export Hotel Bookings" parent="menu_reports" sequence="10"
+              action="action_hotel_booking_export"/>
+    <menuitem id="menu_bus_export" name="Export Bus Bookings" parent="menu_reports" sequence="20"
+              action="action_bus_booking_export"/>
+    <menuitem id="menu_train_export" name="Export Train Bookings" parent="menu_reports" sequence="30"
+              action="action_train_booking_export"/>
+</odoo>
