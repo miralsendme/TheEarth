@@ -10,33 +10,39 @@
                     <button name="action_done" string="Done" type="object" class="oe_highlight" invisible="state != 'confirmed'"/>
                     <button name="action_cancel" string="Cancel" type="object" invisible="state in ('done', 'cancelled')"/>
                     <button name="action_draft" string="Reset to Draft" type="object" invisible="state != 'cancelled'"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
                 </header>
                 <sheet>
                     <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
                     <group>
-                        <group string="Customer">
+                        <group string="Booking Info">
                             <field name="partner_id"/>
-                            <field name="num_tickets"/>
-                            <field name="ticket_category"/>
-                            <field name="seat_numbers"/>
+                            <field name="booking_date"/>
+                            <field name="booking_executive"/>
+                            <field name="employee_code"/>
+                            <field name="document_number"/>
+                            <field name="location_type"/>
                         </group>
                         <group string="Event Info">
                             <field name="event_name"/>
                             <field name="event_type"/>
-                            <field name="venue"/>
                             <field name="city"/>
-                            <field name="country_id"/>
+                            <field name="num_tickets"/>
+                            <field name="seat_numbers"/>
                         </group>
                     </group>
                     <group>
-                        <group string="Schedule">
-                            <field name="event_date"/>
-                            <field name="event_end_date"/>
+                        <group string="Hotel Details">
+                            <field name="hotel_name"/>
+                            <field name="checkin_date"/>
+                            <field name="checkout_date"/>
+                            <field name="num_nights"/>
                         </group>
                         <group string="Payment">
                             <field name="total_amount"/>
                             <field name="currency_id" groups="base.group_multi_currency"/>
+                            <field name="mode_of_payment"/>
+                            <field name="invoice_number"/>
+                            <field name="payment_date"/>
                         </group>
                     </group>
                     <notebook>
@@ -50,23 +56,42 @@
             </form>
         </field>
     </record>
+
     <record id="view_event_booking_list" model="ir.ui.view">
         <field name="name">travel.event.booking.list</field>
         <field name="model">travel.event.booking</field>
         <field name="arch" type="xml">
-            <list string="Event Bookings">
+            <list string="Event Bookings"
+                  decoration-info="state == 'draft'"
+                  decoration-warning="state == 'confirmed'"
+                  decoration-success="state == 'done'"
+                  decoration-danger="state == 'cancelled'">
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="event_name"/>
                 <field name="event_type"/>
-                <field name="venue"/>
-                <field name="event_date"/>
+                <field name="location_type"/>
+                <field name="city"/>
                 <field name="num_tickets"/>
+                <field name="hotel_name"/>
+                <field name="checkin_date"/>
+                <field name="checkout_date"/>
+                <field name="num_nights"/>
                 <field name="total_amount"/>
-                <field name="state" widget="badge"/>
+                <field name="invoice_number"/>
+                <field name="mode_of_payment"/>
+                <field name="payment_date"/>
+                <field name="booking_date"/>
+                <field name="booking_executive"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'confirmed'"
+                       decoration-success="state == 'done'"
+                       decoration-danger="state == 'cancelled'"/>
             </list>
         </field>
     </record>
+
     <record id="view_event_booking_search" model="ir.ui.view">
         <field name="name">travel.event.booking.search</field>
         <field name="model">travel.event.booking</field>
@@ -75,16 +100,17 @@
                 <field name="name"/>
                 <field name="partner_id"/>
                 <field name="event_name"/>
-                <field name="venue"/>
                 <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
                 <filter string="Confirmed" name="confirmed" domain="[('state','=','confirmed')]"/>
                 <group expand="0" string="Group By">
-                    <filter string="Customer" name="group_customer" context="{'group_by': 'partner_id'}"/>
+                    <filter string="Billing Company" name="group_customer" context="{'group_by': 'partner_id'}"/>
                     <filter string="Event Type" name="group_type" context="{'group_by': 'event_type'}"/>
+                    <filter string="Location Type" name="group_location" context="{'group_by': 'location_type'}"/>
                 </group>
             </search>
         </field>
     </record>
+
     <record id="action_event_booking" model="ir.actions.act_window">
         <field name="name">Event Bookings</field>
         <field name="res_model">travel.event.booking</field>

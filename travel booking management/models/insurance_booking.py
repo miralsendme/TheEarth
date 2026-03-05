@@ -5,33 +5,33 @@ from odoo.exceptions import ValidationError
 
 class InsuranceBooking(models.Model):
     _name = 'travel.insurance.booking'
-    _description = 'Travel Insurance Booking'
+    _description = 'Insurance Booking'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'create_date desc'
 
     name = fields.Char(string='Booking Reference', required=True, copy=False,
                        readonly=True, default=lambda self: _('New'))
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
-    insurance_provider = fields.Char(string='Insurance Provider', required=True)
-    policy_number = fields.Char(string='Policy Number')
-    insurance_type = fields.Selection([
-        ('travel_medical', 'Travel Medical'),
-        ('trip_cancellation', 'Trip Cancellation'),
-        ('baggage_loss', 'Baggage Loss'),
-        ('flight_delay', 'Flight Delay'),
-        ('comprehensive', 'Comprehensive'),
-    ], string='Insurance Type', default='comprehensive', required=True)
-    coverage_amount = fields.Float(string='Coverage Amount')
-    destination_country_id = fields.Many2one('res.country', string='Destination Country')
-    start_date = fields.Date(string='Coverage Start Date', required=True, tracking=True)
-    end_date = fields.Date(string='Coverage End Date', required=True, tracking=True)
-    num_travellers = fields.Integer(string='Number of Travellers', default=1, required=True)
-    nominee_name = fields.Char(string='Nominee Name')
-    nominee_relation = fields.Char(string='Nominee Relation')
-    premium_amount = fields.Float(string='Premium Amount', tracking=True)
+    booking_date = fields.Date(string='Booking Date', default=fields.Date.context_today, tracking=True)
+    booking_executive = fields.Many2one('res.users', string='Booking Executive',
+                                        default=lambda self: self.env.user, tracking=True)
+    passenger_name = fields.Char(string='Passenger Name', required=True)
+    employee_code = fields.Char(string='Employee Code')
+    billing_company_id = fields.Many2one('res.partner', string='Billing Company', required=True, tracking=True)
+    document_number = fields.Char(string='Doc. No. / Requested By')
+    reference_number = fields.Char(string='Reference Number')
+    description = fields.Text(string='Description')
+    amount = fields.Float(string='Amount', tracking=True)
     currency_id = fields.Many2one('res.currency', string='Currency',
                                   default=lambda self: self.env.company.currency_id)
-    notes = fields.Text(string='Notes')
+    mode_of_payment = fields.Selection([
+        ('cash', 'Cash'),
+        ('credit_card', 'Credit Card'),
+        ('bank_transfer', 'Bank Transfer'),
+        ('cheque', 'Cheque'),
+        ('online', 'Online'),
+    ], string='Mode of Payment')
+    remarks = fields.Text(string='Remarks')
+    confirmed_by = fields.Many2one('res.users', string='Confirmed By', required=True)
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
@@ -46,12 +46,6 @@ class InsuranceBooking(models.Model):
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('travel.insurance.booking') or _('New')
         return super().create(vals_list)
-
-    @api.constrains('start_date', 'end_date')
-    def _check_dates(self):
-        for rec in self:
-            if rec.start_date and rec.end_date and rec.start_date >= rec.end_date:
-                raise ValidationError(_('End date must be after start date.'))
 
     def action_confirm(self):
         self.write({'state': 'confirmed'})
@@ -69,9 +63,9 @@ class InsuranceBooking(models.Model):
             'context': {
                 'default_booking_type': 'insurance',
                 'default_insurance_booking_id': self.id,
-                'default_partner_id': self.partner_id.id,
+                'default_partner_id': self.billing_company_id.id,
                 'default_booking_ref': self.name,
-                'default_booking_amount': self.premium_amount,
+                'default_booking_amount': self.amount,
             },
         }
 

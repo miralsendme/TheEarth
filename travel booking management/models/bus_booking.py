@@ -47,6 +47,8 @@ class BusBooking(models.Model):
     currency_id = fields.Many2one('res.currency', string='Currency',
                                   default=lambda self: self.env.company.currency_id)
     notes = fields.Text(string='Notes')
+
+
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
@@ -62,6 +64,8 @@ class BusBooking(models.Model):
                 rec.num_passengers = len([l for l in rec.passenger_names.strip().splitlines() if l.strip()])
             else:
                 rec.num_passengers = 0
+
+
 
     @api.model_create_multi
     def create(self, vals_list):

@@ -11,26 +11,24 @@ class HotelBooking(models.Model):
 
     name = fields.Char(string='Booking Reference', required=True, copy=False,
                        readonly=True, default=lambda self: _('New'))
+    booking_date = fields.Date(string='Booking Date', default=fields.Date.context_today, tracking=True)
+    booking_executive = fields.Many2one('res.users', string='Booking Executive',
+                                        default=lambda self: self.env.user, tracking=True)
+    guest_names = fields.Text(string='Name of Guest(s)')
+    num_adults = fields.Integer(string='Number of Guest(s)', compute='_compute_num_adults', store=True, readonly=False)
+    employee_code = fields.Char(string='Employee Code')
     billing_company_id = fields.Many2one('res.partner', string='Billing Company', required=True, tracking=True)
-    hotel_name = fields.Char(string='Hotel Name', required=True)
+    document_number = fields.Char(string='Doc. no./Req. by')
     location = fields.Char(string='Location', required=True)
-    country_id = fields.Many2one('res.country', string='Country', required=True)
+    location_type = fields.Selection([
+        ('domestic', 'Domestic'),
+        ('international', 'International'),
+    ], string='Location Type')
     checkin_date = fields.Date(string='Check-in Date', required=True, tracking=True)
     checkout_date = fields.Date(string='Check-out Date', required=True, tracking=True)
     num_nights = fields.Integer(string='Number of Nights', compute='_compute_num_nights', store=True)
-    num_rooms = fields.Integer(string='Number of Rooms', default=1, required=True)
-    room_type = fields.Selection([
-        ('single', 'Single'),
-        ('double', 'Double'),
-        ('suite', 'Suite'),
-        ('deluxe', 'Deluxe'),
-        ('family', 'Family'),
-    ], string='Room Type', default='double', required=True)
-    guest_names = fields.Text(string='Name of Guest(s)')
-    num_adults = fields.Integer(string='Number of Guest(s)', compute='_compute_num_adults', store=True, readonly=False)
-    num_children = fields.Integer(string='Children', default=0)
-    employee_code = fields.Char(string='Employee Code')
-    document_number = fields.Char(string='Document Number / Requested By')
+    hotel_name = fields.Char(string='Hotel Name', required=True)
+    total_amount = fields.Float(string='Total Amount', tracking=True)
     mode_of_payment = fields.Selection([
         ('cash', 'Cash'),
         ('card', 'Credit/Debit Card'),
@@ -38,21 +36,29 @@ class HotelBooking(models.Model):
         ('online', 'Online Payment'),
         ('cheque', 'Cheque'),
     ], string='Mode of Payment')
-    remark = fields.Text(string='Remark')
-    booking_date = fields.Date(string='Booking Date', default=fields.Date.context_today, tracking=True)
-    booking_service_provider = fields.Char(string='Booking Service Provider')
-    booking_executive = fields.Many2one('res.users', string='Booking Executive', default=lambda self: self.env.user, tracking=True)
-    meal_plan = fields.Selection([
-        ('none', 'Room Only'),
-        ('breakfast', 'Bed & Breakfast'),
-        ('half_board', 'Half Board'),
-        ('full_board', 'Full Board'),
-        ('all_inclusive', 'All Inclusive'),
-    ], string='Meal Plan', default='breakfast')
-    total_amount = fields.Float(string='Total Amount', tracking=True)
-    currency_id = fields.Many2one('res.currency', string='Currency',
-                                  default=lambda self: self.env.company.currency_id)
-    special_requests = fields.Text(string='Special Requests')
+    booking_service_provider = fields.Selection([
+        ('aman_travels', 'Aman Travels Ltd (GRN)'),
+        ('makemytrip', 'MAKEMYTRIP'),
+        ('treebo', 'TREEBO'),
+        ('goibibo', 'GOIBIBO'),
+        ('airbnb', 'AIRBNB'),
+        ('meril_travel_desk', 'Meril Travel Desk'),
+        ('travel_plus', 'Travel Plus'),
+        ('other', 'Other'),
+    ], string='Booking Service Provider')
+    remark = fields.Selection([
+        ('corporate', 'CORPORATE'),
+        ('retail', 'RETAIL'),
+        ('same_day_checking', 'SAME DAY CHECKING(IF NOT MAPPED)'),
+        ('not_available', 'CORPORATE HOTEL NOT AVAILABLE AT LOCATION'),
+        ('pax_not_agreed', 'PAX NOT AGREED FOR CORPORATE'),
+        ('sold_out', 'CORPORATE SOLD OUT'),
+        ('not_in_budget', 'CORPORATE HOTEL NOT IN BUDGET'),
+        ('rate_expired', 'Contracted rate expired'),
+        ('other', 'Other'),
+    ], string='Remarks')
+    confirmed_by = fields.Many2one('res.users', string='Confirmed By', tracking=True)
+
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),

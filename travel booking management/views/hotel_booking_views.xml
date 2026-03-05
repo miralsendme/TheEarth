@@ -15,33 +15,36 @@
                 <sheet>
                     <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
                     <group>
-                        <group string="Customer">
+                        <group string="Booking Info">
+                            <field name="booking_date"/>
+                            <field name="booking_executive"/>
+                            <field name="guest_names"/>
+                            <field name="num_adults"/>
+                            <field name="employee_code"/>
                             <field name="billing_company_id"/>
+                            <field name="document_number"/>
                         </group>
                         <group string="Hotel Info">
-                            <field name="hotel_name"/>
                             <field name="location"/>
-                            <field name="country_id"/>
-                            <field name="room_type"/>
-                            <field name="num_rooms"/>
-                        </group>
-                    </group>
-                    <group>
-                        <group string="Stay Details">
+                            <field name="location_type"/>
                             <field name="checkin_date"/>
                             <field name="checkout_date"/>
                             <field name="num_nights"/>
-                            <field name="meal_plan"/>
+                            <field name="hotel_name"/>
                         </group>
-                        <group string="Payment">
+                    </group>
+                    <group>
+                        <group string="Payment &amp; Service">
                             <field name="total_amount"/>
-                            <field name="currency_id" groups="base.group_multi_currency"/>
+                            <field name="mode_of_payment"/>
+                            <field name="booking_service_provider"/>
+                        </group>
+                        <group string="Confirmation">
+                            <field name="remark"/>
+                            <field name="confirmed_by"/>
                         </group>
                     </group>
                     <notebook>
-                        <page string="Special Requests">
-                            <field name="special_requests"/>
-                        </page>
                         <page string="Cancellation" invisible="not cancellation_id">
                             <field name="cancellation_id"/>
                         </page>
@@ -49,6 +52,43 @@
                 </sheet>
                 <chatter/>
             </form>
+        </field>
+    </record>
+
+    <record id="view_hotel_booking_list" model="ir.ui.view">
+        <field name="name">travel.hotel.booking.list</field>
+        <field name="model">travel.hotel.booking</field>
+        <field name="arch" type="xml">
+            <list string="Hotel Bookings"
+                  decoration-info="state == 'draft'"
+                  decoration-warning="state == 'confirmed'"
+                  decoration-success="state == 'done'"
+                  decoration-danger="state == 'cancelled'">
+                <field name="name"/>
+                <field name="booking_date"/>
+                <field name="booking_executive"/>
+                <field name="guest_names"/>
+                <field name="num_adults"/>
+                <field name="employee_code"/>
+                <field name="billing_company_id"/>
+                <field name="document_number"/>
+                <field name="location"/>
+                <field name="location_type"/>
+                <field name="checkin_date"/>
+                <field name="checkout_date"/>
+                <field name="num_nights"/>
+                <field name="hotel_name"/>
+                <field name="total_amount"/>
+                <field name="mode_of_payment"/>
+                <field name="booking_service_provider"/>
+                <field name="remark"/>
+                <field name="confirmed_by"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'confirmed'"
+                       decoration-success="state == 'done'"
+                       decoration-danger="state == 'cancelled'"/>
+            </list>
         </field>
     </record>
 

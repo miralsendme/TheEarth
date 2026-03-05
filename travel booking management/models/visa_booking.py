@@ -11,30 +11,29 @@ class VisaBooking(models.Model):
 
     name = fields.Char(string='Booking Reference', required=True, copy=False,
                        readonly=True, default=lambda self: _('New'))
-    partner_id = fields.Many2one('res.partner', string='Customer', required=True, tracking=True)
-    destination_country_id = fields.Many2one('res.country', string='Destination Country', required=True)
-    visa_type = fields.Selection([
-        ('tourist', 'Tourist'),
-        ('business', 'Business'),
-        ('transit', 'Transit'),
-        ('student', 'Student'),
-        ('work', 'Work'),
-        ('medical', 'Medical'),
-    ], string='Visa Type', default='tourist', required=True)
-    passport_number = fields.Char(string='Passport Number', required=True)
-    passport_expiry = fields.Date(string='Passport Expiry Date', required=True)
-    application_date = fields.Date(string='Application Date', required=True, tracking=True)
-    travel_date = fields.Date(string='Intended Travel Date', required=True)
-    return_date = fields.Date(string='Intended Return Date')
-    duration_of_stay = fields.Integer(string='Duration of Stay (Days)')
-    embassy_appointment_date = fields.Datetime(string='Embassy Appointment')
-    processing_time = fields.Char(string='Processing Time')
-    service_charge = fields.Float(string='Service Charge', tracking=True)
-    visa_fee = fields.Float(string='Visa Fee')
-    total_amount = fields.Float(string='Total Amount', compute='_compute_total', store=True)
+    booking_date = fields.Date(string='Booking Date', default=fields.Date.context_today, tracking=True)
+    booking_executive = fields.Many2one('res.users', string='Booking Executive',
+                                        default=lambda self: self.env.user, tracking=True)
+    booking_type = fields.Selection([
+        ('visa', 'Visa'),
+        ('gvk_pranam', 'GVK Pranam Service'),
+    ], string='Type of Booking', required=True, tracking=True)
+    passenger_name = fields.Char(string='Passenger Name', required=True)
+    employee_code = fields.Char(string='Employee Code')
+    billing_company_id = fields.Many2one('res.partner', string='Billing Company', required=True, tracking=True)
+    document_number = fields.Char(string='Document Number / Requested By')
+    reference_number = fields.Char(string='Reference Number')
+    description = fields.Text(string='Description')
+    mode_of_payment = fields.Selection([
+        ('cash', 'Cash'),
+        ('credit_card', 'Credit Card'),
+        ('bank_transfer', 'Bank Transfer'),
+        ('cheque', 'Cheque'),
+        ('online', 'Online'),
+    ], string='Mode of Payment')
+    confirmed_by = fields.Many2one('res.users', string='Confirmed By')
     currency_id = fields.Many2one('res.currency', string='Currency',
                                   default=lambda self: self.env.company.currency_id)
-    notes = fields.Text(string='Notes')
     state = fields.Selection([
         ('draft', 'Draft'),
         ('submitted', 'Submitted'),
@@ -45,23 +44,12 @@ class VisaBooking(models.Model):
     ], string='Status', default='draft', tracking=True)
     cancellation_id = fields.Many2one('travel.booking.cancellation', string='Cancellation', readonly=True)
 
-    @api.depends('service_charge', 'visa_fee')
-    def _compute_total(self):
-        for rec in self:
-            rec.total_amount = rec.service_charge + rec.visa_fee
-
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('travel.visa.booking') or _('New')
         return super().create(vals_list)
-
-    @api.constrains('travel_date', 'return_date')
-    def _check_dates(self):
-        for rec in self:
-            if rec.travel_date and rec.return_date and rec.travel_date >= rec.return_date:
-                raise ValidationError(_('Return date must be after travel date.'))
 
     def action_submit(self):
         self.write({'state': 'submitted'})
@@ -85,9 +73,8 @@ class VisaBooking(models.Model):
             'context': {
                 'default_booking_type': 'visa',
                 'default_visa_booking_id': self.id,
-                'default_partner_id': self.partner_id.id,
+                'default_partner_id': self.billing_company_id.id,
                 'default_booking_ref': self.name,
-                'default_booking_amount': self.total_amount,
             },
         }
 

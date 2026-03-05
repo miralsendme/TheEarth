@@ -117,4 +117,37 @@
         <field name="res_model">travel.car.booking</field>
         <field name="view_mode">list,form</field>
     </record>
+
+    <record id="view_car_booking_list" model="ir.ui.view">
+        <field name="name">travel.car.booking.list</field>
+        <field name="model">travel.car.booking</field>
+        <field name="arch" type="xml">
+            <list string="Car Bookings"
+                  decoration-info="state == 'draft'"
+                  decoration-warning="state == 'confirmed'"
+                  decoration-success="state == 'done'"
+                  decoration-danger="state == 'cancelled'">
+                <field name="name"/>
+                <field name="billing_company_id"/>
+                <field name="car_type"/>
+                <field name="rental_type"/>
+                <field name="pickup_location"/>
+                <field name="drop_location"/>
+                <field name="pickup_date"/>
+                <field name="drop_date"/>
+                <field name="num_passengers"/>
+                <field name="driver_name"/>
+                <field name="vehicle_number"/>
+                <field name="total_amount"/>
+                <field name="booking_date"/>
+                <field name="booking_executive"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'confirmed'"
+                       decoration-success="state == 'done'"
+                       decoration-danger="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
 </odoo>

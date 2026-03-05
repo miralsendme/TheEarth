@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from odoo import models, fields, api, _
-from odoo.exceptions import ValidationError
 
 
 class DomesticFlightBooking(models.Model):
@@ -11,42 +10,40 @@ class DomesticFlightBooking(models.Model):
 
     name = fields.Char(string='Booking Reference', required=True, copy=False,
                        readonly=True, default=lambda self: _('New'))
-    billing_company_id = fields.Many2one('res.partner', string='Billing Company', required=True, tracking=True)
     booking_date = fields.Date(string='Booking Date', default=fields.Date.context_today, tracking=True)
     booking_executive = fields.Many2one('res.users', string='Booking Executive',
                                         default=lambda self: self.env.user, tracking=True)
+    passenger_names = fields.Text(string='Name of Passenger(s)')
+    num_passengers = fields.Integer(string='Number of Passenger(s)', compute='_compute_num_passengers',
+                                    store=True, readonly=False)
     employee_code = fields.Char(string='Employee Code')
-    document_number = fields.Char(string='Document Number / Requested By')
-    airline = fields.Char(string='Airline', required=True)
-    flight_number = fields.Char(string='Flight Number (Onwards)')
-    flight_number_return = fields.Char(string='Flight Number (Return)')
-    origin_city = fields.Char(string='From City', required=True)
-    destination_city = fields.Char(string='To City', required=True)
-    departure_date = fields.Datetime(string='Departure Date & Time', required=True, tracking=True)
-    arrival_date = fields.Datetime(string='Arrival Date & Time', required=True)
+    billing_company_id = fields.Many2one('res.partner', string='Billing Company', required=True, tracking=True)
+    document_number = fields.Char(string='Doc. no./Req. by')
+    origin_city = fields.Char(string='From - Origin', required=True)
+    destination_city = fields.Char(string='To - Destination', required=True)
+    return_origin = fields.Char(string='Return Origin')
+    return_destination = fields.Char(string='Return Destination')
     trip_type = fields.Selection([
         ('one_way', 'One Way'),
         ('round_trip', 'Round Trip'),
-    ], string='Trip Type', default='one_way', required=True)
-    return_travel_date = fields.Datetime(string='Travel Date (Return)')
-    return_origin = fields.Char(string='Return Origin')
-    return_destination = fields.Char(string='Return Destination')
-    return_departure_date = fields.Datetime(string='Return Departure')
-    return_arrival_date = fields.Datetime(string='Return Arrival')
+    ], string='Travel Type', default='one_way', required=True)
+    travel_date_onward = fields.Date(string='Travel Date (Onward)', required=True, tracking=True)
+    return_date = fields.Date(string='Return Date (Return)')
+    ticket_number = fields.Char(string='Ticket Number')
+    pnr_number = fields.Char(string='PNR Number',
+                              help="USE CRS PNR / BOOKING REFERENCE NO IF LCC AIRLINE (DON'T PUT AO NO)")
+    flight_number = fields.Char(string='Flight Number Onward')
+    flight_number_return = fields.Char(string='Flight Number Return')
     travel_class = fields.Selection([
         ('economy', 'Economy'),
-        ('premium_economy', 'Premium Economy'),
         ('business', 'Business'),
-    ], string='Class', default='economy', required=True)
-    passenger_names = fields.Text(string='Name of Passenger(s)')
-    num_passengers = fields.Integer(string='Passengers', compute='_compute_num_passengers',
-                                    store=True, readonly=False)
-    pnr_number = fields.Char(string='PNR Number')
-    ticket_number = fields.Char(string='Ticket Number')
-    baggage_allowance = fields.Char(string='Baggage Allowance')
-    gross_amount = fields.Float(string='Gross Amount')
-    total_amount = fields.Float(string='Net Amount', tracking=True)
-    gst_amount = fields.Float(string='GST Amount')
+        ('first', 'First'),
+    ], string='Class of Booking', default='economy', required=True)
+    airline = fields.Char(string='Airline Name', required=True)
+    gross_amount = fields.Float(string='Gross Amount (Total value)')
+    total_amount = fields.Float(string='Net Amount (Total value)', tracking=True)
+    gst_amount = fields.Float(string='GST Amount',
+                               help="ONLY IF GST CLAIM IS ALLOWED")
     mode_of_payment = fields.Selection([
         ('cash', 'Cash'),
         ('card', 'Credit/Debit Card'),
@@ -54,9 +51,9 @@ class DomesticFlightBooking(models.Model):
         ('online', 'Online Payment'),
         ('cheque', 'Cheque'),
     ], string='Mode of Payment')
-    currency_id = fields.Many2one('res.currency', string='Currency',
-                                  default=lambda self: self.env.company.currency_id)
-    notes = fields.Text(string='Notes')
+    remarks = fields.Text(string='Remarks')
+    confirmed_by = fields.Many2one('res.users', string='Confirmed By', tracking=True)
+
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
@@ -79,12 +76,6 @@ class DomesticFlightBooking(models.Model):
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('travel.domestic.flight.booking') or _('New')
         return super().create(vals_list)
-
-    @api.constrains('departure_date', 'arrival_date')
-    def _check_dates(self):
-        for rec in self:
-            if rec.departure_date and rec.arrival_date and rec.departure_date >= rec.arrival_date:
-                raise ValidationError(_('Arrival must be after departure.'))
 
     def action_confirm(self):
         self.write({'state': 'confirmed'})

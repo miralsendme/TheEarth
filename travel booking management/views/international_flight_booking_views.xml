@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <record id="view_intl_flight_booking_form" model="ir.ui.view">
+    <record id="view_international_flight_booking_form" model="ir.ui.view">
         <field name="name">travel.international.flight.booking.form</field>
         <field name="model">travel.international.flight.booking</field>
         <field name="arch" type="xml">
@@ -15,68 +15,44 @@
                 <sheet>
                     <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
                     <group>
-                        <group string="Booking">
-                            <field name="billing_company_id"/>
+                        <group string="Booking Info">
                             <field name="booking_date"/>
                             <field name="booking_executive"/>
+                            <field name="passenger_names"/>
+                            <field name="num_passengers"/>
                             <field name="employee_code"/>
+                            <field name="billing_company_id"/>
                             <field name="document_number"/>
                         </group>
                         <group string="Flight Info">
-                            <field name="airline"/>
-                            <field name="flight_number"/>
-                            <field name="flight_number_return" invisible="trip_type == 'one_way'"/>
-                            <field name="pnr_number"/>
-                            <field name="ticket_number"/>
-                            <field name="travel_class"/>
-                            <field name="trip_type"/>
-                            <field name="baggage_allowance"/>
-                        </group>
-                    </group>
-                    <group>
-                        <group string="Origin">
                             <field name="origin_city"/>
-                            <field name="origin_country_id"/>
-                        </group>
-                        <group string="Destination">
                             <field name="destination_city"/>
-                            <field name="destination_country_id"/>
-                        </group>
-                    </group>
-                    <group>
-                        <group string="Schedule (Onwards)">
-                            <field name="departure_date"/>
-                            <field name="arrival_date"/>
-                        </group>
-                    </group>
-                    <group invisible="trip_type == 'one_way'">
-                        <group string="Return Journey">
                             <field name="return_origin"/>
                             <field name="return_destination"/>
-                        </group>
-                        <group string="Schedule (Return)">
-                            <field name="return_departure_date"/>
-                            <field name="return_arrival_date"/>
+                            <field name="trip_type"/>
+                            <field name="travel_date_onward"/>
+                            <field name="return_date"/>
                         </group>
                     </group>
                     <group>
-                        <group string="Passenger Details">
-                            <field name="passenger_names" placeholder="Enter one passenger name per line..."/>
-                            <field name="num_passengers"/>
-                            <field name="passport_number"/>
-                            <field name="visa_required"/>
+                        <group string="Ticket Details">
+                            <field name="ticket_number"/>
+                            <field name="pnr_number" placeholder="CRS PNR / BOOKING REF NO IF LCC AIRLINE"/>
+                            <field name="flight_number"/>
+                            <field name="flight_number_return"/>
+                            <field name="travel_class"/>
+                            <field name="airline"/>
                         </group>
-                        <group string="Payment">
+                        <group string="Payment &amp; Confirmation">
                             <field name="gross_amount"/>
-                            <field name="gst_amount"/>
                             <field name="total_amount"/>
-                            <field name="currency_id" groups="base.group_multi_currency"/>
+                            <field name="gst_amount"/>
                             <field name="mode_of_payment"/>
+                            <field name="remarks"/>
+                            <field name="confirmed_by"/>
                         </group>
                     </group>
                     <notebook>
-                        <page string="Layover Info"><field name="layover_info"/></page>
-                        <page string="Notes"><field name="notes"/></page>
                         <page string="Cancellation" invisible="not cancellation_id">
                             <field name="cancellation_id"/>
                         </page>
@@ -86,59 +62,52 @@
             </form>
         </field>
     </record>
-    <record id="view_intl_flight_booking_list" model="ir.ui.view">
+
+    <record id="view_international_flight_booking_list" model="ir.ui.view">
         <field name="name">travel.international.flight.booking.list</field>
         <field name="model">travel.international.flight.booking</field>
         <field name="arch" type="xml">
-            <list string="International Flight Bookings">
+            <list string="International Flight Bookings"
+                  decoration-info="state == 'draft'"
+                  decoration-warning="state == 'confirmed'"
+                  decoration-success="state == 'done'"
+                  decoration-danger="state == 'cancelled'">
                 <field name="name"/>
-                <field name="billing_company_id"/>
+                <field name="booking_date"/>
                 <field name="booking_executive"/>
-                <field name="airline"/>
-                <field name="flight_number"/>
+                <field name="passenger_names"/>
+                <field name="num_passengers"/>
+                <field name="employee_code"/>
+                <field name="billing_company_id"/>
+                <field name="document_number"/>
                 <field name="origin_city"/>
                 <field name="destination_city"/>
-                <field name="destination_country_id"/>
-                <field name="booking_date"/>
-                <field name="departure_date"/>
+                <field name="return_origin"/>
+                <field name="return_destination"/>
                 <field name="trip_type"/>
-                <field name="travel_class"/>
-                <field name="num_passengers"/>
-                <field name="pnr_number"/>
+                <field name="travel_date_onward"/>
+                <field name="return_date"/>
                 <field name="ticket_number"/>
+                <field name="pnr_number"/>
+                <field name="flight_number"/>
+                <field name="flight_number_return"/>
+                <field name="travel_class"/>
+                <field name="airline"/>
+                <field name="gross_amount"/>
                 <field name="total_amount"/>
-                <field name="state" widget="badge"/>
+                <field name="gst_amount"/>
+                <field name="mode_of_payment"/>
+                <field name="remarks"/>
+                <field name="confirmed_by"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'confirmed'"
+                       decoration-success="state == 'done'"
+                       decoration-danger="state == 'cancelled'"/>
             </list>
         </field>
     </record>
-    <record id="view_intl_flight_booking_search" model="ir.ui.view">
-        <field name="name">travel.international.flight.booking.search</field>
-        <field name="model">travel.international.flight.booking</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-                <field name="billing_company_id"/>
-                <field name="airline"/>
-                <field name="pnr_number"/>
-                <field name="ticket_number"/>
-                <field name="booking_executive"/>
-                <field name="employee_code"/>
-                <filter string="Today's Departures" name="today_departures" domain="[('departure_date', '&gt;=', context_today().strftime('%%Y-%%m-%%d 00:00:00')), ('departure_date', '&lt;=', context_today().strftime('%%Y-%%m-%%d 23:59:59'))]"/>
-                <separator/>
-                <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
-                <filter string="Confirmed" name="confirmed" domain="[('state','=','confirmed')]"/>
-                <group expand="0" string="Group By">
-                    <filter string="Billing Company" name="group_company" context="{'group_by': 'billing_company_id'}"/>
-                    <filter string="Booking Executive" name="group_executive" context="{'group_by': 'booking_executive'}"/>
-                    <filter string="Booking Date" name="group_booking_date" context="{'group_by': 'booking_date:day'}"/>
-                    <filter string="Airline" name="group_airline" context="{'group_by': 'airline'}"/>
-                    <filter string="Destination Country" name="group_dest" context="{'group_by': 'destination_country_id'}"/>
-                    <filter string="Trip Type" name="group_trip" context="{'group_by': 'trip_type'}"/>
-                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
-                </group>
-            </search>
-        </field>
-    </record>
+
     <record id="action_intl_flight_booking" model="ir.actions.act_window">
         <field name="name">International Flight Bookings</field>
         <field name="res_model">travel.international.flight.booking</field>

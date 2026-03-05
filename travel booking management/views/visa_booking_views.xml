@@ -17,34 +17,27 @@
                 <sheet>
                     <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
                     <group>
-                        <group string="Customer">
-                            <field name="partner_id"/>
-                            <field name="passport_number"/>
-                            <field name="passport_expiry"/>
+                        <group string="Booking Info">
+                            <field name="billing_company_id"/>
+                            <field name="booking_date"/>
+                            <field name="booking_executive"/>
+                            <field name="booking_type"/>
+                            <field name="employee_code"/>
+                            <field name="document_number"/>
                         </group>
-                        <group string="Visa Info">
-                            <field name="destination_country_id"/>
-                            <field name="visa_type"/>
-                            <field name="duration_of_stay"/>
-                            <field name="processing_time"/>
+                        <group string="Passenger Info">
+                            <field name="passenger_name"/>
+                            <field name="reference_number"/>
+                            <field name="confirmed_by"/>
+                            <field name="mode_of_payment"/>
                         </group>
                     </group>
                     <group>
-                        <group string="Dates">
-                            <field name="application_date"/>
-                            <field name="travel_date"/>
-                            <field name="return_date"/>
-                            <field name="embassy_appointment_date"/>
-                        </group>
-                        <group string="Payment">
-                            <field name="visa_fee"/>
-                            <field name="service_charge"/>
-                            <field name="total_amount"/>
-                            <field name="currency_id" groups="base.group_multi_currency"/>
+                        <group string="Description">
+                            <field name="description" nolabel="1"/>
                         </group>
                     </group>
                     <notebook>
-                        <page string="Notes"><field name="notes"/></page>
                         <page string="Cancellation" invisible="not cancellation_id">
                             <field name="cancellation_id"/>
                         </page>
@@ -54,41 +47,57 @@
             </form>
         </field>
     </record>
+
     <record id="view_visa_booking_list" model="ir.ui.view">
         <field name="name">travel.visa.booking.list</field>
         <field name="model">travel.visa.booking</field>
         <field name="arch" type="xml">
-            <list string="Visa Bookings">
+            <list string="Visa Bookings"
+                  decoration-info="state == 'draft'"
+                  decoration-warning="state == 'processing'"
+                  decoration-success="state == 'approved'"
+                  decoration-danger="state in ('rejected', 'cancelled')">
                 <field name="name"/>
-                <field name="partner_id"/>
-                <field name="destination_country_id"/>
-                <field name="visa_type"/>
-                <field name="application_date"/>
-                <field name="travel_date"/>
-                <field name="total_amount"/>
-                <field name="state" widget="badge"/>
+                <field name="billing_company_id"/>
+                <field name="passenger_name"/>
+                <field name="booking_type"/>
+                <field name="booking_date"/>
+                <field name="booking_executive"/>
+                <field name="employee_code"/>
+                <field name="document_number"/>
+                <field name="reference_number"/>
+                <field name="confirmed_by"/>
+                <field name="mode_of_payment"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'processing'"
+                       decoration-success="state == 'approved'"
+                       decoration-danger="state in ('rejected', 'cancelled')"/>
             </list>
         </field>
     </record>
+
     <record id="view_visa_booking_search" model="ir.ui.view">
         <field name="name">travel.visa.booking.search</field>
         <field name="model">travel.visa.booking</field>
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
-                <field name="partner_id"/>
-                <field name="passport_number"/>
+                <field name="billing_company_id"/>
+                <field name="passenger_name"/>
+                <field name="reference_number"/>
                 <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
                 <filter string="Processing" name="processing" domain="[('state','=','processing')]"/>
                 <filter string="Approved" name="approved" domain="[('state','=','approved')]"/>
                 <group expand="0" string="Group By">
-                    <filter string="Customer" name="group_customer" context="{'group_by': 'partner_id'}"/>
-                    <filter string="Country" name="group_country" context="{'group_by': 'destination_country_id'}"/>
-                    <filter string="Visa Type" name="group_type" context="{'group_by': 'visa_type'}"/>
+                    <filter string="Billing Company" name="group_company" context="{'group_by': 'billing_company_id'}"/>
+                    <filter string="Booking Type" name="group_type" context="{'group_by': 'booking_type'}"/>
+                    <filter string="Booking Executive" name="group_executive" context="{'group_by': 'booking_executive'}"/>
                 </group>
             </search>
         </field>
     </record>
+
     <record id="action_visa_booking" model="ir.actions.act_window">
         <field name="name">Visa Bookings</field>
         <field name="res_model">travel.visa.booking</field>

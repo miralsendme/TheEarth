@@ -11,18 +11,17 @@ class TrainBooking(models.Model):
 
     name = fields.Char(string='Booking Reference', required=True, copy=False,
                        readonly=True, default=lambda self: _('New'))
-    billing_company_id = fields.Many2one('res.partner', string='Billing Company', required=True, tracking=True)
     booking_date = fields.Date(string='Booking Date', default=fields.Date.context_today, tracking=True)
     booking_executive = fields.Many2one('res.users', string='Booking Executive',
                                         default=lambda self: self.env.user, tracking=True)
+    passenger_names = fields.Text(string='Name of Passenger(s)')
+    num_passengers = fields.Integer(string='Number of Passenger(s)', compute='_compute_num_passengers',
+                                    store=True, readonly=False)
     employee_code = fields.Char(string='Employee Code')
-    document_number = fields.Char(string='Document Number / Requested By')
-    booking_account = fields.Char(string='Booking Account')
-    train_name = fields.Char(string='Train Name / Number', required=True)
-    origin_station = fields.Char(string='From Station', required=True)
-    destination_station = fields.Char(string='To Station', required=True)
-    departure_date = fields.Datetime(string='Departure Date & Time', required=True, tracking=True)
-    arrival_date = fields.Datetime(string='Arrival Date & Time', required=True)
+    billing_company_id = fields.Many2one('res.partner', string='Billing Company', required=True, tracking=True)
+    document_number = fields.Char(string='Doc. no./Req. by')
+    origin_station = fields.Char(string='From - Origin', required=True)
+    destination_station = fields.Char(string='To - Destination', required=True)
     travel_class = fields.Selection([
         ('sleeper', 'Sleeper'),
         ('ac_3tier', 'AC 3 Tier'),
@@ -41,19 +40,10 @@ class TrainBooking(models.Model):
         ('defence', 'Defence'),
         ('foreign_tourist', 'Foreign Tourist'),
     ], string='Quota', default='general')
-    seat_preference = fields.Selection([
-        ('lower', 'Lower Berth'),
-        ('middle', 'Middle Berth'),
-        ('upper', 'Upper Berth'),
-        ('window', 'Window'),
-        ('aisle', 'Aisle'),
-        ('no_pref', 'No Preference'),
-    ], string='Seat Preference', default='no_pref')
-    passenger_names = fields.Text(string='Name of Passenger(s)')
-    num_passengers = fields.Integer(string='Passengers', compute='_compute_num_passengers',
-                                    store=True, readonly=False)
     pnr_number = fields.Char(string='PNR Number')
-    total_amount = fields.Float(string='Total Amount', tracking=True)
+    travel_date = fields.Date(string='Travel Date', required=True, tracking=True)
+    train_number = fields.Char(string='Train Number', required=True)
+    total_amount = fields.Float(string='Total Fare', tracking=True)
     gst_amount = fields.Float(string='GST Amount')
     mode_of_payment = fields.Selection([
         ('cash', 'Cash'),
@@ -62,9 +52,10 @@ class TrainBooking(models.Model):
         ('online', 'Online Payment'),
         ('cheque', 'Cheque'),
     ], string='Mode of Payment')
-    currency_id = fields.Many2one('res.currency', string='Currency',
-                                  default=lambda self: self.env.company.currency_id)
-    notes = fields.Text(string='Notes')
+    booking_account = fields.Char(string='Booking Account')
+    remarks = fields.Text(string='Remarks')
+    confirmed_by = fields.Many2one('res.users', string='Confirmed By', tracking=True)
+
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirmed', 'Confirmed'),
@@ -87,12 +78,6 @@ class TrainBooking(models.Model):
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self.env['ir.sequence'].next_by_code('travel.train.booking') or _('New')
         return super().create(vals_list)
-
-    @api.constrains('departure_date', 'arrival_date')
-    def _check_dates(self):
-        for rec in self:
-            if rec.departure_date and rec.arrival_date and rec.departure_date >= rec.arrival_date:
-                raise ValidationError(_('Arrival must be after departure.'))
 
     def action_confirm(self):
         self.write({'state': 'confirmed'})
