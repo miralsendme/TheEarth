@@ -18,11 +18,11 @@ class BusCancellation(models.Model):
     passenger_names = fields.Text(string='Name of Passenger(s)')
     num_passengers = fields.Integer(string='Number of Passenger(s)', compute='_compute_num_passengers',
                                     store=True, readonly=False)
-    employee_code = fields.Char(string='Employee Code', compute='_compute_employee_code',
+    employee_code = fields.Char(string='Employee Code', compute='_compute_from_passenger',
                                 store=True, readonly=False)
     billing_company_id = fields.Many2one('res.partner', string='Billing Company', tracking=True,
                                          domain=[('is_company', '=', True)],
-                                         compute='_compute_billing_company', store=True, readonly=False)
+                                         compute='_compute_from_passenger', store=True, readonly=False)
     document_number = fields.Char(string='Doc. no./Req. by')
     origin_station = fields.Char(string='From - Origin')
     destination_station = fields.Char(string='To - Destination')
@@ -79,39 +79,32 @@ class BusCancellation(models.Model):
                 rec.num_passengers = 0
 
     @api.depends('passenger_names')
-    def _compute_employee_code(self):
+    def _compute_from_passenger(self):
         for rec in self:
             if rec.passenger_names:
                 names = [n.strip() for n in rec.passenger_names.strip().splitlines() if n.strip()]
                 codes = []
+                first_emp = None
                 for name in names:
-                    records = self.env['travel.employee.code'].search([
-                        ('employee_name', 'ilike', name),
-                    ], limit=1)
-                    if records:
-                        codes.append(records[0].employee_code)
-                rec.employee_code = ', '.join(codes) if codes else False
-            else:
-                rec.employee_code = False
-
-    @api.depends('passenger_names')
-    def _compute_billing_company(self):
-        for rec in self:
-            if rec.passenger_names:
-                name = rec.passenger_names.strip().splitlines()[0].strip() if rec.passenger_names.strip() else False
-                if name:
                     emp = self.env['travel.employee.code'].search([
                         ('employee_name', 'ilike', name),
                     ], limit=1)
                     if emp:
-                        partner = self.env['res.partner'].search([
-                            ('name', 'ilike', emp.entity),
-                            ('is_company', '=', True),
-                        ], limit=1)
-                        if partner:
-                            rec.billing_company_id = partner.id
-                            continue
-            rec.billing_company_id = rec.billing_company_id
+                        codes.append(emp.employee_code)
+                        if not first_emp:
+                            first_emp = emp
+                rec.employee_code = ', '.join(codes) if codes else False
+                if first_emp:
+                    partner = self.env['res.partner'].search([
+                        ('name', 'ilike', first_emp.entity),
+                        ('is_company', '=', True),
+                    ], limit=1)
+                    rec.billing_company_id = partner.id if partner else rec.billing_company_id
+                else:
+                    rec.billing_company_id = rec.billing_company_id
+            else:
+                rec.employee_code = False
+                rec.billing_company_id = rec.billing_company_id
 
     @api.model_create_multi
     def create(self, vals_list):
