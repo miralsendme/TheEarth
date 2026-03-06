@@ -24,6 +24,7 @@
         'views/package_tour_booking_views.xml',
         'views/event_booking_views.xml',
         'views/cancellation_views.xml',
+        'views/bus_cancellation_views.xml',
         'views/menu_views.xml',
     ],
     'installable': True,

@@ -67,5 +67,11 @@
             <field name="prefix">CXL/%(year)s/</field>
             <field name="padding">5</field>
         </record>
+        <record id="seq_bus_cancellation" model="ir.sequence">
+            <field name="name">Bus Cancellation</field>
+            <field name="code">travel.bus.cancellation</field>
+            <field name="prefix">BCXL/%(year)s/</field>
+            <field name="padding">5</field>
+        </record>
     </data>
 </odoo>

@@ -28,9 +28,13 @@
     <menuitem id="menu_event_booking" name="Event" parent="menu_bookings" sequence="100"
               action="action_event_booking"/>
 
-    <!-- Cancellations -->
-    <menuitem id="menu_cancellations" name="Cancellations" parent="menu_travel_booking_root" sequence="20"
+    <!-- Cancellations Parent -->
+    <menuitem id="menu_cancellations" name="Cancellations" parent="menu_travel_booking_root" sequence="20"/>
+
+    <menuitem id="menu_cancellation_old" name="General Cancellations" parent="menu_cancellations" sequence="10"
               action="action_cancellation"/>
+    <menuitem id="menu_bus_cancellation" name="Bus" parent="menu_cancellations" sequence="20"
+              action="action_bus_cancellation"/>
 
     <!-- Reports / Export -->
     <menuitem id="menu_reports" name="Reports" parent="menu_travel_booking_root" sequence="30"/>

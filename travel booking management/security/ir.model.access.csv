@@ -14,3 +14,4 @@ access_hotel_booking_export,travel.hotel.booking.export,model_travel_hotel_booki
 access_bus_booking_export,travel.bus.booking.export,model_travel_bus_booking_export,base.group_user,1,1,1,1
 access_train_booking_export,travel.train.booking.export,model_travel_train_booking_export,base.group_user,1,1,1,1
 access_employee_code,travel.employee.code,model_travel_employee_code,base.group_user,1,1,1,1
+access_bus_cancellation,travel.bus.cancellation,model_travel_bus_cancellation,base.group_user,1,1,1,1
