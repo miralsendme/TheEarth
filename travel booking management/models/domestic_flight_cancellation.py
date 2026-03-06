@@ -44,7 +44,23 @@ class DomesticFlightCancellation(models.Model):
         ('business', 'Business'),
         ('first', 'First'),
     ], string='Class of Booking')
-    airline = fields.Char(string='Airline Name')
+    airline = fields.Selection([
+        ('air_asia', 'AIR ASIA'),
+        ('indigo', 'INDIGO'),
+        ('go_airlines', 'GO AIRLINES'),
+        ('spicejet', 'SPICEJET'),
+        ('vistara', 'VISTARA AIRLINES'),
+        ('ventura', 'VENTURA AIR CONNECT'),
+        ('air_india', 'AIR INDIA'),
+        ('air_india_express', 'AIR INDIA EXPRESS'),
+        ('flybig', 'FLYBIG'),
+        ('jet_airways', 'JET AIRWAYS'),
+        ('pawanhans', 'PAWANHANS'),
+        ('star_air', 'STAR AIR'),
+        ('true_jet', 'TRUE JET'),
+        ('akasa_air', 'AKASA AIR'),
+        ('alliance_air', 'Alliance Air'),
+    ], string='Airline Name')
     fare = fields.Float(string='Fare', tracking=True)
     refund_amount = fields.Float(string='Refund Amount', tracking=True)
     mode_of_refund = fields.Selection([

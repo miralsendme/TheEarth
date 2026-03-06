@@ -41,7 +41,23 @@ class DomesticFlightBooking(models.Model):
         ('business', 'Business'),
         ('first', 'First'),
     ], string='Class of Booking', default='economy', required=True)
-    airline = fields.Char(string='Airline Name', required=True)
+    airline = fields.Selection([
+        ('air_asia', 'AIR ASIA'),
+        ('indigo', 'INDIGO'),
+        ('go_airlines', 'GO AIRLINES'),
+        ('spicejet', 'SPICEJET'),
+        ('vistara', 'VISTARA AIRLINES'),
+        ('ventura', 'VENTURA AIR CONNECT'),
+        ('air_india', 'AIR INDIA'),
+        ('air_india_express', 'AIR INDIA EXPRESS'),
+        ('flybig', 'FLYBIG'),
+        ('jet_airways', 'JET AIRWAYS'),
+        ('pawanhans', 'PAWANHANS'),
+        ('star_air', 'STAR AIR'),
+        ('true_jet', 'TRUE JET'),
+        ('akasa_air', 'AKASA AIR'),
+        ('alliance_air', 'Alliance Air'),
+    ], string='Airline Name')
     gross_amount = fields.Float(string='Gross Amount (Total value)')
     total_amount = fields.Float(string='Net Amount (Total value)', tracking=True)
     gst_amount = fields.Float(string='GST Amount',

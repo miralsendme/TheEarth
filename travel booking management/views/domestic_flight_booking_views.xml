@@ -27,11 +27,11 @@
                         <group string="Flight Info">
                             <field name="origin_city"/>
                             <field name="destination_city"/>
-                            <field name="return_origin"/>
-                            <field name="return_destination"/>
+                            <field name="return_origin" invisible="trip_type != 'round_trip'"/>
+                            <field name="return_destination" invisible="trip_type != 'round_trip'"/>
                             <field name="trip_type"/>
                             <field name="travel_date_onward"/>
-                            <field name="return_date"/>
+                            <field name="return_date" invisible="trip_type != 'round_trip'"/>
                         </group>
                     </group>
                     <group>
@@ -39,7 +39,7 @@
                             <field name="ticket_number"/>
                             <field name="pnr_number" placeholder="CRS PNR / BOOKING REF NO IF LCC AIRLINE"/>
                             <field name="flight_number"/>
-                            <field name="flight_number_return"/>
+                            <field name="flight_number_return" invisible="trip_type != 'round_trip'"/>
                             <field name="travel_class"/>
                             <field name="airline"/>
                         </group>

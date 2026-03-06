@@ -40,7 +40,7 @@
                             <field name="pnr_number"/>
                             <field name="split_pnr"/>
                             <field name="flight_number"/>
-                            <field name="flight_number_return"/>
+                            <field name="flight_number_return" invisible="trip_type not in ('round_trip',)"/>
                             <field name="travel_class"/>
                             <field name="airline"/>
                             <field name="fare"/>
