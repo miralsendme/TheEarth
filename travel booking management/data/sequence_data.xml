@@ -85,5 +85,29 @@
             <field name="prefix">HCXL/%(year)s/</field>
             <field name="padding">5</field>
         </record>
+        <record id="seq_intl_flight_cancellation" model="ir.sequence">
+            <field name="name">International Flight Cancellation</field>
+            <field name="code">travel.intl.flight.cancellation</field>
+            <field name="prefix">IFCXL/%(year)s/</field>
+            <field name="padding">5</field>
+        </record>
+        <record id="seq_train_cancellation" model="ir.sequence">
+            <field name="name">Train Cancellation</field>
+            <field name="code">travel.train.cancellation</field>
+            <field name="prefix">TCXL/%(year)s/</field>
+            <field name="padding">5</field>
+        </record>
+        <record id="seq_insurance_cancellation" model="ir.sequence">
+            <field name="name">Insurance Cancellation</field>
+            <field name="code">travel.insurance.cancellation</field>
+            <field name="prefix">ICXL/%(year)s/</field>
+            <field name="padding">5</field>
+        </record>
+        <record id="seq_visa_cancellation" model="ir.sequence">
+            <field name="name">Visa Cancellation</field>
+            <field name="code">travel.visa.cancellation</field>
+            <field name="prefix">VCXL/%(year)s/</field>
+            <field name="padding">5</field>
+        </record>
     </data>
 </odoo>

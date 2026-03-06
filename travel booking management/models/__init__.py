@@ -13,4 +13,8 @@ from . import booking_cancellation
 from . import bus_cancellation
 from . import domestic_flight_cancellation
 from . import hotel_cancellation
+from . import intl_flight_cancellation
+from . import train_cancellation
+from . import insurance_cancellation
+from . import visa_cancellation
 from . import employee_code

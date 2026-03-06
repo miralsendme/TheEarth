@@ -39,6 +39,14 @@
               action="action_bus_cancellation"/>
     <menuitem id="menu_domestic_flight_cancellation" name="Domestic Flight" parent="menu_cancellations" sequence="30"
               action="action_domestic_flight_cancellation"/>
+    <menuitem id="menu_intl_flight_cancellation" name="International Flight" parent="menu_cancellations" sequence="40"
+              action="action_intl_flight_cancellation"/>
+    <menuitem id="menu_train_cancellation" name="Train" parent="menu_cancellations" sequence="50"
+              action="action_train_cancellation"/>
+    <menuitem id="menu_insurance_cancellation" name="Insurance" parent="menu_cancellations" sequence="60"
+              action="action_insurance_cancellation"/>
+    <menuitem id="menu_visa_cancellation" name="Visa" parent="menu_cancellations" sequence="70"
+              action="action_visa_cancellation"/>
 
     <!-- Reports / Export -->
     <menuitem id="menu_reports" name="Reports" parent="menu_travel_booking_root" sequence="30"/>
