@@ -16,37 +16,31 @@
                     <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
                     <group>
                         <group string="Booking Info">
-                            <field name="billing_company_id"/>
                             <field name="booking_date"/>
                             <field name="booking_executive"/>
+                            <field name="passenger_names"/>
+                            <field name="num_passengers"/>
                             <field name="employee_code"/>
+                            <field name="billing_company_id"/>
                             <field name="document_number"/>
-                            <field name="confirmed_by"/>
                         </group>
                         <group string="Bus Info">
-                            <field name="operator_name"/>
-                            <field name="bus_type"/>
+                            <field name="origin_station"/>
+                            <field name="destination_station"/>
                             <field name="pnr_number"/>
-                            <field name="seat_numbers"/>
+                            <field name="bus_name"/>
+                            <field name="total_amount"/>
+                            <field name="travel_date"/>
                         </group>
                     </group>
                     <group>
-                        <group string="Journey Details">
-                            <field name="boarding_point"/>
-                            <field name="dropping_point"/>
-                            <field name="departure_date"/>
-                            <field name="arrival_date"/>
-                            <field name="passenger_names" placeholder="Enter one passenger name per line..."/>
-                            <field name="num_passengers"/>
-                        </group>
-                        <group string="Payment">
-                            <field name="total_amount"/>
-                            <field name="currency_id" groups="base.group_multi_currency"/>
+                        <group string="Payment &amp; Confirmation">
                             <field name="mode_of_payment"/>
+                            <field name="remarks"/>
+                            <field name="confirmed_by"/>
                         </group>
                     </group>
                     <notebook>
-                        <page string="Notes"><field name="notes"/></page>
                         <page string="Cancellation" invisible="not cancellation_id">
                             <field name="cancellation_id"/>
                         </page>
@@ -67,41 +61,28 @@
                   decoration-success="state == 'done'"
                   decoration-danger="state == 'cancelled'">
                 <field name="name"/>
-                <field name="billing_company_id"/>
-                <field name="operator_name"/>
-                <field name="bus_type"/>
-                <field name="boarding_point"/>
-                <field name="dropping_point"/>
-                <field name="departure_date"/>
-                <field name="arrival_date"/>
-                <field name="num_passengers"/>
-                <field name="pnr_number"/>
-                <field name="total_amount"/>
                 <field name="booking_date"/>
                 <field name="booking_executive"/>
+                <field name="passenger_names"/>
+                <field name="num_passengers"/>
+                <field name="employee_code"/>
+                <field name="billing_company_id"/>
+                <field name="document_number"/>
+                <field name="origin_station"/>
+                <field name="destination_station"/>
+                <field name="pnr_number"/>
+                <field name="bus_name"/>
+                <field name="total_amount"/>
+                <field name="travel_date"/>
+                <field name="mode_of_payment"/>
+                <field name="remarks"/>
+                <field name="confirmed_by"/>
                 <field name="state" widget="badge"
                        decoration-info="state == 'draft'"
                        decoration-warning="state == 'confirmed'"
                        decoration-success="state == 'done'"
                        decoration-danger="state == 'cancelled'"/>
             </list>
-        </field>
-    </record>
-
-    <record id="view_bus_booking_search" model="ir.ui.view">
-        <field name="name">travel.bus.booking.search</field>
-        <field name="model">travel.bus.booking</field>
-        <field name="arch" type="xml">
-            <search>
-                <field name="name"/>
-                <field name="billing_company_id"/>
-                <field name="operator_name"/>
-                <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
-                <filter string="Confirmed" name="confirmed" domain="[('state','=','confirmed')]"/>
-                <group expand="0" string="Group By">
-                    <filter string="Billing Company" name="group_company" context="{'group_by': 'billing_company_id'}"/>
-                </group>
-            </search>
         </field>
     </record>
 
