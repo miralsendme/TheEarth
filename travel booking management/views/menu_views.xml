@@ -33,6 +33,8 @@
 
     <menuitem id="menu_cancellation_old" name="General Cancellations" parent="menu_cancellations" sequence="10"
               action="action_cancellation"/>
+    <menuitem id="menu_hotel_cancellation" name="Hotel" parent="menu_cancellations" sequence="15"
+              action="action_hotel_cancellation"/>
     <menuitem id="menu_bus_cancellation" name="Bus" parent="menu_cancellations" sequence="20"
               action="action_bus_cancellation"/>
     <menuitem id="menu_domestic_flight_cancellation" name="Domestic Flight" parent="menu_cancellations" sequence="30"

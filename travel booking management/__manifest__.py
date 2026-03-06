@@ -26,6 +26,7 @@
         'views/cancellation_views.xml',
         'views/bus_cancellation_views.xml',
         'views/domestic_flight_cancellation_views.xml',
+        'views/hotel_cancellation_views.xml',
         'views/menu_views.xml',
     ],
     'installable': True,
