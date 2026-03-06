@@ -11,4 +11,5 @@ from . import package_tour_booking
 from . import event_booking
 from . import booking_cancellation
 from . import bus_cancellation
+from . import domestic_flight_cancellation
 from . import employee_code

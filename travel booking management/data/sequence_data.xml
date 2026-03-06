@@ -73,5 +73,11 @@
             <field name="prefix">BCXL/%(year)s/</field>
             <field name="padding">5</field>
         </record>
+        <record id="seq_domestic_flight_cancellation" model="ir.sequence">
+            <field name="name">Domestic Flight Cancellation</field>
+            <field name="code">travel.domestic.flight.cancellation</field>
+            <field name="prefix">DFCXL/%(year)s/</field>
+            <field name="padding">5</field>
+        </record>
     </data>
 </odoo>
