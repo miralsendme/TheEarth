@@ -17,7 +17,9 @@ class DomesticFlightBooking(models.Model):
     num_passengers = fields.Integer(string='Number of Passenger(s)', compute='_compute_num_passengers',
                                     store=True, readonly=False)
     employee_code = fields.Char(string='Employee Code', compute='_compute_employee_code', store=True, readonly=False)
-    billing_company_id = fields.Many2one('res.partner', string='Billing Company', required=True, tracking=True, domain=[('is_company', '=', True)])
+    billing_company_id = fields.Many2one('res.partner', string='Billing Company', tracking=True,
+                                        domain=[('is_company', '=', True)],
+                                        compute='_compute_billing_company', store=True, readonly=False)
     document_number = fields.Char(string='Doc. no./Req. by')
     origin_city = fields.Char(string='From - Origin', required=True)
     destination_city = fields.Char(string='To - Destination', required=True)
@@ -141,3 +143,22 @@ class DomesticFlightBooking(models.Model):
                 rec.employee_code = ', '.join(codes) if codes else False
             else:
                 rec.employee_code = False
+
+    @api.depends('passenger_names')
+    def _compute_billing_company(self):
+        for rec in self:
+            if rec.passenger_names:
+                name = rec.passenger_names.strip().splitlines()[0].strip() if rec.passenger_names.strip() else False
+                if name:
+                    emp = self.env['travel.employee.code'].search([
+                        ('employee_name', 'ilike', name),
+                    ], limit=1)
+                    if emp:
+                        partner = self.env['res.partner'].search([
+                            ('name', 'ilike', emp.entity),
+                            ('is_company', '=', True),
+                        ], limit=1)
+                        if partner:
+                            rec.billing_company_id = partner.id
+                            continue
+            rec.billing_company_id = rec.billing_company_id

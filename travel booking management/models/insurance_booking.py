@@ -16,7 +16,9 @@ class InsuranceBooking(models.Model):
                                         default=lambda self: self.env.user, tracking=True)
     passenger_name = fields.Char(string='Passenger Name', required=True)
     employee_code = fields.Char(string='Employee Code', compute='_compute_employee_code', store=True, readonly=False)
-    billing_company_id = fields.Many2one('res.partner', string='Billing Company', required=True, tracking=True, domain=[('is_company', '=', True)])
+    billing_company_id = fields.Many2one('res.partner', string='Billing Company', tracking=True,
+                                        domain=[('is_company', '=', True)],
+                                        compute='_compute_billing_company', store=True, readonly=False)
     document_number = fields.Char(string='Doc. No. / Requested By')
     reference_number = fields.Char(string='Reference Number')
     description = fields.Text(string='Description')
@@ -106,3 +108,20 @@ class InsuranceBooking(models.Model):
                 rec.employee_code = records[0].employee_code if records else False
             else:
                 rec.employee_code = False
+
+    @api.depends('passenger_name')
+    def _compute_billing_company(self):
+        for rec in self:
+            if rec.passenger_name:
+                emp = self.env['travel.employee.code'].search([
+                    ('employee_name', 'ilike', rec.passenger_name.strip()),
+                ], limit=1)
+                if emp:
+                    partner = self.env['res.partner'].search([
+                        ('name', 'ilike', emp.entity),
+                        ('is_company', '=', True),
+                    ], limit=1)
+                    if partner:
+                        rec.billing_company_id = partner.id
+                        continue
+            rec.billing_company_id = rec.billing_company_id
