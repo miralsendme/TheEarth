@@ -95,10 +95,21 @@ class BusCancellation(models.Model):
                             first_emp = emp
                 rec.employee_code = ', '.join(codes) if codes else False
                 if first_emp:
+                    entity = first_emp.entity
                     partner = self.env['res.partner'].search([
-                        ('name', 'ilike', first_emp.entity),
+                        ('name', 'ilike', entity),
                         ('is_company', '=', True),
                     ], limit=1)
+                    if not partner:
+                        # Strip common suffixes for fuzzy match
+                        core = entity
+                        for suffix in ['Private Limited', 'Pvt Ltd', 'Pvt. Ltd.', 'Pvt Ltd.', 'Ltd', 'Ltd.']:
+                            core = core.replace(suffix, '').strip().rstrip(',').strip()
+                        if core:
+                            partner = self.env['res.partner'].search([
+                                ('name', 'ilike', core),
+                                ('is_company', '=', True),
+                            ], limit=1)
                     rec.billing_company_id = partner.id if partner else rec.billing_company_id
                 else:
                     rec.billing_company_id = rec.billing_company_id

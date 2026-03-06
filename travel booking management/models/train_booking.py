@@ -156,10 +156,20 @@ class TrainBooking(models.Model):
                         ('employee_name', 'ilike', name),
                     ], limit=1)
                     if emp:
+                        entity = emp.entity
                         partner = self.env['res.partner'].search([
-                            ('name', 'ilike', emp.entity),
+                            ('name', 'ilike', entity),
                             ('is_company', '=', True),
                         ], limit=1)
+                        if not partner:
+                            core = entity
+                            for suffix in ['Private Limited', 'Pvt Ltd', 'Pvt. Ltd.', 'Pvt Ltd.', 'Ltd', 'Ltd.']:
+                                core = core.replace(suffix, '').strip().rstrip(',').strip()
+                            if core:
+                                partner = self.env['res.partner'].search([
+                                    ('name', 'ilike', core),
+                                    ('is_company', '=', True),
+                                ], limit=1)
                         if partner:
                             rec.billing_company_id = partner.id
                             continue
