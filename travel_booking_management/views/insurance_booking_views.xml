@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_insurance_booking_form" model="ir.ui.view">
+        <field name="name">travel.insurance.booking.form</field>
+        <field name="model">travel.insurance.booking</field>
+        <field name="arch" type="xml">
+            <form string="Insurance Booking">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_done" string="Done" type="object" class="oe_highlight" invisible="state != 'confirmed'"/>
+                    <button name="action_cancel" string="Cancel" type="object" invisible="state in ('done', 'cancelled')"/>
+                    <button name="action_draft" string="Reset to Draft" type="object" invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
+                </header>
+                <sheet>
+                    <field name="sale_order_id" invisible="1"/>
+                    <field name="purchase_order_id" invisible="1"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_sale_order" type="object" class="oe_stat_button"
+                                icon="fa-file-text-o" invisible="not sale_order_id">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Sales Order</span>
+                            </div>
+                        </button>
+                        <button name="action_view_purchase_order" type="object" class="oe_stat_button"
+                                icon="fa-shopping-cart" invisible="not purchase_order_id">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">Purchase Order</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
+                    <group>
+                        <group string="Booking Info">
+                            <field name="billing_company_id"/>
+                            <field name="booking_date"/>
+                            <field name="booking_executive"/>
+                            <field name="employee_code"/>
+                            <field name="document_number"/>
+                        </group>
+                        <group string="Passenger Info">
+                            <field name="passenger_name"/>
+                            <field name="reference_number"/>
+                            <field name="confirmed_by" required="1"/>
+                            <field name="mode_of_payment"/>
+                            <field name="amount"/>
+                            <field name="currency_id" groups="base.group_multi_currency"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Description">
+                            <field name="description" nolabel="1"/>
+                        </group>
+                        <group string="Remarks">
+                            <field name="remarks" nolabel="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Cancellation" invisible="not cancellation_id">
+                            <field name="cancellation_id"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_insurance_booking_list" model="ir.ui.view">
+        <field name="name">travel.insurance.booking.list</field>
+        <field name="model">travel.insurance.booking</field>
+        <field name="arch" type="xml">
+            <list string="Insurance Bookings"
+                  decoration-info="state == 'draft'"
+                  decoration-warning="state == 'confirmed'"
+                  decoration-success="state == 'done'"
+                  decoration-danger="state == 'cancelled'">
+                <field name="name"/>
+                <field name="billing_company_id"/>
+                <field name="passenger_name"/>
+                <field name="booking_date"/>
+                <field name="booking_executive"/>
+                <field name="employee_code"/>
+                <field name="document_number"/>
+                <field name="reference_number"/>
+                <field name="amount"/>
+                <field name="mode_of_payment"/>
+                <field name="confirmed_by"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'confirmed'"
+                       decoration-success="state == 'done'"
+                       decoration-danger="state == 'cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_insurance_booking_search" model="ir.ui.view">
+        <field name="name">travel.insurance.booking.search</field>
+        <field name="model">travel.insurance.booking</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="billing_company_id"/>
+                <field name="passenger_name"/>
+                <field name="reference_number"/>
+                <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('state','=','confirmed')]"/>
+                <filter string="Done" name="done" domain="[('state','=','done')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Billing Company" name="group_company" context="{'group_by': 'billing_company_id'}"/>
+                    <filter string="Booking Executive" name="group_executive" context="{'group_by': 'booking_executive'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_insurance_booking" model="ir.actions.act_window">
+        <field name="name">Insurance Bookings</field>
+        <field name="res_model">travel.insurance.booking</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tax Invoice PDF (Service Charge) -->
+    <record id="action_report_tax_invoice" model="ir.actions.report">
+        <field name="name">Tax Invoice (Service Charge)</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">travel_booking_management.report_tax_invoice</field>
+        <field name="report_file">travel_booking_management.report_tax_invoice</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'TaxInvoice_%s' % object.name</field>
+    </record>
+
+    <!-- Debit Note PDF (Fare Reimbursement) -->
+    <record id="action_report_debit_note" model="ir.actions.report">
+        <field name="name">Debit Note (Fare Reimbursement)</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">travel_booking_management.report_debit_note</field>
+        <field name="report_file">travel_booking_management.report_debit_note</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'DebitNote_%s' % object.name</field>
+    </record>
+
+    <!-- Credit Note PDF -->
+    <record id="action_report_credit_note" model="ir.actions.report">
+        <field name="name">Credit Note</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">travel_booking_management.report_credit_note</field>
+        <field name="report_file">travel_booking_management.report_credit_note</field>
+        <field name="binding_model_id" ref="account.model_account_move"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'CreditNote_%s' % object.name</field>
+    </record>
+</odoo>

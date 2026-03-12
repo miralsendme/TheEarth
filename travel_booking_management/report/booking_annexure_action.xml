@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Report actions for each booking model - used to generate annexure PDFs -->
+
+    <record id="action_report_annexure_domestic_flight" model="ir.actions.report">
+        <field name="name">Booking Annexure</field>
+        <field name="model">travel.domestic.flight.booking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">travel_booking_management.report_booking_annexure_document</field>
+        <field name="report_file">travel_booking_management.report_booking_annexure_document</field>
+        <field name="print_report_name">'Annexure_%s' % object.name</field>
+        <field name="binding_model_id" ref="model_travel_domestic_flight_booking"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_annexure_intl_flight" model="ir.actions.report">
+        <field name="name">Booking Annexure</field>
+        <field name="model">travel.international.flight.booking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">travel_booking_management.report_booking_annexure_document</field>
+        <field name="report_file">travel_booking_management.report_booking_annexure_document</field>
+        <field name="print_report_name">'Annexure_%s' % object.name</field>
+        <field name="binding_model_id" ref="model_travel_international_flight_booking"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_annexure_hotel" model="ir.actions.report">
+        <field name="name">Booking Annexure</field>
+        <field name="model">travel.hotel.booking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">travel_booking_management.report_booking_annexure_document</field>
+        <field name="report_file">travel_booking_management.report_booking_annexure_document</field>
+        <field name="print_report_name">'Annexure_%s' % object.name</field>
+        <field name="binding_model_id" ref="model_travel_hotel_booking"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_annexure_train" model="ir.actions.report">
+        <field name="name">Booking Annexure</field>
+        <field name="model">travel.train.booking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">travel_booking_management.report_booking_annexure_document</field>
+        <field name="report_file">travel_booking_management.report_booking_annexure_document</field>
+        <field name="print_report_name">'Annexure_%s' % object.name</field>
+        <field name="binding_model_id" ref="model_travel_train_booking"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_annexure_bus" model="ir.actions.report">
+        <field name="name">Booking Annexure</field>
+        <field name="model">travel.bus.booking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">travel_booking_management.report_booking_annexure_document</field>
+        <field name="report_file">travel_booking_management.report_booking_annexure_document</field>
+        <field name="print_report_name">'Annexure_%s' % object.name</field>
+        <field name="binding_model_id" ref="model_travel_bus_booking"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_annexure_car" model="ir.actions.report">
+        <field name="name">Booking Annexure</field>
+        <field name="model">travel.car.booking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">travel_booking_management.report_booking_annexure_document</field>
+        <field name="report_file">travel_booking_management.report_booking_annexure_document</field>
+        <field name="print_report_name">'Annexure_%s' % object.name</field>
+        <field name="binding_model_id" ref="model_travel_car_booking"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_annexure_insurance" model="ir.actions.report">
+        <field name="name">Booking Annexure</field>
+        <field name="model">travel.insurance.booking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">travel_booking_management.report_booking_annexure_document</field>
+        <field name="report_file">travel_booking_management.report_booking_annexure_document</field>
+        <field name="print_report_name">'Annexure_%s' % object.name</field>
+        <field name="binding_model_id" ref="model_travel_insurance_booking"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_annexure_visa" model="ir.actions.report">
+        <field name="name">Booking Annexure</field>
+        <field name="model">travel.visa.booking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">travel_booking_management.report_booking_annexure_document</field>
+        <field name="report_file">travel_booking_management.report_booking_annexure_document</field>
+        <field name="print_report_name">'Annexure_%s' % object.name</field>
+        <field name="binding_model_id" ref="model_travel_visa_booking"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_annexure_package_tour" model="ir.actions.report">
+        <field name="name">Booking Annexure</field>
+        <field name="model">travel.package.tour.booking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">travel_booking_management.report_booking_annexure_document</field>
+        <field name="report_file">travel_booking_management.report_booking_annexure_document</field>
+        <field name="print_report_name">'Annexure_%s' % object.name</field>
+        <field name="binding_model_id" ref="model_travel_package_tour_booking"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="action_report_annexure_event" model="ir.actions.report">
+        <field name="name">Booking Annexure</field>
+        <field name="model">travel.event.booking</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">travel_booking_management.report_booking_annexure_document</field>
+        <field name="report_file">travel_booking_management.report_booking_annexure_document</field>
+        <field name="print_report_name">'Annexure_%s' % object.name</field>
+        <field name="binding_model_id" ref="model_travel_event_booking"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

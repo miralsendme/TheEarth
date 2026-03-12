@@ -1,0 +1,137 @@
+# -*- coding: utf-8 -*-
+from odoo import models, fields, api, _
+from odoo.exceptions import ValidationError
+
+
+class EventBooking(models.Model):
+    _name = 'travel.event.booking'
+    _description = 'Event Booking'
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'travel.sale.purchase.mixin']
+    _order = 'create_date desc'
+
+    name = fields.Char(string='Booking Reference', required=True, copy=False,
+                       readonly=True, default=lambda self: _('New'))
+    partner_id = fields.Many2one('res.partner', string='Billing Company', required=True, tracking=True, domain=[('is_company', '=', True)])
+    booking_date = fields.Date(string='Booking Date', default=fields.Date.context_today, tracking=True)
+    booking_executive = fields.Many2one('res.users', string='Booking Executive',
+                                        default=lambda self: self.env.user, tracking=True)
+    employee_code = fields.Char(string='Employee Code / Mats Number')
+    document_number = fields.Char(string='Document Number / Requested By')
+    event_name = fields.Char(string='Event Name', required=True)
+    event_type = fields.Selection([
+        ('conference', 'Conference'),
+        ('concert', 'Concert'),
+        ('sports', 'Sports'),
+        ('exhibition', 'Exhibition'),
+        ('festival', 'Festival'),
+        ('workshop', 'Workshop'),
+        ('other', 'Other'),
+    ], string='Event Type', default='conference', required=True)
+    city = fields.Char(string='City', required=True)
+    country_id = fields.Many2one('res.country', string='Country')
+    location_type = fields.Selection([
+        ('domestic', 'Domestic'),
+        ('international', 'International'),
+    ], string='Location Type', default='domestic')
+    checkin_date = fields.Date(string='Check In Date', tracking=True)
+    checkout_date = fields.Date(string='Check Out Date', tracking=True)
+    num_nights = fields.Integer(string='Number of Nights', compute='_compute_num_nights', store=True)
+    hotel_name = fields.Char(string='Hotel Name')
+    num_tickets = fields.Integer(string='Number of Guest(s)', default=1, required=True)
+    seat_numbers = fields.Char(string='Seat Numbers')
+    invoice_number = fields.Char(string='Invoice Number')
+    mode_of_payment = fields.Selection([
+        ('air_asia', 'Air Asia (India) Limited'),
+        ('akasa_airline', 'Akasa Airline'),
+        ('akbar_offshore', 'AKBAR OFFSHORE PVT LTD'),
+        ('akbar_new', 'Akbar Online Booking Company Pvt Ltd - New'),
+        ('akbar_old', 'Akbar Online Booking Company Pvt Ltd - Old'),
+        ('aman_travels', 'Aman Travels Ltd'),
+        ('interglobe', 'Interglobe Aviation Limited'),
+        ('mmt_wallet', 'MMT Wallet'),
+        ('pcc_akbar_offshore', 'PCC AKBAR OFFSHORE PVT LTD'),
+        ('plus_wallet', 'Plus Wallet'),
+        ('riya_offline', 'Riya Travels & Tours - Offline'),
+        ('riya_online', 'Riya Travel & Tours - Online'),
+        ('spicejet', 'Spicejet Limited'),
+        ('axis_cc_vistara_deep_1236', 'Axis CC Vistara Deep Thakkar - 1236'),
+        ('axis_debit_deep_2100', 'Axis Debit Deep - 2100 / Card - 5434'),
+        ('hdfc_cc_deep_0943', 'HDFC CC Deep Thakkar-0943'),
+        ('hdfc_cc_deep_6223', 'HDFC CC Deep Thakkar-6223'),
+        ('ketan_axis_cc_ace_7929', 'Ketan Thakkar Axis CC Ace -7929/0735'),
+        ('axis_cc_nirav_2281', 'Axis CC Nirav Thakkar-2281-7179/9743'),
+        ('axis_debit_nirav_2448', 'AXIS Debit Nirav Thakkar -2448/5349/8819/7578'),
+        ('hdfc_cc_nirav_9912', 'HDFC CC Nirav-9912 / 5100'),
+        ('hdfc_nirav_cc_1583', 'HDFC NIRAV CC - 1583'),
+        ('hdfc_nirav_cc_7122', 'HDFC Nirav CC-7122'),
+        ('hdfc_earth_cc_3026', 'HDFC EARTH CC-3026'),
+        ('hdfc_earth_cc_7209', 'HDFC The Earth CC - 7209/6804'),
+        ('hdfc_earth_card_0481', 'HDFC The Earth Travel Card - 0481'),
+        ('earth_hdfc_cc_1554', 'The Earth HDFC CC- 1554'),
+        ('icici_deep_cc_0003', 'ICICI DEEP CC-0003'),
+        ('icici_ketan_cc_9005', 'ICICI Ketan CC-9005'),
+    ], string='Mode of Payment')
+    payment_date = fields.Date(string='Payment Date')
+    total_amount = fields.Float(string='Total Amount', tracking=True)
+    service_charge = fields.Float(string='Service Charge', compute='_compute_service_charge',
+                                  store=True, readonly=False, tracking=True)
+    currency_id = fields.Many2one('res.currency', string='Currency',
+                                  default=lambda self: self.env.company.currency_id)
+    notes = fields.Text(string='Notes')
+    state = fields.Selection([
+        ('draft', 'Draft'),
+        ('confirmed', 'Confirmed'),
+        ('done', 'Done'),
+        ('cancelled', 'Cancelled'),
+    ], string='Status', default='draft', tracking=True)
+    cancellation_id = fields.Many2one('travel.booking.cancellation', string='Cancellation', readonly=True)
+
+    @api.depends('checkin_date', 'checkout_date')
+    def _compute_num_nights(self):
+        for rec in self:
+            if rec.checkin_date and rec.checkout_date:
+                rec.num_nights = (rec.checkout_date - rec.checkin_date).days
+            else:
+                rec.num_nights = 0
+
+    @api.depends('total_amount')
+    def _compute_service_charge(self):
+        for rec in self:
+            rec.service_charge = self.env['travel.service.charge'].get_service_charge(
+                'event', booking_amount=rec.total_amount)
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('name', _('New')) == _('New'):
+                vals['name'] = self.env['ir.sequence'].next_by_code('travel.event.booking') or _('New')
+        return super().create(vals_list)
+
+    def action_confirm(self):
+        self.write({'state': 'confirmed'})
+        self._generate_sale_purchase_orders()
+
+    def _get_booking_type_label(self):
+        return 'Event'
+
+    def action_done(self):
+        self.write({'state': 'done'})
+
+    def action_cancel(self):
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Cancel Booking'),
+            'res_model': 'travel.booking.cancellation',
+            'view_mode': 'form',
+            'target': 'current',
+            'context': {
+                'default_booking_type': 'event',
+                'default_event_booking_id': self.id,
+                'default_partner_id': self.partner_id.id,
+                'default_booking_ref': self.name,
+                'default_booking_amount': self.total_amount,
+            },
+        }
+
+    def action_draft(self):
+        self.write({'state': 'draft'})

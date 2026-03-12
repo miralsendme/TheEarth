@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="travel_booking_management.Dashboard">
+        <div class="o_action the_earth_dashboard">
+            <!-- Hero Header -->
+            <div class="te_dashboard_header">
+                <div class="te_header_content">
+                    <div class="te_header_left">
+                        <div class="te_brand">
+                            <span class="te_brand_icon">🌍</span>
+                            <div class="te_brand_text">
+                                <h1>The Earth</h1>
+                                <p>Travel Booking Management <span class="te_header_date"><i class="fa fa-calendar"/> <t t-esc="state.todayDate"/></span></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="te_header_stats">
+                        <div class="te_stat_card">
+                            <i class="fa fa-calendar-check-o"/>
+                            <div class="te_stat_info">
+                                <span class="te_stat_number" t-esc="state.totalBookings"/>
+                                <span class="te_stat_label">Total Bookings</span>
+                            </div>
+                        </div>
+                        <div class="te_stat_card">
+                            <i class="fa fa-times-circle"/>
+                            <div class="te_stat_info">
+                                <span class="te_stat_number" t-esc="state.cancellationCount"/>
+                                <span class="te_stat_label">Cancellations</span>
+                            </div>
+                        </div>
+                        <div class="te_stat_card">
+                            <i class="fa fa-inr"/>
+                            <div class="te_stat_info">
+                                <span class="te_stat_number" t-esc="formatCurrency(state.totalRevenue)"/>
+                                <span class="te_stat_label">Revenue</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <!-- Quick nav pills -->
+                <div class="te_header_nav">
+                    <div class="te_nav_pill" t-on-click="() => this.openBookings('hotel')">
+                        <i class="fa fa-bed"/> Hotel
+                    </div>
+                    <div class="te_nav_pill" t-on-click="() => this.openBookings('domestic_flight')">
+                        <i class="fa fa-plane"/> Flight
+                    </div>
+                    <div class="te_nav_pill" t-on-click="() => this.openBookings('train')">
+                        <i class="fa fa-train"/> Train
+                    </div>
+                    <div class="te_nav_pill" t-on-click="() => this.openBookings('bus')">
+                        <i class="fa fa-bus"/> Bus
+                    </div>
+                    <div class="te_nav_pill" t-on-click="() => this.openBookings('car')">
+                        <i class="fa fa-car"/> Car
+                    </div>
+                    <div class="te_nav_pill" t-on-click="() => this.openBookings('insurance')">
+                        <i class="fa fa-shield"/> Insurance
+                    </div>
+                    <div class="te_nav_pill" t-on-click="() => this.openBookings('visa')">
+                        <i class="fa fa-id-card"/> Visa
+                    </div>
+                    <div class="te_nav_pill" t-on-click="() => this.openBookings('package')">
+                        <i class="fa fa-suitcase"/> Package
+                    </div>
+                    <div class="te_nav_pill" t-on-click="() => this.openBookings('event')">
+                        <i class="fa fa-ticket"/> Event
+                    </div>
+                </div>
+            </div>
+
+            <div class="te_dashboard_body">
+                <!-- Main Content: Quick Actions + Chart -->
+                <div class="te_main_content">
+                    <!-- Quick Booking Tiles -->
+                    <div class="te_quick_actions">
+                        <h3><i class="fa fa-th-large"/> Bookings Overview</h3>
+                        <div class="te_tiles_grid">
+                            <div class="te_tile te_tile_hotel" t-on-click="() => this.openBookings('hotel')">
+                                <i class="fa fa-bed"/>
+                                <span class="te_tile_name">Hotel</span>
+                                <span class="te_tile_count" t-esc="state.hotelCount"/>
+                            </div>
+                            <div class="te_tile te_tile_flight" t-on-click="() => this.openBookings('domestic_flight')">
+                                <i class="fa fa-plane"/>
+                                <span class="te_tile_name">Domestic Flight</span>
+                                <span class="te_tile_count" t-esc="state.flightCount"/>
+                            </div>
+                            <div class="te_tile te_tile_intl" t-on-click="() => this.openBookings('international_flight')">
+                                <i class="fa fa-globe"/>
+                                <span class="te_tile_name">Intl Flight</span>
+                                <span class="te_tile_count" t-esc="state.flightCount"/>
+                            </div>
+                            <div class="te_tile te_tile_train" t-on-click="() => this.openBookings('train')">
+                                <i class="fa fa-train"/>
+                                <span class="te_tile_name">Train</span>
+                                <span class="te_tile_count" t-esc="state.trainCount"/>
+                            </div>
+                            <div class="te_tile te_tile_bus" t-on-click="() => this.openBookings('bus')">
+                                <i class="fa fa-bus"/>
+                                <span class="te_tile_name">Bus</span>
+                                <span class="te_tile_count" t-esc="state.busCount"/>
+                            </div>
+                            <div class="te_tile te_tile_car" t-on-click="() => this.openBookings('car')">
+                                <i class="fa fa-car"/>
+                                <span class="te_tile_name">Car</span>
+                                <span class="te_tile_count" t-esc="state.carCount"/>
+                            </div>
+                            <div class="te_tile te_tile_insurance" t-on-click="() => this.openBookings('insurance')">
+                                <i class="fa fa-shield"/>
+                                <span class="te_tile_name">Insurance</span>
+                                <span class="te_tile_count" t-esc="state.insuranceCount"/>
+                            </div>
+                            <div class="te_tile te_tile_visa" t-on-click="() => this.openBookings('visa')">
+                                <i class="fa fa-id-card"/>
+                                <span class="te_tile_name">Visa</span>
+                                <span class="te_tile_count" t-esc="state.visaCount"/>
+                            </div>
+                            <div class="te_tile te_tile_package" t-on-click="() => this.openBookings('package')">
+                                <i class="fa fa-suitcase"/>
+                                <span class="te_tile_name">Package Tour</span>
+                                <span class="te_tile_count" t-esc="state.packageCount"/>
+                            </div>
+                            <div class="te_tile te_tile_event" t-on-click="() => this.openBookings('event')">
+                                <i class="fa fa-ticket"/>
+                                <span class="te_tile_name">Event</span>
+                                <span class="te_tile_count" t-esc="state.eventCount"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Booking Distribution Chart -->
+                    <div class="te_chart_section">
+                        <h3><i class="fa fa-bar-chart"/> Booking Distribution</h3>
+                        <div class="te_bar_chart">
+                            <t t-foreach="state.bookingByType" t-as="item" t-key="item.label">
+                                <div class="te_bar_row">
+                                    <span class="te_bar_label" t-esc="item.label"/>
+                                    <div class="te_bar_track">
+                                        <div class="te_bar_fill" t-attf-style="width: {{getBarWidth(item.count)}}%; background: {{item.color}};"/>
+                                    </div>
+                                    <span class="te_bar_value" t-esc="item.count"/>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

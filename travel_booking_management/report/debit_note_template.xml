@@ -1,0 +1,513 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!-- TAX INVOICE template (Service Charge with CGST+SGST)         -->
+    <!-- ============================================================ -->
+    <template id="report_tax_invoice_document">
+        <t t-set="company" t-value="doc.company_id"/>
+        <t t-set="partner" t-value="doc.partner_id"/>
+
+        <!-- Detect booking type from line description -->
+        <t t-set="booking_type_label" t-value="''"/>
+        <t t-foreach="doc.invoice_line_ids.filtered(lambda l: l.display_type == 'product')" t-as="line">
+            <t t-if="not booking_type_label and 'Domestic Flight' in (line.name or '')"><t t-set="booking_type_label" t-value="'DOMESTIC FLIGHT BOOKING'"/></t>
+            <t t-if="not booking_type_label and 'International Flight' in (line.name or '')"><t t-set="booking_type_label" t-value="'INTERNATIONAL FLIGHT BOOKING'"/></t>
+            <t t-if="not booking_type_label and 'Hotel' in (line.name or '')"><t t-set="booking_type_label" t-value="'HOTEL BOOKING'"/></t>
+            <t t-if="not booking_type_label and 'Train' in (line.name or '')"><t t-set="booking_type_label" t-value="'TRAIN BOOKING'"/></t>
+            <t t-if="not booking_type_label and 'Bus' in (line.name or '')"><t t-set="booking_type_label" t-value="'BUS BOOKING'"/></t>
+            <t t-if="not booking_type_label and 'Car' in (line.name or '')"><t t-set="booking_type_label" t-value="'CAR BOOKING'"/></t>
+            <t t-if="not booking_type_label and 'Insurance' in (line.name or '')"><t t-set="booking_type_label" t-value="'INSURANCE BOOKING'"/></t>
+            <t t-if="not booking_type_label and 'Visa' in (line.name or '')"><t t-set="booking_type_label" t-value="'VISA BOOKING'"/></t>
+            <t t-if="not booking_type_label and 'Package' in (line.name or '')"><t t-set="booking_type_label" t-value="'PACKAGE TOUR BOOKING'"/></t>
+            <t t-if="not booking_type_label and 'Event' in (line.name or '')"><t t-set="booking_type_label" t-value="'EVENT BOOKING'"/></t>
+        </t>
+        <t t-if="not booking_type_label"><t t-set="booking_type_label" t-value="'SERVICE CHARGES'"/></t>
+
+        <!-- Tax amounts -->
+        <t t-set="total_untaxed" t-value="doc.amount_untaxed"/>
+        <t t-set="total_tax" t-value="doc.amount_tax"/>
+        <t t-set="total_amount" t-value="doc.amount_total"/>
+        <t t-set="cgst_amount" t-value="0"/>
+        <t t-set="sgst_amount" t-value="0"/>
+        <t t-foreach="doc.line_ids.filtered(lambda l: l.tax_line_id)" t-as="tax_line">
+            <t t-if="'CGST' in (tax_line.tax_line_id.name or '')">
+                <t t-set="cgst_amount" t-value="cgst_amount + abs(tax_line.balance)"/>
+            </t>
+            <t t-if="'SGST' in (tax_line.tax_line_id.name or '')">
+                <t t-set="sgst_amount" t-value="sgst_amount + abs(tax_line.balance)"/>
+            </t>
+        </t>
+
+        <div class="page" style="font-family: Arial, sans-serif; font-size: 11px;">
+            <!-- Company Header -->
+            <div style="border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 5px;">
+                <table style="width: 100%;"><tr>
+                    <td style="vertical-align: top; width: 80px;">
+                        <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 60px; max-width: 75px;" alt="Logo"/>
+                    </td>
+                    <td style="vertical-align: top;">
+                        <h2 style="margin: 0; font-size: 20px; font-weight: bold;">THE EARTH</h2>
+                        <span t-field="company.street"/><br/>
+                        <t t-if="company.street2"><span t-field="company.street2"/><br/></t>
+                        <span>Contact No. : <t t-esc="company.phone or ''"/>, E-Mail : <t t-esc="company.email or ''"/></span><br/>
+                        <span>GSTIN : <t t-esc="company.vat or ''"/>, State Name : <t t-esc="company.state_id.name or ''"/>, Code : <t t-esc="company.state_id.code or ''"/></span>
+                    </td>
+                </tr></table>
+            </div>
+
+            <!-- Title -->
+            <div style="text-align: center; margin: 8px 0;">
+                <h3 style="margin: 0; font-size: 14px; font-weight: bold;">Tax Invoice</h3>
+                <h4 style="margin: 4px 0; font-size: 12px; text-decoration: underline;"><t t-esc="booking_type_label"/></h4>
+            </div>
+
+            <!-- IRN placeholder -->
+            <div style="border: 1px solid #999; padding: 4px; margin-bottom: 8px; font-size: 9px; color: #666;">
+                <table style="width: 100%;"><tr>
+                    <td style="width: 70%;">IRN :<br/>Ack No. :<br/>Ack Date :</td>
+                    <td style="width: 30%; text-align: right; vertical-align: top;"><span style="font-size: 8px; color: #999;">e-Invoice</span></td>
+                </tr></table>
+            </div>
+
+            <!-- Receiver + Invoice details -->
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-bottom: 0;">
+                <tr>
+                    <td style="width: 55%; border: 1px solid #000; padding: 6px; vertical-align: top;">
+                        <b>Details of Receiver (Billed To)</b><br/><br/>
+                        <table style="width: 100%; font-size: 10px;">
+                            <tr><td style="width: 90px; vertical-align: top;"><b>Party Billing</b></td><td style="vertical-align: top;">: <t t-esc="partner.name or ''"/></td></tr>
+                            <tr><td style="vertical-align: top;"><b>Address</b></td><td style="vertical-align: top;">: <t t-esc="partner.street or ''"/><t t-if="partner.street2"><br/><t t-esc="partner.street2"/></t><t t-if="partner.city"><br/><t t-esc="partner.city"/></t><t t-if="partner.zip"> - <t t-esc="partner.zip"/></t></td></tr>
+                            <tr><td><b>State</b></td><td>: <t t-esc="partner.state_id.name or ''"/><t t-if="partner.state_id.code">, Code : <t t-esc="partner.state_id.code"/></t></td></tr>
+                            <tr><td><b>GSTIN</b></td><td>: <t t-esc="partner.vat or ''"/></td></tr>
+                        </table>
+                    </td>
+                    <td style="width: 45%; border: 1px solid #000; padding: 6px; vertical-align: top;">
+                        <table style="width: 100%; font-size: 10px;">
+                            <tr><td style="width: 100px;"><b>Invoice No</b></td><td>: <b><t t-esc="doc.name or 'Draft'"/></b></td></tr>
+                            <tr><td><b>Invoice Date</b></td><td>: <t t-esc="doc.invoice_date" t-options="{'widget': 'date'}"/></td></tr>
+                            <tr><td><b>Ref Inv. No.</b></td><td>: <b><t t-esc="doc.invoice_origin or ''"/></b></td></tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- Line Items -->
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
+                <thead><tr style="background-color: #d6e4f0;">
+                    <th style="border: 1px solid #000; padding: 4px; width: 40px; text-align: center;"><b>Sr No</b></th>
+                    <th style="border: 1px solid #000; padding: 4px; text-align: center;"><b>Description Of Services</b></th>
+                    <th style="border: 1px solid #000; padding: 4px; width: 70px; text-align: center;"><b>SAC Code</b></th>
+                    <th style="border: 1px solid #000; padding: 4px; width: 90px; text-align: center;"><b>Amount ₹</b></th>
+                </tr></thead>
+                <tbody>
+                    <t t-set="sr_no" t-value="0"/>
+                    <t t-foreach="doc.invoice_line_ids.filtered(lambda l: l.display_type == 'product')" t-as="line">
+                        <t t-set="sr_no" t-value="sr_no + 1"/>
+                        <tr><td style="border: 1px solid #000; padding: 4px; text-align: center; vertical-align: top;"><t t-esc="sr_no"/></td>
+                            <td style="border: 1px solid #000; padding: 4px; vertical-align: top;"><b><t t-esc="line.name or ''"/></b></td>
+                            <td style="border: 1px solid #000; padding: 4px; text-align: center; vertical-align: top;">998551</td>
+                            <td style="border: 1px solid #000; padding: 4px; text-align: right; vertical-align: top;"><t t-esc="'{:,.2f}'.format(line.price_subtotal)"/></td>
+                        </tr>
+                    </t>
+                    <tr style="height: 80px;"><td style="border: 1px solid #000;"/><td style="border: 1px solid #000;"/><td style="border: 1px solid #000;"/><td style="border: 1px solid #000;"/></tr>
+                </tbody>
+                <tfoot><tr>
+                    <td colspan="2" style="border: 1px solid #000;"/><td style="border: 1px solid #000; padding: 4px; text-align: right;"><b>Total</b></td>
+                    <td style="border: 1px solid #000; padding: 4px; text-align: right;"><b><t t-esc="'{:,.2f}'.format(total_untaxed)"/></b></td>
+                </tr></tfoot>
+            </table>
+
+            <!-- Bank Details + Tax -->
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
+                <tr>
+                    <td style="width: 55%; border: 1px solid #000; padding: 6px; vertical-align: top;" rowspan="2">
+                        <b>Company's Bank Details</b><br/>
+                        <table style="font-size: 10px; margin-top: 4px;">
+                            <tr><td style="width: 80px;"><b>Bank Name</b></td><td>: <t t-esc="company.partner_id.bank_ids[:1].bank_id.name if company.partner_id.bank_ids else ''"/></td></tr>
+                            <tr><td><b>A/c No</b></td><td>: <t t-esc="company.partner_id.bank_ids[:1].acc_number if company.partner_id.bank_ids else ''"/></td></tr>
+                            <tr><td><b>IFSC Code</b></td><td>: <t t-esc="company.partner_id.bank_ids[:1].bank_id.bic if company.partner_id.bank_ids else ''"/></td></tr>
+                            <tr><td><b>PAN No.</b></td><td>: <t t-esc="(company.vat or '')[2:12] if company.vat and len(company.vat) >= 12 else ''"/></td></tr>
+                        </table>
+                    </td>
+                    <td style="border: 1px solid #000; padding: 4px;">CGST @ 9%</td>
+                    <td style="border: 1px solid #000; padding: 4px; text-align: right; width: 90px;"><t t-esc="'{:,.2f}'.format(cgst_amount)"/></td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000; padding: 4px;">SGST @ 9%</td>
+                    <td style="border: 1px solid #000; padding: 4px; text-align: right;"><t t-esc="'{:,.2f}'.format(sgst_amount)"/></td>
+                </tr>
+            </table>
+
+            <!-- Remark + Total -->
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
+                <tr>
+                    <td style="width: 55%; border: 1px solid #000; padding: 4px;"><b>Remark</b> : <t t-if="doc.narration"><t t-out="doc.narration"/></t></td>
+                    <td style="border: 1px solid #000; padding: 4px;"><b>Total Amount</b></td>
+                    <td style="border: 1px solid #000; padding: 4px; text-align: right; width: 90px;"><b><t t-esc="'{:,.2f}'.format(total_amount)"/></b></td>
+                </tr>
+            </table>
+
+            <!-- Amount in Words -->
+            <div style="border: 1px solid #000; border-top: 0; padding: 6px; font-size: 10px;">
+                <b>Amount Chargeable (In Words)</b><span style="float: right;">E. &amp; O.E</span><br/>
+                <b>INR <t t-esc="doc.currency_id.amount_to_text(total_amount) if total_amount else 'Zero'"/> Only.</b><br/>
+                <span style="font-size: 9px;">Tax Amount (in words) : <b>INR <t t-esc="doc.currency_id.amount_to_text(total_tax) if total_tax else 'Zero'"/> Only</b></span>
+            </div>
+
+            <!-- Terms + Signature -->
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-top: 0;">
+                <tr>
+                    <td style="width: 60%; border: 1px solid #000; padding: 6px; vertical-align: top; font-size: 9px;">
+                        <b>TERMS AND CONDITIONS</b><br/>Terms of Payment : Immediate<br/>
+                        Cheque :- Al cheques or D.D. payment of bills should be drawn<br/>in favour of "THE EARTH".<br/>Subject to Vapi Jurisdiction
+                    </td>
+                    <td style="border: 1px solid #000; padding: 6px; text-align: right; vertical-align: top;">
+                        <b>for THE EARTH</b><br/><br/><br/><br/><b>Authorised Signatory</b>
+                    </td>
+                </tr>
+            </table>
+            <div style="text-align: center; margin-top: 8px; font-size: 9px; border-top: 1px solid #000; padding-top: 4px;">
+                <b>This is a Computer Generated Invoice</b>
+            </div>
+        </div>
+    </template>
+
+
+    <!-- ============================================================ -->
+    <!-- DEBIT NOTE template (Fare Reimbursement, no GST on DN)       -->
+    <!-- ============================================================ -->
+    <template id="report_debit_note_document">
+        <t t-set="company" t-value="doc.company_id"/>
+        <t t-set="partner" t-value="doc.partner_id"/>
+
+        <!-- Detect booking type -->
+        <t t-set="booking_type_label" t-value="''"/>
+        <t t-set="short_desc" t-value="''"/>
+        <t t-foreach="doc.invoice_line_ids.filtered(lambda l: l.display_type == 'product')" t-as="line">
+            <t t-if="not booking_type_label and 'Domestic Flight' in (line.name or '')"><t t-set="booking_type_label" t-value="'DOMESTIC FLIGHT BOOKING'"/><t t-set="short_desc" t-value="'Dom. Air Fare Reimbursement As Per Attached Annex.'"/></t>
+            <t t-if="not booking_type_label and 'International Flight' in (line.name or '')"><t t-set="booking_type_label" t-value="'INTERNATIONAL FLIGHT BOOKING'"/><t t-set="short_desc" t-value="'Intl. Air Fare Reimbursement As Per Attached Annex.'"/></t>
+            <t t-if="not booking_type_label and 'Hotel' in (line.name or '')"><t t-set="booking_type_label" t-value="'HOTEL BOOKING'"/><t t-set="short_desc" t-value="'Hotel Fare Reimbursement As Per Attached Annex.'"/></t>
+            <t t-if="not booking_type_label and 'Train' in (line.name or '')"><t t-set="booking_type_label" t-value="'TRAIN BOOKING'"/><t t-set="short_desc" t-value="'Train Fare Reimbursement As Per Attached Annex.'"/></t>
+            <t t-if="not booking_type_label and 'Bus' in (line.name or '')"><t t-set="booking_type_label" t-value="'BUS BOOKING'"/><t t-set="short_desc" t-value="'Bus Fare Reimbursement As Per Attached Annex.'"/></t>
+            <t t-if="not booking_type_label and 'Car' in (line.name or '')"><t t-set="booking_type_label" t-value="'CAR BOOKING'"/><t t-set="short_desc" t-value="'Car Fare Reimbursement As Per Attached Annex.'"/></t>
+            <t t-if="not booking_type_label and 'Insurance' in (line.name or '')"><t t-set="booking_type_label" t-value="'INSURANCE BOOKING'"/><t t-set="short_desc" t-value="'Insurance Fare Reimbursement As Per Attached Annex.'"/></t>
+            <t t-if="not booking_type_label and 'Visa' in (line.name or '')"><t t-set="booking_type_label" t-value="'VISA BOOKING'"/><t t-set="short_desc" t-value="'Visa Fare Reimbursement As Per Attached Annex.'"/></t>
+            <t t-if="not booking_type_label and 'Package' in (line.name or '')"><t t-set="booking_type_label" t-value="'PACKAGE TOUR BOOKING'"/><t t-set="short_desc" t-value="'Package Tour Fare Reimbursement As Per Attached Annex.'"/></t>
+            <t t-if="not booking_type_label and 'Event' in (line.name or '')"><t t-set="booking_type_label" t-value="'EVENT BOOKING'"/><t t-set="short_desc" t-value="'Event Fare Reimbursement As Per Attached Annex.'"/></t>
+        </t>
+        <t t-if="not booking_type_label"><t t-set="booking_type_label" t-value="'TRAVEL BOOKING'"/><t t-set="short_desc" t-value="'Fare Reimbursement As Per Attached Annex.'"/></t>
+
+        <t t-set="total_amount" t-value="doc.amount_total"/>
+
+        <div class="page" style="font-family: Arial, sans-serif; font-size: 11px;">
+            <!-- Company Header -->
+            <div style="border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 5px;">
+                <table style="width: 100%;"><tr>
+                    <td style="vertical-align: top; width: 80px;">
+                        <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 60px; max-width: 75px;" alt="Logo"/>
+                    </td>
+                    <td style="vertical-align: top;">
+                        <h2 style="margin: 0; font-size: 20px; font-weight: bold;">THE EARTH</h2>
+                        <span t-field="company.street"/><br/>
+                        <t t-if="company.street2"><span t-field="company.street2"/><br/></t>
+                        <span>Contact No. : <t t-esc="company.phone or ''"/>, E-Mail : <t t-esc="company.email or ''"/></span><br/>
+                        <span>GSTIN : <t t-esc="company.vat or ''"/>, State Name : <t t-esc="company.state_id.name or ''"/>, Code : <t t-esc="company.state_id.code or ''"/></span>
+                    </td>
+                </tr></table>
+            </div>
+
+            <!-- Title: DEBIT NOTE -->
+            <div style="text-align: center; margin: 8px 0;">
+                <h3 style="margin: 0; font-size: 14px; font-weight: bold;">DEBIT NOTE</h3>
+                <h4 style="margin: 4px 0; font-size: 12px; text-decoration: underline;"><t t-esc="booking_type_label"/></h4>
+            </div>
+
+            <!-- Receiver + DN details -->
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-bottom: 0;">
+                <tr>
+                    <td style="width: 55%; border: 1px solid #000; padding: 6px; vertical-align: top;">
+                        <b>Details of Receiver (Billed To)</b><br/><br/>
+                        <table style="width: 100%; font-size: 10px;">
+                            <tr><td style="width: 90px; vertical-align: top;"><b>Party Billing</b></td><td style="vertical-align: top;">: <b><t t-esc="partner.name or ''"/></b></td></tr>
+                            <tr><td style="vertical-align: top;"><b>Address</b></td><td style="vertical-align: top;">: <t t-esc="partner.street or ''"/><t t-if="partner.street2"><br/><t t-esc="partner.street2"/></t><t t-if="partner.city"><br/><t t-esc="partner.city"/></t><t t-if="partner.zip"> - <t t-esc="partner.zip"/></t></td></tr>
+                            <tr><td><b>State</b></td><td>: <t t-esc="partner.state_id.name or ''"/><t t-if="partner.state_id.code">, Code : <t t-esc="partner.state_id.code"/></t></td></tr>
+                            <tr><td><b>GSTIN</b></td><td>: <t t-esc="partner.vat or ''"/></td></tr>
+                        </table>
+                    </td>
+                    <td style="width: 45%; border: 1px solid #000; padding: 6px; vertical-align: top;">
+                        <table style="width: 100%; font-size: 10px;">
+                            <tr><td style="width: 110px;"><b>Debit Note No</b></td><td>: <b>DN/<t t-esc="doc.name or 'Draft'"/></b></td></tr>
+                            <tr><td><b>Debit Note Date</b></td><td>: <t t-esc="doc.invoice_date" t-options="{'widget': 'date'}"/></td></tr>
+                            <tr><td><b>Ref. Inv. No.</b></td><td>: <b><t t-esc="doc.invoice_origin or doc.name or 'Draft'"/></b></td></tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- Line Items (fare only, use short_desc) -->
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
+                <thead><tr style="background-color: #d6e4f0;">
+                    <th style="border: 1px solid #000; padding: 4px; width: 40px; text-align: center;"><b>Sr No</b></th>
+                    <th style="border: 1px solid #000; padding: 4px; text-align: center;"><b>Description Of Services</b></th>
+                    <th style="border: 1px solid #000; padding: 4px; width: 70px; text-align: center;"><b>SAC Code</b></th>
+                    <th style="border: 1px solid #000; padding: 4px; width: 100px; text-align: center;"><b>Amount ₹</b></th>
+                </tr></thead>
+                <tbody>
+                    <t t-set="sr_no" t-value="0"/>
+                    <t t-foreach="doc.invoice_line_ids.filtered(lambda l: l.display_type == 'product')" t-as="line">
+                        <t t-set="sr_no" t-value="sr_no + 1"/>
+                        <tr><td style="border: 1px solid #000; padding: 4px; text-align: center; vertical-align: top;"><t t-esc="sr_no"/></td>
+                            <td style="border: 1px solid #000; padding: 4px; vertical-align: top;"><b><t t-esc="short_desc"/></b></td>
+                            <td style="border: 1px solid #000; padding: 4px; text-align: center; vertical-align: top;">998551</td>
+                            <td style="border: 1px solid #000; padding: 4px; text-align: right; vertical-align: top;"><t t-esc="'{:,.2f}'.format(line.price_subtotal)"/></td>
+                        </tr>
+                    </t>
+                    <tr style="height: 100px;"><td style="border: 1px solid #000;"/><td style="border: 1px solid #000;"/><td style="border: 1px solid #000;"/><td style="border: 1px solid #000;"/></tr>
+                </tbody>
+                <tfoot><tr>
+                    <td colspan="2" style="border: 1px solid #000;"/><td style="border: 1px solid #000; padding: 4px; text-align: right;"><b>Total</b></td>
+                    <td style="border: 1px solid #000; padding: 4px; text-align: right;"><b><t t-esc="'{:,.2f}'.format(total_amount)"/></b></td>
+                </tr></tfoot>
+            </table>
+
+            <!-- N.B. Note -->
+            <div style="border: 1px solid #000; border-top: 0; padding: 6px; font-size: 10px;">
+                <b>N.B :- GST Amount mentioned in the attached annexure has to be claim directly from the Airline</b>
+            </div>
+
+            <!-- Amount in Words -->
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; border-top: 0;">
+                <tr>
+                    <td style="border: 1px solid #000; padding: 6px; font-size: 10px;">
+                        <b>Amount Chargeable(In Words)</b><span style="float: right;">E. &amp; O.E</span><br/>
+                        <b>INR <t t-esc="doc.currency_id.amount_to_text(total_amount) if total_amount else 'Zero'"/> Only.</b>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- Terms + Signature -->
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-top: 0;">
+                <tr>
+                    <td style="width: 60%; border: 1px solid #000; padding: 6px; vertical-align: top; font-size: 9px;">
+                        <b>TERMS AND CONDITIONS</b><br/>Terms of Payment : Immediate<br/>
+                        Cheque :- Al cheques or D.D. payment of bills should be drawn<br/>in favour of "THE EARTH".<br/>Subject to Vapi Jurisdiction
+                    </td>
+                    <td style="border: 1px solid #000; padding: 6px; text-align: right; vertical-align: top;">
+                        <b>for THE EARTH</b><br/><br/><br/><br/><b>Authorised Signatory</b>
+                    </td>
+                </tr>
+            </table>
+            <div style="text-align: center; margin-top: 8px; font-size: 9px; border-top: 1px solid #000; padding-top: 4px;">
+                <b>This is a Computer Generated Document</b>
+            </div>
+        </div>
+    </template>
+
+
+    <!-- ============================================================ -->
+    <!-- CREDIT NOTE template (Cancellation Service Charge)           -->
+    <!-- Tax Invoice format with CN Inv. No / CN Inv. Date labels     -->
+    <!-- ============================================================ -->
+    <template id="report_credit_note_document">
+        <t t-set="company" t-value="doc.company_id"/>
+        <t t-set="partner" t-value="doc.partner_id"/>
+
+        <!-- Detect booking type -->
+        <t t-set="booking_type_label" t-value="''"/>
+        <t t-foreach="doc.invoice_line_ids.filtered(lambda l: l.display_type == 'product')" t-as="line">
+            <t t-if="not booking_type_label and 'Domestic Flight' in (line.name or '')"><t t-set="booking_type_label" t-value="'DOMESTIC FLIGHT BOOKING'"/></t>
+            <t t-if="not booking_type_label and 'International Flight' in (line.name or '')"><t t-set="booking_type_label" t-value="'INTERNATIONAL FLIGHT BOOKING'"/></t>
+            <t t-if="not booking_type_label and 'Hotel' in (line.name or '')"><t t-set="booking_type_label" t-value="'HOTEL BOOKING'"/></t>
+            <t t-if="not booking_type_label and 'Train' in (line.name or '')"><t t-set="booking_type_label" t-value="'TRAIN BOOKING'"/></t>
+            <t t-if="not booking_type_label and 'Bus' in (line.name or '')"><t t-set="booking_type_label" t-value="'BUS BOOKING'"/></t>
+            <t t-if="not booking_type_label and 'Car' in (line.name or '')"><t t-set="booking_type_label" t-value="'CAR BOOKING'"/></t>
+            <t t-if="not booking_type_label and 'Insurance' in (line.name or '')"><t t-set="booking_type_label" t-value="'INSURANCE BOOKING'"/></t>
+            <t t-if="not booking_type_label and 'Visa' in (line.name or '')"><t t-set="booking_type_label" t-value="'VISA BOOKING'"/></t>
+            <t t-if="not booking_type_label and 'Package' in (line.name or '')"><t t-set="booking_type_label" t-value="'PACKAGE TOUR BOOKING'"/></t>
+            <t t-if="not booking_type_label and 'Event' in (line.name or '')"><t t-set="booking_type_label" t-value="'EVENT BOOKING'"/></t>
+        </t>
+        <t t-if="not booking_type_label"><t t-set="booking_type_label" t-value="'SERVICE CHARGES'"/></t>
+
+        <!-- Tax amounts -->
+        <t t-set="total_untaxed" t-value="doc.amount_untaxed"/>
+        <t t-set="total_tax" t-value="doc.amount_tax"/>
+        <t t-set="total_amount" t-value="doc.amount_total"/>
+        <t t-set="cgst_amount" t-value="0"/>
+        <t t-set="sgst_amount" t-value="0"/>
+        <t t-foreach="doc.line_ids.filtered(lambda l: l.tax_line_id)" t-as="tax_line">
+            <t t-if="'CGST' in (tax_line.tax_line_id.name or '')">
+                <t t-set="cgst_amount" t-value="cgst_amount + abs(tax_line.balance)"/>
+            </t>
+            <t t-if="'SGST' in (tax_line.tax_line_id.name or '')">
+                <t t-set="sgst_amount" t-value="sgst_amount + abs(tax_line.balance)"/>
+            </t>
+        </t>
+
+        <div class="page" style="font-family: Arial, sans-serif; font-size: 11px;">
+            <!-- Company Header -->
+            <div style="border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 5px;">
+                <table style="width: 100%;"><tr>
+                    <td style="vertical-align: top; width: 80px;">
+                        <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 60px; max-width: 75px;" alt="Logo"/>
+                    </td>
+                    <td style="vertical-align: top;">
+                        <h2 style="margin: 0; font-size: 20px; font-weight: bold;">THE EARTH</h2>
+                        <span t-field="company.street"/><br/>
+                        <t t-if="company.street2"><span t-field="company.street2"/><br/></t>
+                        <span>Contact No. : <t t-esc="company.phone or ''"/>, E-Mail : <t t-esc="company.email or ''"/></span><br/>
+                        <span>GSTIN : <t t-esc="company.vat or ''"/>, State Name : <t t-esc="company.state_id.name or ''"/>, Code : <t t-esc="company.state_id.code or ''"/></span>
+                    </td>
+                </tr></table>
+            </div>
+
+            <!-- Title: Tax Invoice (same as booking, but CN labels) -->
+            <div style="text-align: center; margin: 8px 0;">
+                <h3 style="margin: 0; font-size: 14px; font-weight: bold;">Tax Invoice</h3>
+                <h4 style="margin: 4px 0; font-size: 12px; text-decoration: underline;"><t t-esc="booking_type_label"/></h4>
+            </div>
+
+            <!-- IRN placeholder -->
+            <div style="border: 1px solid #999; padding: 4px; margin-bottom: 8px; font-size: 9px; color: #666;">
+                <table style="width: 100%;"><tr>
+                    <td style="width: 70%;">IRN :<br/>Ack No. :<br/>Ack Date :</td>
+                    <td style="width: 30%; text-align: right; vertical-align: top;"><span style="font-size: 8px; color: #999;">e-Invoice</span></td>
+                </tr></table>
+            </div>
+
+            <!-- Receiver + CN Invoice details -->
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-bottom: 0;">
+                <tr>
+                    <td style="width: 55%; border: 1px solid #000; padding: 6px; vertical-align: top;">
+                        <b>Details of Receiver (Billed To)</b><br/><br/>
+                        <table style="width: 100%; font-size: 10px;">
+                            <tr><td style="width: 90px; vertical-align: top;"><b>Party Billing</b></td><td style="vertical-align: top;">: <t t-esc="partner.name or ''"/></td></tr>
+                            <tr><td style="vertical-align: top;"><b>Address</b></td><td style="vertical-align: top;">: <t t-esc="partner.street or ''"/><t t-if="partner.street2"><br/><t t-esc="partner.street2"/></t><t t-if="partner.city"><br/><t t-esc="partner.city"/></t><t t-if="partner.zip"> - <t t-esc="partner.zip"/></t></td></tr>
+                            <tr><td><b>State</b></td><td>: <t t-esc="partner.state_id.name or ''"/><t t-if="partner.state_id.code">, Code : <t t-esc="partner.state_id.code"/></t></td></tr>
+                            <tr><td><b>GSTIN</b></td><td>: <t t-esc="partner.vat or ''"/></td></tr>
+                        </table>
+                    </td>
+                    <td style="width: 45%; border: 1px solid #000; padding: 6px; vertical-align: top;">
+                        <table style="width: 100%; font-size: 10px;">
+                            <tr><td style="width: 100px;"><b>CN Inv. No.</b></td><td>: <b><t t-esc="doc.name or 'Draft'"/></b></td></tr>
+                            <tr><td><b>CN Inv. Date</b></td><td>: <t t-esc="doc.invoice_date" t-options="{'widget': 'date'}"/></td></tr>
+                            <tr><td><b>Ref CN No</b></td><td>: <b>CN/<t t-esc="doc.name or 'Draft'"/></b></td></tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+
+            <!-- Line Items -->
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
+                <thead><tr style="background-color: #d6e4f0;">
+                    <th style="border: 1px solid #000; padding: 4px; width: 40px; text-align: center;"><b>Sr No</b></th>
+                    <th style="border: 1px solid #000; padding: 4px; text-align: center;"><b>Description Of Services</b></th>
+                    <th style="border: 1px solid #000; padding: 4px; width: 70px; text-align: center;"><b>SAC Code</b></th>
+                    <th style="border: 1px solid #000; padding: 4px; width: 90px; text-align: center;"><b>Amount ₹</b></th>
+                </tr></thead>
+                <tbody>
+                    <t t-set="sr_no" t-value="0"/>
+                    <t t-foreach="doc.invoice_line_ids.filtered(lambda l: l.display_type == 'product')" t-as="line">
+                        <t t-set="sr_no" t-value="sr_no + 1"/>
+                        <tr><td style="border: 1px solid #000; padding: 4px; text-align: center; vertical-align: top;"><t t-esc="sr_no"/></td>
+                            <td style="border: 1px solid #000; padding: 4px; vertical-align: top;"><b><t t-esc="line.name or ''"/></b></td>
+                            <td style="border: 1px solid #000; padding: 4px; text-align: center; vertical-align: top;">998551</td>
+                            <td style="border: 1px solid #000; padding: 4px; text-align: right; vertical-align: top;"><t t-esc="'{:,.2f}'.format(line.price_subtotal)"/></td>
+                        </tr>
+                    </t>
+                    <tr style="height: 80px;"><td style="border: 1px solid #000;"/><td style="border: 1px solid #000;"/><td style="border: 1px solid #000;"/><td style="border: 1px solid #000;"/></tr>
+                </tbody>
+                <tfoot><tr>
+                    <td colspan="2" style="border: 1px solid #000;"/><td style="border: 1px solid #000; padding: 4px; text-align: right;"><b>Total</b></td>
+                    <td style="border: 1px solid #000; padding: 4px; text-align: right;"><b><t t-esc="'{:,.2f}'.format(total_untaxed)"/></b></td>
+                </tr></tfoot>
+            </table>
+
+            <!-- Bank Details + Tax -->
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
+                <tr>
+                    <td style="width: 55%; border: 1px solid #000; padding: 6px; vertical-align: top;" rowspan="2">
+                        <b>Company's Bank Details</b><br/>
+                        <table style="font-size: 10px; margin-top: 4px;">
+                            <tr><td style="width: 80px;"><b>Bank Name</b></td><td>: <t t-esc="company.partner_id.bank_ids[:1].bank_id.name if company.partner_id.bank_ids else ''"/></td></tr>
+                            <tr><td><b>A/c No</b></td><td>: <t t-esc="company.partner_id.bank_ids[:1].acc_number if company.partner_id.bank_ids else ''"/></td></tr>
+                            <tr><td><b>IFSC Code</b></td><td>: <t t-esc="company.partner_id.bank_ids[:1].bank_id.bic if company.partner_id.bank_ids else ''"/></td></tr>
+                            <tr><td><b>PAN No.</b></td><td>: <t t-esc="(company.vat or '')[2:12] if company.vat and len(company.vat) >= 12 else ''"/></td></tr>
+                        </table>
+                    </td>
+                    <td style="border: 1px solid #000; padding: 4px;">CGST @ 9%</td>
+                    <td style="border: 1px solid #000; padding: 4px; text-align: right; width: 90px;"><t t-esc="'{:,.2f}'.format(cgst_amount)"/></td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid #000; padding: 4px;">SGST @ 9%</td>
+                    <td style="border: 1px solid #000; padding: 4px; text-align: right;"><t t-esc="'{:,.2f}'.format(sgst_amount)"/></td>
+                </tr>
+            </table>
+
+            <!-- Remark + Total -->
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
+                <tr>
+                    <td style="width: 55%; border: 1px solid #000; padding: 4px;"><b>Remark</b> : <t t-if="doc.narration"><t t-out="doc.narration"/></t></td>
+                    <td style="border: 1px solid #000; padding: 4px;"><b>Total Amount</b></td>
+                    <td style="border: 1px solid #000; padding: 4px; text-align: right; width: 90px;"><b><t t-esc="'{:,.2f}'.format(total_amount)"/></b></td>
+                </tr>
+            </table>
+
+            <!-- Amount in Words -->
+            <div style="border: 1px solid #000; border-top: 0; padding: 6px; font-size: 10px;">
+                <b>Amount Chargeable (In Words)</b><span style="float: right;">E. &amp; O.E</span><br/>
+                <b>INR <t t-esc="doc.currency_id.amount_to_text(total_amount) if total_amount else 'Zero'"/> Only.</b><br/>
+                <span style="font-size: 9px;">Tax Amount (in words) : <b>INR <t t-esc="doc.currency_id.amount_to_text(total_tax) if total_tax else 'Zero'"/> Only</b></span>
+            </div>
+
+            <!-- Terms + Signature -->
+            <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-top: 0;">
+                <tr>
+                    <td style="width: 60%; border: 1px solid #000; padding: 6px; vertical-align: top; font-size: 9px;">
+                        <b>TERMS AND CONDITIONS</b><br/>Terms of Payment : Immediate<br/>
+                        Cheque :- Al cheques or D.D. payment of bills should be drawn<br/>in favour of "THE EARTH".<br/>Subject to Vapi Jurisdiction
+                    </td>
+                    <td style="border: 1px solid #000; padding: 6px; text-align: right; vertical-align: top;">
+                        <b>for THE EARTH</b><br/><br/><br/><br/><b>Authorised Signatory</b>
+                    </td>
+                </tr>
+            </table>
+            <div style="text-align: center; margin-top: 8px; font-size: 9px; border-top: 1px solid #000; padding-top: 4px;">
+                <b>This is a Computer Generated Invoice</b>
+            </div>
+        </div>
+    </template>
+
+    <!-- ============================================================ -->
+    <!-- Wrapper templates                                            -->
+    <!-- ============================================================ -->
+    <template id="report_tax_invoice">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.basic_layout">
+                    <t t-call="travel_booking_management.report_tax_invoice_document"/>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_debit_note">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.basic_layout">
+                    <t t-call="travel_booking_management.report_debit_note_document"/>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <template id="report_credit_note">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.basic_layout">
+                    <t t-call="travel_booking_management.report_credit_note_document"/>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

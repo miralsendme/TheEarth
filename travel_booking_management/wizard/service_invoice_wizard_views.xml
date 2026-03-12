@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_service_invoice_wizard_form" model="ir.ui.view">
+        <field name="name">travel.service.invoice.wizard.form</field>
+        <field name="model">travel.service.invoice.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate Service Charge Invoice">
+                <group>
+                    <group>
+                        <field name="partner_id"/>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                    </group>
+                    <group>
+                        <field name="line_count" string="Matching SO Lines" readonly="1"/>
+                    </group>
+                </group>
+                <separator string="Service Charge Lines (Preview)"/>
+                <field name="so_line_ids" readonly="1" nolabel="1">
+                    <list>
+                        <field name="order_id" string="Sales Order"/>
+                        <field name="name" string="Description"/>
+                        <field name="price_unit" string="Amount"/>
+                    </list>
+                </field>
+                <footer>
+                    <button name="action_generate_invoice" string="Generate Invoice"
+                            type="object" class="btn-primary"
+                            invisible="line_count == 0"/>
+                    <button name="action_preview" string="Refresh Preview"
+                            type="object" class="btn-secondary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_service_invoice_wizard" model="ir.actions.act_window">
+        <field name="name">Generate Service Invoice</field>
+        <field name="res_model">travel.service.invoice.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>

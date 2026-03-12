@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Bus: 150 booking, 50 cancellation (per pax, fixed) -->
+        <record id="sc_bus" model="travel.service.charge">
+            <field name="booking_type">bus</field>
+            <field name="charge_type">fixed</field>
+            <field name="amount">150.0</field>
+            <field name="notes">Per pax</field>
+        </record>
+        <record id="sc_bus_cancel" model="travel.service.charge">
+            <field name="booking_type">bus_cancellation</field>
+            <field name="charge_type">fixed</field>
+            <field name="amount">50.0</field>
+            <field name="notes">Per pax</field>
+        </record>
+
+        <!-- Train General: 50 booking, 50 cancellation -->
+        <record id="sc_train_general" model="travel.service.charge">
+            <field name="booking_type">train_general</field>
+            <field name="charge_type">fixed</field>
+            <field name="amount">50.0</field>
+            <field name="notes">Per pax - General quota</field>
+        </record>
+        <!-- Train Tatkal: 250 booking, 50 cancellation -->
+        <record id="sc_train_tatkal" model="travel.service.charge">
+            <field name="booking_type">train_tatkal</field>
+            <field name="charge_type">fixed</field>
+            <field name="amount">250.0</field>
+            <field name="notes">Per pax - Tatkal quota</field>
+        </record>
+        <record id="sc_train_cancel" model="travel.service.charge">
+            <field name="booking_type">train_cancellation</field>
+            <field name="charge_type">fixed</field>
+            <field name="amount">50.0</field>
+            <field name="notes">Per pax</field>
+        </record>
+
+        <!-- Domestic Flight One Way: 350 booking, 150 cancellation -->
+        <record id="sc_dom_flight_ow" model="travel.service.charge">
+            <field name="booking_type">domestic_flight_one_way</field>
+            <field name="charge_type">fixed</field>
+            <field name="amount">350.0</field>
+            <field name="notes">Per pax - One Way</field>
+        </record>
+        <!-- Domestic Flight Round Trip: 700 booking, 300 cancellation -->
+        <record id="sc_dom_flight_rt" model="travel.service.charge">
+            <field name="booking_type">domestic_flight_round_trip</field>
+            <field name="charge_type">fixed</field>
+            <field name="amount">700.0</field>
+            <field name="notes">Per pax - Round Trip</field>
+        </record>
+        <record id="sc_dom_flight_ow_cancel" model="travel.service.charge">
+            <field name="booking_type">domestic_flight_one_way_cancel</field>
+            <field name="charge_type">fixed</field>
+            <field name="amount">150.0</field>
+            <field name="notes">Per pax - One Way cancellation</field>
+        </record>
+        <record id="sc_dom_flight_rt_cancel" model="travel.service.charge">
+            <field name="booking_type">domestic_flight_round_trip_cancel</field>
+            <field name="charge_type">fixed</field>
+            <field name="amount">300.0</field>
+            <field name="notes">Per pax - Round Trip cancellation</field>
+        </record>
+
+        <!-- International Flight One Way: 500 booking, 150 cancellation -->
+        <record id="sc_intl_flight_ow" model="travel.service.charge">
+            <field name="booking_type">international_flight_one_way</field>
+            <field name="charge_type">fixed</field>
+            <field name="amount">500.0</field>
+            <field name="notes">Per pax - One Way</field>
+        </record>
+        <!-- International Flight Round Trip: 1000 booking, 300 cancellation -->
+        <record id="sc_intl_flight_rt" model="travel.service.charge">
+            <field name="booking_type">international_flight_round_trip</field>
+            <field name="charge_type">fixed</field>
+            <field name="amount">1000.0</field>
+            <field name="notes">Per pax - Round Trip</field>
+        </record>
+        <record id="sc_intl_flight_ow_cancel" model="travel.service.charge">
+            <field name="booking_type">intl_flight_one_way_cancel</field>
+            <field name="charge_type">fixed</field>
+            <field name="amount">150.0</field>
+            <field name="notes">Per pax - One Way cancellation</field>
+        </record>
+        <record id="sc_intl_flight_rt_cancel" model="travel.service.charge">
+            <field name="booking_type">intl_flight_round_trip_cancel</field>
+            <field name="charge_type">fixed</field>
+            <field name="amount">300.0</field>
+            <field name="notes">Per pax - Round Trip cancellation</field>
+        </record>
+
+        <!-- Hotel: 5% of booking amount -->
+        <record id="sc_hotel" model="travel.service.charge">
+            <field name="booking_type">hotel</field>
+            <field name="charge_type">percentage</field>
+            <field name="amount">5.0</field>
+            <field name="notes">5% of booking amount. No cancellation SC.</field>
+        </record>
+
+        <!-- Event: 5% of booking amount -->
+        <record id="sc_event" model="travel.service.charge">
+            <field name="booking_type">event</field>
+            <field name="charge_type">percentage</field>
+            <field name="amount">5.0</field>
+            <field name="notes">5% of booking amount. No cancellation SC.</field>
+        </record>
+    </data>
+</odoo>

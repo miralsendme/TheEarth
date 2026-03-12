@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_debit_credit_note_wizard_form" model="ir.ui.view">
+        <field name="name">travel.debit.credit.note.wizard.form</field>
+        <field name="model">travel.debit.credit.note.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate Debit / Credit Note">
+                <group>
+                    <group>
+                        <field name="note_type" widget="radio"/>
+                        <field name="partner_id"/>
+                        <field name="booking_type_filter"/>
+                    </group>
+                    <group>
+                        <field name="date_from"/>
+                        <field name="date_to"/>
+                        <separator/>
+                        <field name="line_count" string="Records Found" readonly="1"/>
+                        <field name="total_service_charge" readonly="1" widget="monetary"/>
+                        <field name="total_fare" readonly="1" widget="monetary"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_generate" string="Generate"
+                            type="object" class="btn-primary"
+                            invisible="line_count == 0"/>
+                    <button name="action_preview" string="Refresh Preview"
+                            type="object" class="btn-secondary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_debit_note_wizard" model="ir.actions.act_window">
+        <field name="name">Generate Debit Note</field>
+        <field name="res_model">travel.debit.credit.note.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_note_type': 'debit'}</field>
+    </record>
+
+    <record id="action_credit_note_wizard" model="ir.actions.act_window">
+        <field name="name">Generate Credit Note</field>
+        <field name="res_model">travel.debit.credit.note.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="context">{'default_note_type': 'credit'}</field>
+    </record>
+</odoo>

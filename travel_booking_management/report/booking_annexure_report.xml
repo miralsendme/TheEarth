@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Annexure Report Template - works for all booking models via mixin methods -->
+    <template id="report_booking_annexure_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page" style="font-family: Arial, sans-serif;">
+                        <!-- Header -->
+                        <div style="text-align: center; margin-bottom: 20px;">
+                            <h2 style="margin-bottom: 5px; color: #2c3e50;">
+                                <strong>ANNEXURE</strong>
+                            </h2>
+                            <h4 style="color: #7f8c8d; margin-top: 0;">
+                                <t t-esc="doc._get_booking_type_label()"/> Booking
+                            </h4>
+                        </div>
+
+                        <!-- Booking Reference -->
+                        <t t-set="route_info" t-value="doc._get_route_info()"/>
+                        <t t-set="pnr_info" t-value="doc._get_pnr_info()"/>
+                        <t t-set="customer_name" t-value="doc._get_customer_partner() and doc._get_customer_partner().name or ''"/>
+                        <table style="width: 100%; margin-bottom: 20px; border-collapse: collapse;">
+                            <tr>
+                                <td style="width: 50%; padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">
+                                    <strong>Booking Reference</strong>
+                                </td>
+                                <td style="width: 50%; padding: 8px; border: 1px solid #ddd;">
+                                    <t t-esc="doc.name"/>
+                                </td>
+                            </tr>
+                            <tr t-if="customer_name">
+                                <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">
+                                    <strong>Billing Company</strong>
+                                </td>
+                                <td style="padding: 8px; border: 1px solid #ddd;">
+                                    <t t-esc="customer_name"/>
+                                </td>
+                            </tr>
+                            <tr t-if="route_info">
+                                <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">
+                                    <strong>Route</strong>
+                                </td>
+                                <td style="padding: 8px; border: 1px solid #ddd;">
+                                    <t t-esc="route_info"/>
+                                </td>
+                            </tr>
+                            <tr t-if="pnr_info">
+                                <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">
+                                    <strong>PNR / Reference</strong>
+                                </td>
+                                <td style="padding: 8px; border: 1px solid #ddd;">
+                                    <t t-esc="pnr_info"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Travel Dates -->
+                        <t t-set="travel_dates" t-value="doc._get_travel_dates_info()"/>
+                        <div t-if="travel_dates" style="margin-bottom: 20px;">
+                            <h5 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 5px;">
+                                <strong>Travel Dates</strong>
+                            </h5>
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr style="background: #3498db; color: white;">
+                                        <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Type</th>
+                                        <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="travel_dates" t-as="td">
+                                        <td style="padding: 8px; border: 1px solid #ddd;">
+                                            <t t-esc="td.get('label', '')"/>
+                                        </td>
+                                        <td style="padding: 8px; border: 1px solid #ddd;">
+                                            <t t-esc="td.get('date', '')"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Passenger Names -->
+                        <t t-set="passengers" t-value="doc._get_passenger_list()"/>
+                        <div t-if="passengers" style="margin-bottom: 20px;">
+                            <h5 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 5px;">
+                                <strong>Passenger Details</strong>
+                            </h5>
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr style="background: #3498db; color: white;">
+                                        <th style="padding: 8px; border: 1px solid #ddd; text-align: left; width: 60px;">Sr. No.</th>
+                                        <th style="padding: 8px; border: 1px solid #ddd; text-align: left;">Passenger Name</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="passengers" t-as="pax">
+                                        <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">
+                                            <t t-esc="pax_index + 1"/>
+                                        </td>
+                                        <td style="padding: 8px; border: 1px solid #ddd;">
+                                            <t t-esc="pax"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Amount Summary -->
+                        <div style="margin-bottom: 20px;">
+                            <h5 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 5px;">
+                                <strong>Amount Details</strong>
+                            </h5>
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <tr>
+                                    <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa; width: 50%;">
+                                        <strong>Ticket / Fare Amount</strong>
+                                    </td>
+                                    <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">
+                                        &#x20B9; <t t-esc="'{:,.2f}'.format(doc._get_ticket_amount())"/>
+                                    </td>
+                                </tr>
+                                <t t-set="sc_amount" t-value="doc._get_service_charge_amount()"/>
+                                <tr t-if="sc_amount">
+                                    <td style="padding: 8px; border: 1px solid #ddd; background: #f8f9fa;">
+                                        <strong>Service Charge</strong>
+                                    </td>
+                                    <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">
+                                        &#x20B9; <t t-esc="'{:,.2f}'.format(sc_amount)"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- Footer note -->
+                        <div style="margin-top: 30px; text-align: center; color: #95a5a6; font-size: 11px;">
+                            <p>This is a system-generated annexure from The Earth Travel Management.</p>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
