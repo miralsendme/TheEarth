@@ -34,7 +34,8 @@
                             <field name="checkin_date"/>
                             <field name="checkout_date"/>
                             <field name="hotel_name"/>
-                            <field name="booking_reference"/>
+                            <field name="hotel_booking_id"/>
+                            <field name="booking_reference" readonly="1"/>
                             <field name="total_amount"/>
                             <field name="refund_amount"/>
                             <field name="mode_of_refund"/>

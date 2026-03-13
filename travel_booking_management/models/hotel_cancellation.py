@@ -29,6 +29,8 @@ class HotelCancellation(models.Model):
     checkout_date = fields.Date(string='Check-out Date', tracking=True)
     hotel_name = fields.Char(string='Hotel Name')
     booking_reference = fields.Char(string='Booking Reference Number')
+    hotel_booking_id = fields.Many2one('travel.hotel.booking', string='Hotel Booking',
+                                        domain=[('state', 'in', ('confirmed', 'done'))])
     total_amount = fields.Float(string='Total Amount', tracking=True)
     refund_amount = fields.Float(string='Refund Amount', tracking=True)
     mode_of_refund = fields.Selection([
@@ -117,6 +119,20 @@ class HotelCancellation(models.Model):
             else:
                 rec.employee_code = False
                 rec.billing_company_id = rec.billing_company_id
+
+    @api.onchange('hotel_booking_id')
+    def _onchange_hotel_booking(self):
+        if self.hotel_booking_id:
+            booking = self.hotel_booking_id
+            self.booking_reference = booking.name
+            self.guest_names = booking.guest_names
+            self.billing_company_id = booking.billing_company_id
+            self.location = booking.location
+            self.checkin_date = booking.checkin_date
+            self.checkout_date = booking.checkout_date
+            self.hotel_name = booking.hotel_name
+            self.total_amount = booking.total_amount
+            self.document_number = booking.document_number
 
     @api.model_create_multi
     def create(self, vals_list):

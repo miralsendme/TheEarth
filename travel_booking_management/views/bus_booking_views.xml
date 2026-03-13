@@ -46,7 +46,6 @@
                             <field name="pnr_number"/>
                             <field name="bus_name"/>
                             <field name="total_amount"/>
-                            <field name="service_charge"/>
                             <field name="travel_date"/>
                         </group>
                     </group>

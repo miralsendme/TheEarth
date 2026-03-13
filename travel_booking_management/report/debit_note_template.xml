@@ -245,7 +245,7 @@
                 </tr>
             </table>
 
-            <!-- Line Items (fare only, use short_desc) -->
+            <!-- Line Items (fare only, exclude service charge) -->
             <table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
                 <thead><tr style="background-color: #d6e4f0;">
                     <th style="border: 1px solid #000; padding: 4px; width: 40px; text-align: center;"><b>Sr No</b></th>
@@ -255,8 +255,10 @@
                 </tr></thead>
                 <tbody>
                     <t t-set="sr_no" t-value="0"/>
-                    <t t-foreach="doc.invoice_line_ids.filtered(lambda l: l.display_type == 'product')" t-as="line">
+                    <t t-set="dn_total" t-value="0"/>
+                    <t t-foreach="doc.invoice_line_ids.filtered(lambda l: l.display_type == 'product' and l.product_id.default_code != 'product_service_charge')" t-as="line">
                         <t t-set="sr_no" t-value="sr_no + 1"/>
+                        <t t-set="dn_total" t-value="dn_total + line.price_subtotal"/>
                         <tr><td style="border: 1px solid #000; padding: 4px; text-align: center; vertical-align: top;"><t t-esc="sr_no"/></td>
                             <td style="border: 1px solid #000; padding: 4px; vertical-align: top;"><b><t t-esc="short_desc"/></b></td>
                             <td style="border: 1px solid #000; padding: 4px; text-align: center; vertical-align: top;">998551</td>
@@ -267,7 +269,7 @@
                 </tbody>
                 <tfoot><tr>
                     <td colspan="2" style="border: 1px solid #000;"/><td style="border: 1px solid #000; padding: 4px; text-align: right;"><b>Total</b></td>
-                    <td style="border: 1px solid #000; padding: 4px; text-align: right;"><b><t t-esc="'{:,.2f}'.format(total_amount)"/></b></td>
+                    <td style="border: 1px solid #000; padding: 4px; text-align: right;"><b><t t-esc="'{:,.2f}'.format(dn_total)"/></b></td>
                 </tr></tfoot>
             </table>
 
@@ -281,7 +283,7 @@
                 <tr>
                     <td style="border: 1px solid #000; padding: 6px; font-size: 10px;">
                         <b>Amount Chargeable(In Words)</b><span style="float: right;">E. &amp; O.E</span><br/>
-                        <b>INR <t t-esc="doc.currency_id.amount_to_text(total_amount) if total_amount else 'Zero'"/> Only.</b>
+                        <b>INR <t t-esc="doc.currency_id.amount_to_text(dn_total) if dn_total else 'Zero'"/> Only.</b>
                     </td>
                 </tr>
             </table>

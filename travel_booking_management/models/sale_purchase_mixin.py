@@ -394,12 +394,24 @@ class TravelSalePurchaseMixin(models.AbstractModel):
         return po
 
     def _generate_sale_purchase_orders(self):
-        """Called from action_confirm to generate both SO and PO."""
+        """Called from action_confirm to generate both SO and PO.
+        Auto-confirms SO, creates and posts the invoice."""
         for rec in self:
             if not rec.sale_order_id:
                 so = rec._create_draft_sale_order()
                 if so:
                     rec._attach_annexure_to_so(so)
+                    # Auto-confirm the Sales Order
+                    so.action_confirm()
+                    # Auto-create and post the invoice
+                    invoice = so._create_invoices()
+                    if invoice:
+                        # Fix invoice line descriptions: strip [default_code] prefix
+                        for inv_line in invoice.invoice_line_ids.filtered(lambda l: l.display_type == 'product'):
+                            so_line = inv_line.sale_line_ids[:1]
+                            if so_line and so_line.name:
+                                inv_line.write({'name': so_line.name})
+                        invoice.action_post()
             if not rec.purchase_order_id:
                 rec._create_draft_purchase_order()
 
