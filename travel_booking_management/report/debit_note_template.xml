@@ -295,10 +295,12 @@
                 </tr></tfoot>
             </table>
 
-            <!-- N.B. Note -->
-            <div style="border: 1px solid #000; border-top: 0; padding: 6px; font-size: 10px;">
-                <b>N.B :- GST Amount mentioned in the attached annexure has to be claim directly from the Airline</b>
-            </div>
+            <!-- N.B. Note (only for airline bookings) -->
+            <t t-if="'FLIGHT' in booking_type_label">
+                <div style="border: 1px solid #000; border-top: 0; padding: 6px; font-size: 10px;">
+                    <b>N.B :- GST Amount mentioned in the attached annexure has to be claim directly from the Airline</b>
+                </div>
+            </t>
 
             <!-- Amount in Words -->
             <table style="width: 100%; border-collapse: collapse; border: 1px solid #000; border-top: 0;">

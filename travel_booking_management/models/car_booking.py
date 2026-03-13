@@ -19,7 +19,7 @@ class CarBooking(models.Model):
                                         default=lambda self: self.env.user, tracking=True)
     employee_code = fields.Char(string='Employee Code', compute='_compute_employee_code', store=True, readonly=False)
     document_number = fields.Char(string='Document Number / Requested By')
-    confirmed_by = fields.Char(string='Confirmed By')
+    confirmed_by = fields.Many2one('res.users', string='Confirmed By', tracking=True)
     cab_vendor = fields.Char(string='Cab Vendor')
     reference_number = fields.Char(string='Reference Number')
     description = fields.Text(string='Description')

@@ -22,7 +22,7 @@
                         <group>
                             <field name="cancellation_date"/>
                             <field name="booking_executive"/>
-                            <field name="guest_names"/>
+                            <field name="guest_names" widget="passenger_autocomplete"/>
                             <field name="num_cancelled_guests"/>
                             <field name="employee_code"/>
                             <field name="billing_company_id"/>

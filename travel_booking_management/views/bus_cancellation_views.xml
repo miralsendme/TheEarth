@@ -21,13 +21,13 @@
                     <group>
                         <group>
                             <field name="cancellation_date"/>
-                            <field name="travel_date"/>
                             <field name="booking_executive"/>
-                            <field name="passenger_names"/>
+                            <field name="passenger_names" widget="passenger_autocomplete"/>
                             <field name="num_passengers"/>
                             <field name="employee_code"/>
                             <field name="billing_company_id"/>
                             <field name="document_number"/>
+                            <field name="travel_date"/>
                         </group>
                         <group>
                             <field name="origin_station"/>

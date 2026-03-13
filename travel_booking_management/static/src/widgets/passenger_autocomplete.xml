@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="travel_booking_management.PassengerAutocomplete">
+        <t t-if="isReadonly">
+            <span class="o_field_text" t-esc="state.value"/>
+        </t>
+        <t t-else="">
+            <div class="position-relative o_field_text">
+                <textarea
+                    class="o_input o_field_text"
+                    t-att-id="props.id"
+                    t-att-placeholder="props.placeholder"
+                    t-on-input="onInput"
+                    t-on-keydown="onKeydown"
+                    t-ref="textarea"
+                />
+                <div t-ref="dropdown" class="passenger-autocomplete-dropdown" t-if="state.showDropdown">
+                    <t t-foreach="state.suggestions" t-as="suggestion" t-key="suggestion.id">
+                        <div t-att-class="'autocomplete-item' + (state.selectedIndex === suggestion_index ? ' selected' : '')"
+                             t-on-click.stop="() => this.selectSuggestion(suggestion)">
+                            <strong t-esc="suggestion.employee_name"/>
+                            <small class="text-muted ms-2" t-esc="suggestion.employee_code + ' - ' + suggestion.entity"/>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </t>
+
+    <t t-name="travel_booking_management.PassengerAutocompleteChar">
+        <t t-if="isReadonly">
+            <span class="o_field_char" t-esc="state.value"/>
+        </t>
+        <t t-else="">
+            <div class="position-relative o_field_char">
+                <input
+                    type="text"
+                    class="o_input"
+                    t-att-id="props.id"
+                    t-att-placeholder="props.placeholder"
+                    t-on-input="onInput"
+                    t-on-keydown="onKeydown"
+                    t-ref="input"
+                />
+                <div t-ref="dropdown" class="passenger-autocomplete-dropdown" t-if="state.showDropdown">
+                    <t t-foreach="state.suggestions" t-as="suggestion" t-key="suggestion.id">
+                        <div t-att-class="'autocomplete-item' + (state.selectedIndex === suggestion_index ? ' selected' : '')"
+                             t-on-click.stop="() => this.selectSuggestion(suggestion)">
+                            <strong t-esc="suggestion.employee_name"/>
+                            <small class="text-muted ms-2" t-esc="suggestion.employee_code + ' - ' + suggestion.entity"/>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </t>
+
+</templates>

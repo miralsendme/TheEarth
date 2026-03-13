@@ -64,6 +64,7 @@
     'assets': {
         'web.assets_backend': [
             'travel_booking_management/static/src/dashboard/**/*',
+            'travel_booking_management/static/src/widgets/**/*',
         ],
     },
     'installable': True,

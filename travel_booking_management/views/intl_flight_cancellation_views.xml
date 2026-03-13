@@ -22,11 +22,11 @@
                         <group>
                             <field name="cancellation_date"/>
                             <field name="booking_executive"/>
-                            <field name="passenger_names"/>
+                            <field name="passenger_names" widget="passenger_autocomplete"/>
                             <field name="num_cancelled_passengers"/>
                             <field name="employee_code"/>
-                            <field name="document_number"/>
                             <field name="billing_company_id"/>
+                            <field name="document_number"/>
                             <field name="origin_city"/>
                             <field name="destination_city"/>
                             <field name="return_origin" invisible="trip_type not in ('round_trip',)"/>

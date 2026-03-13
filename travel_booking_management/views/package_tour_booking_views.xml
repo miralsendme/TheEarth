@@ -32,22 +32,22 @@
                     <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
                     <group>
                         <group string="Booking Info">
-                            <field name="billing_company_id"/>
                             <field name="booking_date"/>
                             <field name="booking_executive"/>
-                            <field name="booking_type"/>
-                            <field name="location_type"/>
+                            <field name="passenger_names" widget="passenger_autocomplete"/>
+                            <field name="num_passengers"/>
                             <field name="employee_code"/>
+                            <field name="billing_company_id"/>
                             <field name="document_number"/>
                         </group>
-                        <group string="Passenger Info">
-                            <field name="passenger_names" placeholder="Enter one passenger name per line..."/>
-                            <field name="num_passengers"/>
-                            <field name="reference_number"/>
-                            <field name="confirmed_by" required="1"/>
-                            <field name="mode_of_payment"/>
+                        <group string="Tour &amp; Payment">
+                            <field name="booking_type"/>
+                            <field name="location_type"/>
                             <field name="amount"/>
                             <field name="currency_id" groups="base.group_multi_currency"/>
+                            <field name="mode_of_payment"/>
+                            <field name="reference_number"/>
+                            <field name="confirmed_by" required="1"/>
                         </group>
                     </group>
                     <group>

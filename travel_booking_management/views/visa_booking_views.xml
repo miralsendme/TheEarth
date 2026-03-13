@@ -34,18 +34,18 @@
                     <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
                     <group>
                         <group string="Booking Info">
-                            <field name="billing_company_id"/>
                             <field name="booking_date"/>
                             <field name="booking_executive"/>
+                            <field name="passenger_name" widget="passenger_autocomplete_char" string="Name of Passenger(s)"/>
                             <field name="booking_type"/>
                             <field name="employee_code"/>
+                            <field name="billing_company_id"/>
                             <field name="document_number"/>
                         </group>
-                        <group string="Passenger Info">
-                            <field name="passenger_name"/>
+                        <group string="Payment &amp; Confirmation">
                             <field name="reference_number"/>
-                            <field name="confirmed_by"/>
                             <field name="mode_of_payment"/>
+                            <field name="confirmed_by"/>
                         </group>
                     </group>
                     <group>
