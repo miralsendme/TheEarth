@@ -7,7 +7,7 @@
     </record>
 
     <!-- Root Menu -->
-    <menuitem id="menu_travel_booking_root" name="The Earth" sequence="50"
+    <menuitem id="menu_travel_booking_root" name="The Earth" sequence="1"
               web_icon="travel_booking_management,static/description/icon.png"
               action="action_the_earth_dashboard"/>
 

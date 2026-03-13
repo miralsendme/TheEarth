@@ -219,7 +219,7 @@ class TravelSalePurchaseMixin(models.AbstractModel):
         return self._get_or_create_product('product_service_charge', 'Travel Service Charge')
 
     def _get_or_create_gst_taxes(self):
-        """Get or create CGST 9% and SGST 9% taxes for service charge."""
+        """Get or create CGST 9% and SGST 9% sale taxes."""
         company = self.env.company
         cgst = self.env['account.tax'].search([
             ('name', '=', 'CGST 9%'),
@@ -250,6 +250,41 @@ class TravelSalePurchaseMixin(models.AbstractModel):
                 'description': 'SGST @ 9%',
             })
         return cgst, sgst
+
+    def _get_or_create_igst_tax(self):
+        """Get or create IGST 18% sale tax for inter-state transactions."""
+        company = self.env.company
+        igst = self.env['account.tax'].search([
+            ('name', '=', 'IGST 18%'),
+            ('company_id', '=', company.id),
+            ('type_tax_use', '=', 'sale'),
+        ], limit=1)
+        if not igst:
+            igst = self.env['account.tax'].create({
+                'name': 'IGST 18%',
+                'type_tax_use': 'sale',
+                'amount_type': 'percent',
+                'amount': 18.0,
+                'company_id': company.id,
+                'description': 'IGST @ 18%',
+            })
+        return igst
+
+    def _get_service_charge_taxes(self, customer):
+        """Return the correct GST taxes based on customer state vs company state.
+        Intra-state: CGST 9% + SGST 9%
+        Inter-state: IGST 18%
+        """
+        company_state = self.env.company.state_id
+        customer_state = customer.state_id if customer else False
+        if company_state and customer_state and company_state != customer_state:
+            # Inter-state → IGST
+            igst = self._get_or_create_igst_tax()
+            return igst
+        else:
+            # Intra-state (or state unknown) → CGST + SGST
+            cgst, sgst = self._get_or_create_gst_taxes()
+            return cgst | sgst
 
     def _get_or_create_purchase_gst_taxes(self):
         """Get or create CGST 9% and SGST 9% taxes for purchase."""
@@ -329,15 +364,15 @@ class TravelSalePurchaseMixin(models.AbstractModel):
                 'currency_id': company_currency,
             }))
 
-        # Line 2: Service charge — taxable (CGST + SGST)
+        # Line 2: Service charge — taxable (CGST+SGST or IGST based on state)
         if sc_amount:
-            cgst, sgst = self._get_or_create_gst_taxes()
+            taxes = self._get_service_charge_taxes(customer)
             order_lines.append((0, 0, {
                 'product_id': sc_product.id,
                 'name': sc_desc,
                 'product_uom_qty': 1,
                 'price_unit': sc_amount,
-                'tax_id': [(6, 0, [cgst.id, sgst.id])],
+                'tax_id': [(6, 0, taxes.ids)],
                 'currency_id': company_currency,
             }))
 
@@ -395,7 +430,10 @@ class TravelSalePurchaseMixin(models.AbstractModel):
 
     def _generate_sale_purchase_orders(self):
         """Called from action_confirm to generate both SO and PO.
-        Auto-confirms SO, creates and posts the invoice."""
+        Auto-confirms SO, then creates TWO separate invoices:
+          1) Tax Invoice  — service charge line only (with CGST+SGST)
+          2) Debit Note   — fare line only (no tax)
+        """
         for rec in self:
             if not rec.sale_order_id:
                 so = rec._create_draft_sale_order()
@@ -403,17 +441,62 @@ class TravelSalePurchaseMixin(models.AbstractModel):
                     rec._attach_annexure_to_so(so)
                     # Auto-confirm the Sales Order
                     so.action_confirm()
-                    # Auto-create and post the invoice
-                    invoice = so._create_invoices()
-                    if invoice:
-                        # Fix invoice line descriptions: strip [default_code] prefix
-                        for inv_line in invoice.invoice_line_ids.filtered(lambda l: l.display_type == 'product'):
-                            so_line = inv_line.sale_line_ids[:1]
-                            if so_line and so_line.name:
-                                inv_line.write({'name': so_line.name})
-                        invoice.action_post()
+                    # Create two separate invoices from specific SO lines
+                    rec._create_split_invoices(so)
             if not rec.purchase_order_id:
                 rec._create_draft_purchase_order()
+
+    def _create_split_invoices(self, so):
+        """Create two invoices from one SO:
+        Invoice 1 (Tax Invoice): service charge line only
+        Invoice 2 (Debit Note): fare line only
+        """
+        sc_lines = so.order_line.filtered(
+            lambda l: l.product_id.default_code == 'product_service_charge'
+        )
+        fare_lines = so.order_line.filtered(
+            lambda l: l.product_id.default_code == 'product_travel_fare'
+        )
+
+        # Invoice 1: Service Charge (Tax Invoice)
+        if sc_lines:
+            inv1 = self._create_invoice_from_so_lines(so, sc_lines)
+            if inv1:
+                inv1.action_post()
+
+        # Invoice 2: Fare (Debit Note)
+        if fare_lines:
+            inv2 = self._create_invoice_from_so_lines(so, fare_lines)
+            if inv2:
+                inv2.action_post()
+
+    def _create_invoice_from_so_lines(self, so, so_lines):
+        """Create a single invoice from specific SO lines."""
+        invoice_vals = so._prepare_invoice()
+        invoice_line_vals = []
+        for line in so_lines:
+            inv_line_vals = line._prepare_invoice_line()
+            # Use the clean SO line name (without [default_code] prefix)
+            inv_line_vals['name'] = line.name
+            invoice_line_vals.append((0, 0, inv_line_vals))
+
+        if not invoice_line_vals:
+            return False
+
+        invoice_vals['invoice_line_ids'] = invoice_line_vals
+        invoice = self.env['account.move'].with_context(
+            default_move_type='out_invoice'
+        ).create(invoice_vals)
+
+        # Link invoice lines back to SO lines
+        for inv_line in invoice.invoice_line_ids.filtered(lambda l: l.display_type == 'product'):
+            matching_so_line = so_lines.filtered(
+                lambda sl: sl.product_id == inv_line.product_id
+            )[:1]
+            if matching_so_line:
+                inv_line.write({'sale_line_ids': [(4, matching_so_line.id)]})
+
+        return invoice
 
     def _attach_annexure_to_so(self, so):
         """Generate detailed Excel annexures (service charge + fare) and attach to SO."""

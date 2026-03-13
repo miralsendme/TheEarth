@@ -24,12 +24,13 @@
         </t>
         <t t-if="not booking_type_label"><t t-set="booking_type_label" t-value="'SERVICE CHARGES'"/></t>
 
-        <!-- Tax amounts -->
+        <!-- Tax amounts (dynamic: CGST+SGST or IGST) -->
         <t t-set="total_untaxed" t-value="doc.amount_untaxed"/>
         <t t-set="total_tax" t-value="doc.amount_tax"/>
         <t t-set="total_amount" t-value="doc.amount_total"/>
         <t t-set="cgst_amount" t-value="0"/>
         <t t-set="sgst_amount" t-value="0"/>
+        <t t-set="igst_amount" t-value="0"/>
         <t t-foreach="doc.line_ids.filtered(lambda l: l.tax_line_id)" t-as="tax_line">
             <t t-if="'CGST' in (tax_line.tax_line_id.name or '')">
                 <t t-set="cgst_amount" t-value="cgst_amount + abs(tax_line.balance)"/>
@@ -37,7 +38,11 @@
             <t t-if="'SGST' in (tax_line.tax_line_id.name or '')">
                 <t t-set="sgst_amount" t-value="sgst_amount + abs(tax_line.balance)"/>
             </t>
+            <t t-if="'IGST' in (tax_line.tax_line_id.name or '')">
+                <t t-set="igst_amount" t-value="igst_amount + abs(tax_line.balance)"/>
+            </t>
         </t>
+        <t t-set="is_igst" t-value="igst_amount > 0"/>
 
         <div class="page" style="font-family: Arial, sans-serif; font-size: 11px;">
             <!-- Company Header -->
@@ -118,25 +123,42 @@
                 </tr></tfoot>
             </table>
 
-            <!-- Bank Details + Tax -->
+            <!-- Bank Details + Tax (dynamic: CGST+SGST or IGST) -->
             <table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
-                <tr>
-                    <td style="width: 55%; border: 1px solid #000; padding: 6px; vertical-align: top;" rowspan="2">
-                        <b>Company's Bank Details</b><br/>
-                        <table style="font-size: 10px; margin-top: 4px;">
-                            <tr><td style="width: 80px;"><b>Bank Name</b></td><td>: <t t-esc="company.partner_id.bank_ids[:1].bank_id.name if company.partner_id.bank_ids else ''"/></td></tr>
-                            <tr><td><b>A/c No</b></td><td>: <t t-esc="company.partner_id.bank_ids[:1].acc_number if company.partner_id.bank_ids else ''"/></td></tr>
-                            <tr><td><b>IFSC Code</b></td><td>: <t t-esc="company.partner_id.bank_ids[:1].bank_id.bic if company.partner_id.bank_ids else ''"/></td></tr>
-                            <tr><td><b>PAN No.</b></td><td>: <t t-esc="(company.vat or '')[2:12] if company.vat and len(company.vat) >= 12 else ''"/></td></tr>
-                        </table>
-                    </td>
-                    <td style="border: 1px solid #000; padding: 4px;">CGST @ 9%</td>
-                    <td style="border: 1px solid #000; padding: 4px; text-align: right; width: 90px;"><t t-esc="'{:,.2f}'.format(cgst_amount)"/></td>
-                </tr>
-                <tr>
-                    <td style="border: 1px solid #000; padding: 4px;">SGST @ 9%</td>
-                    <td style="border: 1px solid #000; padding: 4px; text-align: right;"><t t-esc="'{:,.2f}'.format(sgst_amount)"/></td>
-                </tr>
+                <t t-if="is_igst">
+                    <tr>
+                        <td style="width: 55%; border: 1px solid #000; padding: 6px; vertical-align: top;">
+                            <b>Company's Bank Details</b><br/>
+                            <table style="font-size: 10px; margin-top: 4px;">
+                                <tr><td style="width: 80px;"><b>Bank Name</b></td><td>: <t t-esc="company.partner_id.bank_ids[:1].bank_id.name if company.partner_id.bank_ids else ''"/></td></tr>
+                                <tr><td><b>A/c No</b></td><td>: <t t-esc="company.partner_id.bank_ids[:1].acc_number if company.partner_id.bank_ids else ''"/></td></tr>
+                                <tr><td><b>IFSC Code</b></td><td>: <t t-esc="company.partner_id.bank_ids[:1].bank_id.bic if company.partner_id.bank_ids else ''"/></td></tr>
+                                <tr><td><b>PAN No.</b></td><td>: <t t-esc="(company.vat or '')[2:12] if company.vat and len(company.vat) >= 12 else ''"/></td></tr>
+                            </table>
+                        </td>
+                        <td style="border: 1px solid #000; padding: 4px;">IGST @ 18%</td>
+                        <td style="border: 1px solid #000; padding: 4px; text-align: right; width: 90px;"><t t-esc="'{:,.2f}'.format(igst_amount)"/></td>
+                    </tr>
+                </t>
+                <t t-else="">
+                    <tr>
+                        <td style="width: 55%; border: 1px solid #000; padding: 6px; vertical-align: top;" rowspan="2">
+                            <b>Company's Bank Details</b><br/>
+                            <table style="font-size: 10px; margin-top: 4px;">
+                                <tr><td style="width: 80px;"><b>Bank Name</b></td><td>: <t t-esc="company.partner_id.bank_ids[:1].bank_id.name if company.partner_id.bank_ids else ''"/></td></tr>
+                                <tr><td><b>A/c No</b></td><td>: <t t-esc="company.partner_id.bank_ids[:1].acc_number if company.partner_id.bank_ids else ''"/></td></tr>
+                                <tr><td><b>IFSC Code</b></td><td>: <t t-esc="company.partner_id.bank_ids[:1].bank_id.bic if company.partner_id.bank_ids else ''"/></td></tr>
+                                <tr><td><b>PAN No.</b></td><td>: <t t-esc="(company.vat or '')[2:12] if company.vat and len(company.vat) >= 12 else ''"/></td></tr>
+                            </table>
+                        </td>
+                        <td style="border: 1px solid #000; padding: 4px;">CGST @ 9%</td>
+                        <td style="border: 1px solid #000; padding: 4px; text-align: right; width: 90px;"><t t-esc="'{:,.2f}'.format(cgst_amount)"/></td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid #000; padding: 4px;">SGST @ 9%</td>
+                        <td style="border: 1px solid #000; padding: 4px; text-align: right;"><t t-esc="'{:,.2f}'.format(sgst_amount)"/></td>
+                    </tr>
+                </t>
             </table>
 
             <!-- Remark + Total -->
@@ -256,7 +278,7 @@
                 <tbody>
                     <t t-set="sr_no" t-value="0"/>
                     <t t-set="dn_total" t-value="0"/>
-                    <t t-foreach="doc.invoice_line_ids.filtered(lambda l: l.display_type == 'product' and l.product_id.default_code != 'product_service_charge')" t-as="line">
+                    <t t-foreach="doc.invoice_line_ids.filtered(lambda l: l.display_type == 'product')" t-as="line">
                         <t t-set="sr_no" t-value="sr_no + 1"/>
                         <t t-set="dn_total" t-value="dn_total + line.price_subtotal"/>
                         <tr><td style="border: 1px solid #000; padding: 4px; text-align: center; vertical-align: top;"><t t-esc="sr_no"/></td>
@@ -331,12 +353,13 @@
         </t>
         <t t-if="not booking_type_label"><t t-set="booking_type_label" t-value="'SERVICE CHARGES'"/></t>
 
-        <!-- Tax amounts -->
+        <!-- Tax amounts (dynamic: CGST+SGST or IGST) -->
         <t t-set="total_untaxed" t-value="doc.amount_untaxed"/>
         <t t-set="total_tax" t-value="doc.amount_tax"/>
         <t t-set="total_amount" t-value="doc.amount_total"/>
         <t t-set="cgst_amount" t-value="0"/>
         <t t-set="sgst_amount" t-value="0"/>
+        <t t-set="igst_amount" t-value="0"/>
         <t t-foreach="doc.line_ids.filtered(lambda l: l.tax_line_id)" t-as="tax_line">
             <t t-if="'CGST' in (tax_line.tax_line_id.name or '')">
                 <t t-set="cgst_amount" t-value="cgst_amount + abs(tax_line.balance)"/>
@@ -344,8 +367,11 @@
             <t t-if="'SGST' in (tax_line.tax_line_id.name or '')">
                 <t t-set="sgst_amount" t-value="sgst_amount + abs(tax_line.balance)"/>
             </t>
+            <t t-if="'IGST' in (tax_line.tax_line_id.name or '')">
+                <t t-set="igst_amount" t-value="igst_amount + abs(tax_line.balance)"/>
+            </t>
         </t>
-
+        <t t-set="is_igst" t-value="igst_amount > 0"/>
         <div class="page" style="font-family: Arial, sans-serif; font-size: 11px;">
             <!-- Company Header -->
             <div style="border-bottom: 2px solid #000; padding-bottom: 8px; margin-bottom: 5px;">
@@ -425,25 +451,42 @@
                 </tr></tfoot>
             </table>
 
-            <!-- Bank Details + Tax -->
+            <!-- Bank Details + Tax (dynamic: CGST+SGST or IGST) -->
             <table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
-                <tr>
-                    <td style="width: 55%; border: 1px solid #000; padding: 6px; vertical-align: top;" rowspan="2">
-                        <b>Company's Bank Details</b><br/>
-                        <table style="font-size: 10px; margin-top: 4px;">
-                            <tr><td style="width: 80px;"><b>Bank Name</b></td><td>: <t t-esc="company.partner_id.bank_ids[:1].bank_id.name if company.partner_id.bank_ids else ''"/></td></tr>
-                            <tr><td><b>A/c No</b></td><td>: <t t-esc="company.partner_id.bank_ids[:1].acc_number if company.partner_id.bank_ids else ''"/></td></tr>
-                            <tr><td><b>IFSC Code</b></td><td>: <t t-esc="company.partner_id.bank_ids[:1].bank_id.bic if company.partner_id.bank_ids else ''"/></td></tr>
-                            <tr><td><b>PAN No.</b></td><td>: <t t-esc="(company.vat or '')[2:12] if company.vat and len(company.vat) >= 12 else ''"/></td></tr>
-                        </table>
-                    </td>
-                    <td style="border: 1px solid #000; padding: 4px;">CGST @ 9%</td>
-                    <td style="border: 1px solid #000; padding: 4px; text-align: right; width: 90px;"><t t-esc="'{:,.2f}'.format(cgst_amount)"/></td>
-                </tr>
-                <tr>
-                    <td style="border: 1px solid #000; padding: 4px;">SGST @ 9%</td>
-                    <td style="border: 1px solid #000; padding: 4px; text-align: right;"><t t-esc="'{:,.2f}'.format(sgst_amount)"/></td>
-                </tr>
+                <t t-if="is_igst">
+                    <tr>
+                        <td style="width: 55%; border: 1px solid #000; padding: 6px; vertical-align: top;">
+                            <b>Company's Bank Details</b><br/>
+                            <table style="font-size: 10px; margin-top: 4px;">
+                                <tr><td style="width: 80px;"><b>Bank Name</b></td><td>: <t t-esc="company.partner_id.bank_ids[:1].bank_id.name if company.partner_id.bank_ids else ''"/></td></tr>
+                                <tr><td><b>A/c No</b></td><td>: <t t-esc="company.partner_id.bank_ids[:1].acc_number if company.partner_id.bank_ids else ''"/></td></tr>
+                                <tr><td><b>IFSC Code</b></td><td>: <t t-esc="company.partner_id.bank_ids[:1].bank_id.bic if company.partner_id.bank_ids else ''"/></td></tr>
+                                <tr><td><b>PAN No.</b></td><td>: <t t-esc="(company.vat or '')[2:12] if company.vat and len(company.vat) >= 12 else ''"/></td></tr>
+                            </table>
+                        </td>
+                        <td style="border: 1px solid #000; padding: 4px;">IGST @ 18%</td>
+                        <td style="border: 1px solid #000; padding: 4px; text-align: right; width: 90px;"><t t-esc="'{:,.2f}'.format(igst_amount)"/></td>
+                    </tr>
+                </t>
+                <t t-else="">
+                    <tr>
+                        <td style="width: 55%; border: 1px solid #000; padding: 6px; vertical-align: top;" rowspan="2">
+                            <b>Company's Bank Details</b><br/>
+                            <table style="font-size: 10px; margin-top: 4px;">
+                                <tr><td style="width: 80px;"><b>Bank Name</b></td><td>: <t t-esc="company.partner_id.bank_ids[:1].bank_id.name if company.partner_id.bank_ids else ''"/></td></tr>
+                                <tr><td><b>A/c No</b></td><td>: <t t-esc="company.partner_id.bank_ids[:1].acc_number if company.partner_id.bank_ids else ''"/></td></tr>
+                                <tr><td><b>IFSC Code</b></td><td>: <t t-esc="company.partner_id.bank_ids[:1].bank_id.bic if company.partner_id.bank_ids else ''"/></td></tr>
+                                <tr><td><b>PAN No.</b></td><td>: <t t-esc="(company.vat or '')[2:12] if company.vat and len(company.vat) >= 12 else ''"/></td></tr>
+                            </table>
+                        </td>
+                        <td style="border: 1px solid #000; padding: 4px;">CGST @ 9%</td>
+                        <td style="border: 1px solid #000; padding: 4px; text-align: right; width: 90px;"><t t-esc="'{:,.2f}'.format(cgst_amount)"/></td>
+                    </tr>
+                    <tr>
+                        <td style="border: 1px solid #000; padding: 4px;">SGST @ 9%</td>
+                        <td style="border: 1px solid #000; padding: 4px; text-align: right;"><t t-esc="'{:,.2f}'.format(sgst_amount)"/></td>
+                    </tr>
+                </t>
             </table>
 
             <!-- Remark + Total -->

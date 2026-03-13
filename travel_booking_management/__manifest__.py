@@ -11,6 +11,7 @@
         'security/ir.model.access.csv',
         'data/sequence_data.xml',
         'data/service_charge_data.xml',
+        'data/hide_menus.xml',
         'report/booking_annexure_report.xml',
         'report/booking_annexure_action.xml',
         'report/debit_note_report.xml',
@@ -67,4 +68,5 @@
     },
     'installable': True,
     'application': True,
+    'post_init_hook': '_hide_orphan_menus',
 }

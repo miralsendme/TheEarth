@@ -62,7 +62,6 @@
                         <group string="Payment &amp; Confirmation">
                             <field name="gross_amount"/>
                             <field name="total_amount"/>
-                            <field name="service_charge"/>
                             <field name="gst_amount" placeholder="Only if GST claim is allowed"/>
                             <field name="mode_of_payment"/>
                             <field name="remarks"/>
