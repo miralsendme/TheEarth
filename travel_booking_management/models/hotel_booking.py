@@ -77,7 +77,7 @@ class HotelBooking(models.Model):
                                         domain=[('is_company', '=', True)],
                                         compute='_compute_billing_company', store=True, readonly=False)
     document_number = fields.Char(string='Doc. no./Req. by')
-    location = fields.Char(string='Location', required=True)
+    location = fields.Many2one('travel.hotel.city', string='Location')
     location_type = fields.Selection([
         ('domestic', 'Domestic'),
         ('international', 'International'),

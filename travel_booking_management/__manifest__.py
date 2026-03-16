@@ -14,6 +14,7 @@
         'data/hide_menus.xml',
         'data/railway_station_data.xml',
         'data/bus_name_data.xml',
+        'data/hotel_city_data.xml',
         'report/booking_annexure_report.xml',
         'report/booking_annexure_action.xml',
         'report/debit_note_report.xml',

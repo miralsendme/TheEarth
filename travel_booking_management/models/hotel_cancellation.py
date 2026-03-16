@@ -24,7 +24,7 @@ class HotelCancellation(models.Model):
                                          domain=[('is_company', '=', True)],
                                          compute='_compute_from_guest', store=True, readonly=False)
     document_number = fields.Char(string='Doc. no./Req. by')
-    location = fields.Char(string='Location')
+    location = fields.Many2one('travel.hotel.city', string='Location')
     num_nights_cancelled = fields.Integer(string='No. of night(s) to be cancelled')
     checkin_date = fields.Date(string='Check-in Date', tracking=True)
     checkout_date = fields.Date(string='Check-out Date', tracking=True)
