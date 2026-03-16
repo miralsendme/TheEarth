@@ -1,7 +1,58 @@
 # -*- coding: utf-8 -*-
 import base64
+from datetime import date as _date
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
+
+# Cancellation type → prefix mapping
+CANCELLATION_PREFIX_MAP = {
+    'train': 'CT',
+    'bus': 'CB',
+    'domestic_flight': 'CDF',
+    'international_flight': 'CIF',
+    'hotel': 'CH',
+    'insurance': 'CTI',
+    'visa': 'CV',
+    'car': 'CC',
+    'package_tour': 'CPT',
+    'event': 'CE',
+}
+
+
+def get_cancellation_ref(env, cancellation_type):
+    """Generate cancellation reference like CTSO/1/25-26.
+    Uses shared sequence 'travel.cancellation.ref' with Indian FY date ranges.
+    """
+    prefix = CANCELLATION_PREFIX_MAP.get(cancellation_type, 'C')
+    today = _date.today()
+    if today.month >= 4:
+        fy_start = _date(today.year, 4, 1)
+        fy_end = _date(today.year + 1, 3, 31)
+        fy_str = f"{today.year % 100}-{(today.year + 1) % 100:02d}"
+    else:
+        fy_start = _date(today.year - 1, 4, 1)
+        fy_end = _date(today.year, 3, 31)
+        fy_str = f"{(today.year - 1) % 100}-{today.year % 100:02d}"
+
+    seq = env['ir.sequence'].search([('code', '=', 'travel.cancellation.ref')], limit=1)
+    if not seq:
+        return False
+
+    date_range = env['ir.sequence.date_range'].search([
+        ('sequence_id', '=', seq.id),
+        ('date_from', '=', fy_start),
+        ('date_to', '=', fy_end),
+    ], limit=1)
+    if not date_range:
+        date_range = env['ir.sequence.date_range'].create({
+            'sequence_id': seq.id,
+            'date_from': fy_start,
+            'date_to': fy_end,
+            'number_next': 1,
+        })
+
+    number = str(date_range._next())
+    return f"{prefix}SO/{number}/{fy_str}"
 
 # Mapping of mode_of_payment keys to vendor names for Purchase Orders
 VENDOR_MAP = {
@@ -57,6 +108,20 @@ class TravelSalePurchaseMixin(models.AbstractModel):
     sale_order_id = fields.Many2one('sale.order', string='Sales Order', readonly=True, copy=False)
     purchase_order_id = fields.Many2one('purchase.order', string='Purchase Order', readonly=True, copy=False)
 
+    # Mapping from booking type label → SO prefix
+    SO_PREFIX_MAP = {
+        'Car': 'C',
+        'Domestic Flight': 'DF',
+        'International Flight': 'IF',
+        'Train': 'T',
+        'Bus': 'B',
+        'Hotel': 'H',
+        'Event': 'E',
+        'Visa': 'V',
+        'Insurance': 'TI',
+        'Package Tour': 'PT',
+    }
+
     def _get_booking_description(self):
         """Override in each booking model to return a descriptive line name."""
         return self.name or 'Travel Booking'
@@ -64,6 +129,68 @@ class TravelSalePurchaseMixin(models.AbstractModel):
     def _get_booking_type_label(self):
         """Override in each booking model to return the booking type label."""
         return 'Travel'
+
+    def _get_so_prefix(self):
+        """Return the SO prefix for this booking type (e.g. 'C' for Car)."""
+        return self.SO_PREFIX_MAP.get(self._get_booking_type_label(), '')
+
+    @staticmethod
+    def _get_indian_fy_string(dt=None):
+        """Return Indian financial year string like '25-26' for a given date.
+        Indian FY runs April 1 to March 31.
+        If month >= April, FY = current_year - next_year, else FY = prev_year - current_year.
+        """
+        from datetime import date as dt_date
+        if dt is None:
+            dt = dt_date.today()
+        if dt.month >= 4:
+            return f"{dt.year % 100}-{(dt.year + 1) % 100:02d}"
+        else:
+            return f"{(dt.year - 1) % 100}-{dt.year % 100:02d}"
+
+    def _get_next_so_number(self):
+        """Get the next sequence number from the shared travel.sale.order sequence,
+        ensuring the date range is aligned to Indian FY (April 1 - March 31).
+        """
+        from datetime import date as dt_date
+        today = dt_date.today()
+        # Determine current Indian FY boundaries
+        if today.month >= 4:
+            fy_start = dt_date(today.year, 4, 1)
+            fy_end = dt_date(today.year + 1, 3, 31)
+        else:
+            fy_start = dt_date(today.year - 1, 4, 1)
+            fy_end = dt_date(today.year, 3, 31)
+
+        seq = self.env['ir.sequence'].search([('code', '=', 'travel.sale.order')], limit=1)
+        if not seq:
+            return '1'
+
+        # Ensure a date_range record exists for this Indian FY
+        date_range = self.env['ir.sequence.date_range'].search([
+            ('sequence_id', '=', seq.id),
+            ('date_from', '=', fy_start),
+            ('date_to', '=', fy_end),
+        ], limit=1)
+        if not date_range:
+            date_range = self.env['ir.sequence.date_range'].create({
+                'sequence_id': seq.id,
+                'date_from': fy_start,
+                'date_to': fy_end,
+                'number_next': 1,
+            })
+
+        # Use the date range to get next number
+        return str(date_range._next())
+
+    def _generate_custom_so_name(self):
+        """Generate SO name like CSO/1/25-26."""
+        prefix = self._get_so_prefix()
+        if not prefix:
+            return False
+        number = self._get_next_so_number()
+        fy = self._get_indian_fy_string()
+        return f"{prefix}SO/{number}/{fy}"
 
     def _get_ticket_amount(self):
         """Return the ticket/fare amount (non-taxable). Override if field name differs."""
@@ -382,6 +509,10 @@ class TravelSalePurchaseMixin(models.AbstractModel):
             'note': f"Auto-generated from {booking_type} booking {self.name}",
             'order_line': order_lines,
         })
+        # Rename SO with custom format: {Prefix}SO/{number}/{FY}
+        custom_name = self._generate_custom_so_name()
+        if custom_name:
+            so.write({'name': custom_name})
         self.sale_order_id = so.id
         return so
 

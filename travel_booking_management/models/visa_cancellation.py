@@ -11,8 +11,21 @@ class VisaCancellation(models.Model):
 
     name = fields.Char(string='Cancellation Reference', required=True, copy=False,
                        readonly=True, default=lambda self: _('New'))
+    visa_booking_id = fields.Many2one('travel.visa.booking', string='Visa Booking',
+                                       domain=[('state', 'in', ('confirmed', 'done'))])
     cancellation_date = fields.Date(string='Cancellation Date', default=fields.Date.context_today,
                                     required=True, tracking=True)
+
+    @api.onchange('visa_booking_id')
+    def _onchange_visa_booking_id(self):
+        if self.visa_booking_id:
+            b = self.visa_booking_id
+            self.booking_executive = b.booking_executive
+            self.booking_type = b.booking_type if hasattr(b, 'booking_type') else False
+            self.passenger_name = b.passenger_name if hasattr(b, 'passenger_name') else ''
+            self.passenger_names = b.passenger_names if hasattr(b, 'passenger_names') else ''
+            self.document_number = b.document_number if hasattr(b, 'document_number') else ''
+
     booking_executive = fields.Many2one('res.users', string='Booking Executive',
                                         default=lambda self: self.env.user, tracking=True)
     booking_type = fields.Selection([
@@ -115,7 +128,8 @@ class VisaCancellation(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('travel.visa.cancellation') or _('New')
+                from .sale_purchase_mixin import get_cancellation_ref
+                vals['name'] = get_cancellation_ref(self.env, 'visa') or self.env['ir.sequence'].next_by_code('travel.visa.cancellation') or _('New')
         return super().create(vals_list)
 
     def action_confirm(self):

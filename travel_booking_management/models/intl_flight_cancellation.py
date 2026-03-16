@@ -11,8 +11,32 @@ class InternationalFlightCancellation(models.Model):
 
     name = fields.Char(string='Cancellation Reference', required=True, copy=False,
                        readonly=True, default=lambda self: _('New'))
+    intl_flight_booking_id = fields.Many2one('travel.international.flight.booking', string='International Flight Booking',
+                                              domain=[('state', 'in', ('confirmed', 'done'))])
     cancellation_date = fields.Date(string='Cancellation Date', default=fields.Date.context_today,
                                     required=True, tracking=True)
+
+    @api.onchange('intl_flight_booking_id')
+    def _onchange_intl_flight_booking_id(self):
+        if self.intl_flight_booking_id:
+            b = self.intl_flight_booking_id
+            self.booking_executive = b.booking_executive
+            self.passenger_names = b.passenger_names
+            self.document_number = b.document_number
+            self.origin_city = b.origin_city if hasattr(b, 'origin_city') else ''
+            self.destination_city = b.destination_city if hasattr(b, 'destination_city') else ''
+            self.trip_type = b.trip_type if hasattr(b, 'trip_type') else False
+            self.travel_date_onward = b.travel_date_onward if hasattr(b, 'travel_date_onward') else False
+            self.return_date = b.return_date if hasattr(b, 'return_date') else False
+            self.ticket_number = b.ticket_number if hasattr(b, 'ticket_number') else ''
+            self.pnr_number = b.pnr_number if hasattr(b, 'pnr_number') else ''
+            self.flight_number = b.flight_number if hasattr(b, 'flight_number') else ''
+            self.flight_number_return = b.flight_number_return if hasattr(b, 'flight_number_return') else ''
+            self.travel_class = b.travel_class if hasattr(b, 'travel_class') else False
+            self.airline = b.airline if hasattr(b, 'airline') else False
+            self.fare = b.total_amount if hasattr(b, 'total_amount') else 0.0
+            self.mode_of_refund = b.mode_of_payment if hasattr(b, 'mode_of_payment') else False
+
     booking_executive = fields.Many2one('res.users', string='Booking Executive',
                                         default=lambda self: self.env.user, tracking=True)
     passenger_names = fields.Text(string='Name of Passenger(s)')
@@ -149,7 +173,8 @@ class InternationalFlightCancellation(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('travel.intl.flight.cancellation') or _('New')
+                from .sale_purchase_mixin import get_cancellation_ref
+                vals['name'] = get_cancellation_ref(self.env, 'international_flight') or self.env['ir.sequence'].next_by_code('travel.intl.flight.cancellation') or _('New')
         return super().create(vals_list)
 
     def action_confirm(self):

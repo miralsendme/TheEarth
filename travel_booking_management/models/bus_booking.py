@@ -25,7 +25,7 @@ class BusBooking(models.Model):
     origin_station = fields.Char(string='From - Origin', required=True)
     destination_station = fields.Char(string='To - Destination', required=True)
     pnr_number = fields.Char(string='PNR Number')
-    bus_name = fields.Char(string='Bus Name', required=True)
+    bus_name = fields.Many2one('travel.bus.name', string='Bus Name')
     total_amount = fields.Float(string='Total Amount', tracking=True)
     service_charge = fields.Float(string='Service Charge', compute='_compute_service_charge',
                                   store=True, readonly=False, tracking=True)

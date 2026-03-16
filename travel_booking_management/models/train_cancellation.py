@@ -11,8 +11,27 @@ class TrainCancellation(models.Model):
 
     name = fields.Char(string='Cancellation Reference', required=True, copy=False,
                        readonly=True, default=lambda self: _('New'))
+    train_booking_id = fields.Many2one('travel.train.booking', string='Train Booking',
+                                        domain=[('state', 'in', ('confirmed', 'done'))])
     cancellation_date = fields.Date(string='Cancellation Date', default=fields.Date.context_today,
                                     required=True, tracking=True)
+
+    @api.onchange('train_booking_id')
+    def _onchange_train_booking_id(self):
+        if self.train_booking_id:
+            b = self.train_booking_id
+            self.travel_date = b.travel_date
+            self.booking_executive = b.booking_executive
+            self.passenger_names = b.passenger_names
+            self.document_number = b.document_number
+            self.origin_station = b.origin_station
+            self.destination_station = b.destination_station
+            self.pnr_number = b.pnr_number
+            self.train_number = b.train_number
+            self.total_fare = b.total_amount
+            self.mode_of_refund = b.mode_of_payment
+            if hasattr(b, 'quota') and b.quota:
+                self.quota = b.quota
     travel_date = fields.Date(string='Travel Date', tracking=True)
     booking_executive = fields.Many2one('res.users', string='Booking Executive',
                                         default=lambda self: self.env.user, tracking=True)
@@ -141,7 +160,8 @@ class TrainCancellation(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('travel.train.cancellation') or _('New')
+                from .sale_purchase_mixin import get_cancellation_ref
+                vals['name'] = get_cancellation_ref(self.env, 'train') or self.env['ir.sequence'].next_by_code('travel.train.cancellation') or _('New')
         return super().create(vals_list)
 
     def action_confirm(self):

@@ -40,3 +40,4 @@ access_visa_cancel_export,travel.visa.cancellation.export,model_travel_visa_canc
 access_service_invoice_wizard,travel.service.invoice.wizard,model_travel_service_invoice_wizard,base.group_user,1,1,1,1
 access_debit_credit_note_wizard,travel.debit.credit.note.wizard,model_travel_debit_credit_note_wizard,base.group_user,1,1,1,1
 access_railway_station,travel.railway.station,model_travel_railway_station,base.group_user,1,1,1,1
+access_bus_name,travel.bus.name,model_travel_bus_name,base.group_user,1,1,1,1

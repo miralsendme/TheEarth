@@ -42,8 +42,9 @@
     <!-- Cancellations Parent -->
     <menuitem id="menu_cancellations" name="Cancellations" parent="menu_travel_booking_root" sequence="20"/>
 
+    <!-- General Cancellations hidden — not needed currently -->
     <menuitem id="menu_cancellation_old" name="General Cancellations" parent="menu_cancellations" sequence="10"
-              action="action_cancellation"/>
+              action="action_cancellation" groups="base.group_no_one"/>
     <menuitem id="menu_hotel_cancellation" name="Hotel" parent="menu_cancellations" sequence="15"
               action="action_hotel_cancellation"/>
     <menuitem id="menu_bus_cancellation" name="Bus" parent="menu_cancellations" sequence="20"

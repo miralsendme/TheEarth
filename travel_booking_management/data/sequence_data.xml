@@ -61,6 +61,20 @@
             <field name="prefix">EVT/%(year)s/</field>
             <field name="padding">5</field>
         </record>
+        <!-- Shared SO counter across all booking types, resets each Indian FY -->
+        <record id="seq_travel_sale_order" model="ir.sequence">
+            <field name="name">Travel Sale Order</field>
+            <field name="code">travel.sale.order</field>
+            <field name="padding">0</field>
+            <field name="use_date_range" eval="True"/>
+        </record>
+        <!-- Shared cancellation counter, resets each Indian FY -->
+        <record id="seq_travel_cancellation_ref" model="ir.sequence">
+            <field name="name">Travel Cancellation Reference</field>
+            <field name="code">travel.cancellation.ref</field>
+            <field name="padding">0</field>
+            <field name="use_date_range" eval="True"/>
+        </record>
         <record id="seq_booking_cancellation" model="ir.sequence">
             <field name="name">Booking Cancellation</field>
             <field name="code">travel.booking.cancellation</field>

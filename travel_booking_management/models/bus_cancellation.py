@@ -11,8 +11,25 @@ class BusCancellation(models.Model):
 
     name = fields.Char(string='Cancellation Reference', required=True, copy=False,
                        readonly=True, default=lambda self: _('New'))
+    bus_booking_id = fields.Many2one('travel.bus.booking', string='Bus Booking',
+                                      domain=[('state', 'in', ('confirmed', 'done'))])
     cancellation_date = fields.Date(string='Date of Cancellation', default=fields.Date.context_today,
                                     required=True, tracking=True)
+
+    @api.onchange('bus_booking_id')
+    def _onchange_bus_booking_id(self):
+        if self.bus_booking_id:
+            b = self.bus_booking_id
+            self.travel_date = b.travel_date
+            self.booking_executive = b.booking_executive
+            self.passenger_names = b.passenger_names
+            self.document_number = b.document_number
+            self.origin_station = b.origin_station
+            self.destination_station = b.destination_station
+            self.pnr_number = b.pnr_number
+            self.total_amount = b.total_amount
+            self.mode_of_refund = b.mode_of_payment
+
     travel_date = fields.Date(string='Travel Date', tracking=True)
     booking_executive = fields.Many2one('res.users', string='Booking Executive',
                                         default=lambda self: self.env.user, tracking=True)
@@ -131,7 +148,8 @@ class BusCancellation(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('travel.bus.cancellation') or _('New')
+                from .sale_purchase_mixin import get_cancellation_ref
+                vals['name'] = get_cancellation_ref(self.env, 'bus') or self.env['ir.sequence'].next_by_code('travel.bus.cancellation') or _('New')
         return super().create(vals_list)
 
     def action_confirm(self):

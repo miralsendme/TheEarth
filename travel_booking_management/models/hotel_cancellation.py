@@ -140,7 +140,8 @@ class HotelCancellation(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('travel.hotel.cancellation') or _('New')
+                from .sale_purchase_mixin import get_cancellation_ref
+                vals['name'] = get_cancellation_ref(self.env, 'hotel') or self.env['ir.sequence'].next_by_code('travel.hotel.cancellation') or _('New')
         return super().create(vals_list)
 
     def action_confirm(self):

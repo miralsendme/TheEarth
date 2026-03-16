@@ -20,6 +20,7 @@
                     <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
                     <group>
                         <group>
+                            <field name="visa_booking_id"/>
                             <field name="cancellation_date"/>
                             <field name="booking_executive"/>
                             <field name="booking_type"/>
