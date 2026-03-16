@@ -184,7 +184,7 @@ class DomesticFlightBooking(models.Model):
                 codes = []
                 for name in names:
                     records = self.env['travel.employee.code'].search([
-                        ('employee_name', 'ilike', name),
+                        ('employee_name', 'ilike', self._strip_name_prefix(name)),
                     ], limit=1)
                     if records:
                         codes.append(records[0].employee_code)
@@ -199,7 +199,7 @@ class DomesticFlightBooking(models.Model):
                 name = rec.passenger_names.strip().splitlines()[0].strip() if rec.passenger_names.strip() else False
                 if name:
                     emp = self.env['travel.employee.code'].search([
-                        ('employee_name', 'ilike', name),
+                        ('employee_name', 'ilike', self._strip_name_prefix(name)),
                     ], limit=1)
                     if emp:
                         entity = emp.entity

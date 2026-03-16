@@ -39,3 +39,4 @@ access_insurance_cancel_export,travel.insurance.cancellation.export,model_travel
 access_visa_cancel_export,travel.visa.cancellation.export,model_travel_visa_cancellation_export,base.group_user,1,1,1,1
 access_service_invoice_wizard,travel.service.invoice.wizard,model_travel_service_invoice_wizard,base.group_user,1,1,1,1
 access_debit_credit_note_wizard,travel.debit.credit.note.wizard,model_travel_debit_credit_note_wizard,base.group_user,1,1,1,1
+access_railway_station,travel.railway.station,model_travel_railway_station,base.group_user,1,1,1,1

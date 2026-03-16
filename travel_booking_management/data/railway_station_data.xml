@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Gujarat -->
+        <record id="station_adi" model="travel.railway.station"><field name="name">Ahmedabad Junction</field><field name="code">ADI</field></record>
+        <record id="station_brc" model="travel.railway.station"><field name="name">Vadodara Junction</field><field name="code">BRC</field></record>
+        <record id="station_st" model="travel.railway.station"><field name="name">Surat</field><field name="code">ST</field></record>
+        <record id="station_rjt" model="travel.railway.station"><field name="name">Rajkot Junction</field><field name="code">RJT</field></record>
+        <record id="station_bvp" model="travel.railway.station"><field name="name">Bhavnagar Terminus</field><field name="code">BVP</field></record>
+        <record id="station_ju" model="travel.railway.station"><field name="name">Junagadh Junction</field><field name="code">JUN</field></record>
+        <record id="station_jam" model="travel.railway.station"><field name="name">Jamnagar</field><field name="code">JAM</field></record>
+        <record id="station_gny" model="travel.railway.station"><field name="name">Gandhidham Junction</field><field name="code">GIMB</field></record>
+        <record id="station_vapi" model="travel.railway.station"><field name="name">Vapi</field><field name="code">VAPI</field></record>
+        <record id="station_blr" model="travel.railway.station"><field name="name">Valsad</field><field name="code">BL</field></record>
+        <record id="station_nvsari" model="travel.railway.station"><field name="name">Navsari</field><field name="code">NVS</field></record>
+        <record id="station_anand" model="travel.railway.station"><field name="name">Anand Junction</field><field name="code">ANND</field></record>
+        <record id="station_nadiad" model="travel.railway.station"><field name="name">Nadiad Junction</field><field name="code">ND</field></record>
+        <record id="station_mehsana" model="travel.railway.station"><field name="name">Mehsana Junction</field><field name="code">MSH</field></record>
+        <record id="station_palanpur" model="travel.railway.station"><field name="name">Palanpur Junction</field><field name="code">PNU</field></record>
+        <record id="station_bharuch" model="travel.railway.station"><field name="name">Bharuch Junction</field><field name="code">BH</field></record>
+        <record id="station_porbandar" model="travel.railway.station"><field name="name">Porbandar</field><field name="code">PBR</field></record>
+        <record id="station_dwarka" model="travel.railway.station"><field name="name">Dwarka</field><field name="code">DWK</field></record>
+        <record id="station_somnath" model="travel.railway.station"><field name="name">Somnath</field><field name="code">SMNH</field></record>
+        <record id="station_gandhinagar" model="travel.railway.station"><field name="name">Gandhinagar Capital</field><field name="code">GNC</field></record>
+
+        <!-- Maharashtra -->
+        <record id="station_cstm" model="travel.railway.station"><field name="name">Mumbai CSMT</field><field name="code">CSMT</field></record>
+        <record id="station_bct" model="travel.railway.station"><field name="name">Mumbai Central</field><field name="code">BCT</field></record>
+        <record id="station_ltt" model="travel.railway.station"><field name="name">Lokmanya Tilak Terminus</field><field name="code">LTT</field></record>
+        <record id="station_dr" model="travel.railway.station"><field name="name">Dadar</field><field name="code">DR</field></record>
+        <record id="station_bandra" model="travel.railway.station"><field name="name">Bandra Terminus</field><field name="code">BDTS</field></record>
+        <record id="station_pnvl" model="travel.railway.station"><field name="name">Panvel</field><field name="code">PNVL</field></record>
+        <record id="station_thane" model="travel.railway.station"><field name="name">Thane</field><field name="code">TNA</field></record>
+        <record id="station_klyn" model="travel.railway.station"><field name="name">Kalyan Junction</field><field name="code">KYN</field></record>
+        <record id="station_pune" model="travel.railway.station"><field name="name">Pune Junction</field><field name="code">PUNE</field></record>
+        <record id="station_ngp" model="travel.railway.station"><field name="name">Nagpur Junction</field><field name="code">NGP</field></record>
+        <record id="station_nsk" model="travel.railway.station"><field name="name">Nashik Road</field><field name="code">NK</field></record>
+        <record id="station_aur" model="travel.railway.station"><field name="name">Aurangabad</field><field name="code">AWB</field></record>
+        <record id="station_klp" model="travel.railway.station"><field name="name">Kolhapur</field><field name="code">KOP</field></record>
+        <record id="station_soli" model="travel.railway.station"><field name="name">Solapur</field><field name="code">SUR</field></record>
+
+        <!-- Delhi / NCR -->
+        <record id="station_ndls" model="travel.railway.station"><field name="name">New Delhi</field><field name="code">NDLS</field></record>
+        <record id="station_dli" model="travel.railway.station"><field name="name">Old Delhi</field><field name="code">DLI</field></record>
+        <record id="station_hnzm" model="travel.railway.station"><field name="name">Hazrat Nizamuddin</field><field name="code">NZM</field></record>
+        <record id="station_anvt" model="travel.railway.station"><field name="name">Anand Vihar Terminal</field><field name="code">ANVT</field></record>
+        <record id="station_gzb" model="travel.railway.station"><field name="name">Ghaziabad Junction</field><field name="code">GZB</field></record>
+
+        <!-- Rajasthan -->
+        <record id="station_jp" model="travel.railway.station"><field name="name">Jaipur Junction</field><field name="code">JP</field></record>
+        <record id="station_ju_raj" model="travel.railway.station"><field name="name">Jodhpur Junction</field><field name="code">JU</field></record>
+        <record id="station_udr" model="travel.railway.station"><field name="name">Udaipur City</field><field name="code">UDZ</field></record>
+        <record id="station_aji" model="travel.railway.station"><field name="name">Ajmer Junction</field><field name="code">AII</field></record>
+        <record id="station_bkn" model="travel.railway.station"><field name="name">Bikaner Junction</field><field name="code">BKN</field></record>
+        <record id="station_kota" model="travel.railway.station"><field name="name">Kota Junction</field><field name="code">KOTA</field></record>
+        <record id="station_abu" model="travel.railway.station"><field name="name">Abu Road</field><field name="code">ABR</field></record>
+
+        <!-- Uttar Pradesh -->
+        <record id="station_lko" model="travel.railway.station"><field name="name">Lucknow Charbagh</field><field name="code">LKO</field></record>
+        <record id="station_lknr" model="travel.railway.station"><field name="name">Lucknow Junction NR</field><field name="code">LJN</field></record>
+        <record id="station_agc" model="travel.railway.station"><field name="name">Agra Cantt</field><field name="code">AGC</field></record>
+        <record id="station_bsb" model="travel.railway.station"><field name="name">Varanasi Junction</field><field name="code">BSB</field></record>
+        <record id="station_cnb" model="travel.railway.station"><field name="name">Kanpur Central</field><field name="code">CNB</field></record>
+        <record id="station_ald" model="travel.railway.station"><field name="name">Prayagraj Junction</field><field name="code">PRYJ</field></record>
+        <record id="station_grk" model="travel.railway.station"><field name="name">Gorakhpur Junction</field><field name="code">GKP</field></record>
+        <record id="station_mau" model="travel.railway.station"><field name="name">Mathura Junction</field><field name="code">MTJ</field></record>
+
+        <!-- Madhya Pradesh -->
+        <record id="station_bpl" model="travel.railway.station"><field name="name">Bhopal Junction</field><field name="code">BPL</field></record>
+        <record id="station_indb" model="travel.railway.station"><field name="name">Indore Junction</field><field name="code">INDB</field></record>
+        <record id="station_jbp" model="travel.railway.station"><field name="name">Jabalpur Junction</field><field name="code">JBP</field></record>
+        <record id="station_gwl" model="travel.railway.station"><field name="name">Gwalior Junction</field><field name="code">GWL</field></record>
+        <record id="station_ujn" model="travel.railway.station"><field name="name">Ujjain Junction</field><field name="code">UJN</field></record>
+
+        <!-- Karnataka -->
+        <record id="station_sbc" model="travel.railway.station"><field name="name">Bengaluru City Junction</field><field name="code">SBC</field></record>
+        <record id="station_ypr" model="travel.railway.station"><field name="name">Yesvantpur Junction</field><field name="code">YPR</field></record>
+        <record id="station_mys" model="travel.railway.station"><field name="name">Mysuru Junction</field><field name="code">MYS</field></record>
+        <record id="station_hub" model="travel.railway.station"><field name="name">Hubballi Junction</field><field name="code">UBL</field></record>
+        <record id="station_maq" model="travel.railway.station"><field name="name">Mangaluru Central</field><field name="code">MAQ</field></record>
+
+        <!-- Tamil Nadu -->
+        <record id="station_mas" model="travel.railway.station"><field name="name">Chennai Central</field><field name="code">MAS</field></record>
+        <record id="station_ms" model="travel.railway.station"><field name="name">Chennai Egmore</field><field name="code">MS</field></record>
+        <record id="station_mdu" model="travel.railway.station"><field name="name">Madurai Junction</field><field name="code">MDU</field></record>
+        <record id="station_cbe" model="travel.railway.station"><field name="name">Coimbatore Junction</field><field name="code">CBE</field></record>
+        <record id="station_tpty" model="travel.railway.station"><field name="name">Tirupati</field><field name="code">TPTY</field></record>
+        <record id="station_sa" model="travel.railway.station"><field name="name">Salem Junction</field><field name="code">SA</field></record>
+
+        <!-- Andhra Pradesh / Telangana -->
+        <record id="station_sc" model="travel.railway.station"><field name="name">Secunderabad Junction</field><field name="code">SC</field></record>
+        <record id="station_hy" model="travel.railway.station"><field name="name">Hyderabad Deccan</field><field name="code">HYB</field></record>
+        <record id="station_vskp" model="travel.railway.station"><field name="name">Visakhapatnam</field><field name="code">VSKP</field></record>
+        <record id="station_vjw" model="travel.railway.station"><field name="name">Vijayawada Junction</field><field name="code">BZA</field></record>
+
+        <!-- Kerala -->
+        <record id="station_ers" model="travel.railway.station"><field name="name">Ernakulam Junction</field><field name="code">ERS</field></record>
+        <record id="station_tvc" model="travel.railway.station"><field name="name">Thiruvananthapuram Central</field><field name="code">TVC</field></record>
+        <record id="station_clt" model="travel.railway.station"><field name="name">Kozhikode</field><field name="code">CLT</field></record>
+        <record id="station_tcr" model="travel.railway.station"><field name="name">Thrissur</field><field name="code">TCR</field></record>
+
+        <!-- West Bengal -->
+        <record id="station_hwh" model="travel.railway.station"><field name="name">Howrah Junction</field><field name="code">HWH</field></record>
+        <record id="station_sdah" model="travel.railway.station"><field name="name">Sealdah</field><field name="code">SDAH</field></record>
+        <record id="station_koaa" model="travel.railway.station"><field name="name">Kolkata</field><field name="code">KOAA</field></record>
+        <record id="station_njp" model="travel.railway.station"><field name="name">New Jalpaiguri</field><field name="code">NJP</field></record>
+
+        <!-- Bihar / Jharkhand -->
+        <record id="station_pnbe" model="travel.railway.station"><field name="name">Patna Junction</field><field name="code">PNBE</field></record>
+        <record id="station_gaya" model="travel.railway.station"><field name="name">Gaya Junction</field><field name="code">GAYA</field></record>
+        <record id="station_rnc" model="travel.railway.station"><field name="name">Ranchi</field><field name="code">RNC</field></record>
+        <record id="station_jsme" model="travel.railway.station"><field name="name">Jamshedpur</field><field name="code">TATA</field></record>
+
+        <!-- Punjab / Haryana / Chandigarh -->
+        <record id="station_cdg" model="travel.railway.station"><field name="name">Chandigarh</field><field name="code">CDG</field></record>
+        <record id="station_asr" model="travel.railway.station"><field name="name">Amritsar Junction</field><field name="code">ASR</field></record>
+        <record id="station_ldh" model="travel.railway.station"><field name="name">Ludhiana Junction</field><field name="code">LDH</field></record>
+        <record id="station_jal" model="travel.railway.station"><field name="name">Jalandhar City</field><field name="code">JUC</field></record>
+        <record id="station_amb" model="travel.railway.station"><field name="name">Ambala Cantt</field><field name="code">UMB</field></record>
+
+        <!-- Odisha -->
+        <record id="station_bbs" model="travel.railway.station"><field name="name">Bhubaneswar</field><field name="code">BBS</field></record>
+        <record id="station_puri" model="travel.railway.station"><field name="name">Puri</field><field name="code">PURI</field></record>
+        <record id="station_ctc" model="travel.railway.station"><field name="name">Cuttack Junction</field><field name="code">CTC</field></record>
+
+        <!-- Assam / Northeast -->
+        <record id="station_ghy" model="travel.railway.station"><field name="name">Guwahati</field><field name="code">GHY</field></record>
+        <record id="station_dbrg" model="travel.railway.station"><field name="name">Dibrugarh</field><field name="code">DBRG</field></record>
+
+        <!-- Goa -->
+        <record id="station_mao" model="travel.railway.station"><field name="name">Madgaon Junction</field><field name="code">MAO</field></record>
+        <record id="station_krmi" model="travel.railway.station"><field name="name">Karmali</field><field name="code">KRMI</field></record>
+        <record id="station_vsg" model="travel.railway.station"><field name="name">Vasco Da Gama</field><field name="code">VSG</field></record>
+
+        <!-- Uttarakhand -->
+        <record id="station_ddn" model="travel.railway.station"><field name="name">Dehradun</field><field name="code">DDN</field></record>
+        <record id="station_hw" model="travel.railway.station"><field name="name">Haridwar Junction</field><field name="code">HW</field></record>
+
+        <!-- Chhattisgarh -->
+        <record id="station_r" model="travel.railway.station"><field name="name">Raipur Junction</field><field name="code">R</field></record>
+        <record id="station_bsp" model="travel.railway.station"><field name="name">Bilaspur Junction</field><field name="code">BSP</field></record>
+
+        <!-- Jammu & Kashmir -->
+        <record id="station_jam_jk" model="travel.railway.station"><field name="name">Jammu Tawi</field><field name="code">JAT</field></record>
+        <record id="station_svdk" model="travel.railway.station"><field name="name">Shri Mata Vaishno Devi Katra</field><field name="code">SVDK</field></record>
+
+        <!-- Himachal Pradesh -->
+        <record id="station_una" model="travel.railway.station"><field name="name">Una Himachal</field><field name="code">UHL</field></record>
+        <record id="station_kka" model="travel.railway.station"><field name="name">Kalka</field><field name="code">KLK</field></record>
+        <record id="station_sml" model="travel.railway.station"><field name="name">Shimla</field><field name="code">SML</field></record>
+    </data>
+</odoo>

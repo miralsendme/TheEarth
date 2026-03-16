@@ -107,7 +107,7 @@ class InsuranceBooking(models.Model):
         for rec in self:
             if rec.passenger_name:
                 records = self.env['travel.employee.code'].search([
-                    ('employee_name', 'ilike', rec.passenger_name.strip()),
+                    ('employee_name', 'ilike', self._strip_name_prefix(rec.passenger_name.strip())),
                 ], limit=1)
                 rec.employee_code = records[0].employee_code if records else False
             else:
@@ -118,7 +118,7 @@ class InsuranceBooking(models.Model):
         for rec in self:
             if rec.passenger_name:
                 emp = self.env['travel.employee.code'].search([
-                    ('employee_name', 'ilike', rec.passenger_name.strip()),
+                    ('employee_name', 'ilike', self._strip_name_prefix(rec.passenger_name.strip())),
                 ], limit=1)
                 if emp:
                     entity = emp.entity

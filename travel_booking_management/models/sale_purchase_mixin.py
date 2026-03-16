@@ -128,6 +128,12 @@ class TravelSalePurchaseMixin(models.AbstractModel):
                     return val.strip()
         return ''
 
+    @staticmethod
+    def _strip_name_prefix(name):
+        """Strip MR/MRS/MS/DR prefix from a passenger name for employee lookup."""
+        import re
+        return re.sub(r'^(MR\s+|MRS\s+|MS\s+|DR\s+)', '', name.strip(), flags=re.IGNORECASE).strip()
+
     def _get_passenger_list(self):
         """Return list of passenger names for annexure."""
         for field in ('passenger_names', 'guest_names'):
@@ -182,9 +188,10 @@ class TravelSalePurchaseMixin(models.AbstractModel):
                 route += ' → ' + self.destination_city
             return route
         if hasattr(self, 'origin_station') and self.origin_station:
-            route = self.origin_station
+            route = self.origin_station.display_name if hasattr(self.origin_station, 'display_name') else str(self.origin_station)
             if hasattr(self, 'destination_station') and self.destination_station:
-                route += ' → ' + self.destination_station
+                dest = self.destination_station.display_name if hasattr(self.destination_station, 'display_name') else str(self.destination_station)
+                route += ' → ' + dest
             return route
         if hasattr(self, 'pickup_location') and self.pickup_location:
             route = self.pickup_location
@@ -337,16 +344,8 @@ class TravelSalePurchaseMixin(models.AbstractModel):
 
         # Build description lines
         ticket_desc = f"{booking_type} Fare Reimbursement As Per Attached Annex."
-        if pnr:
-            ticket_desc += f"\nPNR/Ref: {pnr}"
-        if passenger:
-            ticket_desc += f"\nPassenger(s): {passenger}"
 
         sc_desc = f"Service Charges for {booking_type} Booking"
-        if pnr:
-            sc_desc += f"\nPNR/Ref: {pnr}"
-        if passenger:
-            sc_desc += f"\nPassenger(s): {passenger}"
 
         company_currency = self.env.company.currency_id.id
         fare_product = self._get_fare_product()
@@ -498,6 +497,164 @@ class TravelSalePurchaseMixin(models.AbstractModel):
 
         return invoice
 
+    def _get_annexure_type_columns(self, booking_type, annexure_kind):
+        """Return (headers, values) specific to each booking type for annexures.
+        annexure_kind: 'sc' for service charge, 'fare' for fare charge.
+        """
+        # Common data
+        pax = self._get_passenger_info()
+        pax_list = self._get_passenger_list()
+        num_pax = len(pax_list) if pax_list else 1
+        emp_code = getattr(self, 'employee_code', '') or ''
+        doc_no = getattr(self, 'document_number', '') or ''
+        booking_date_str = str(self.booking_date) if hasattr(self, 'booking_date') and self.booking_date else ''
+        pnr = self._get_pnr_info()
+
+        # Common prefix columns for all types
+        common_headers = ['SR No.', 'Booking Date', 'No of Pax.', 'Passenger(s) Name', 'Emp. Code', 'Doc. No.']
+        common_vals = [1, booking_date_str, num_pax, pax, emp_code, doc_no]
+
+        # Type-specific middle columns
+        mid_headers = []
+        mid_vals = []
+
+        if booking_type in ('Domestic Flight', 'International Flight'):
+            route = self._get_route_info()
+            origin = route.split(' → ')[0] if ' → ' in route else route
+            dest = route.split(' → ')[1] if ' → ' in route else ''
+            trip_type = ''
+            if hasattr(self, 'trip_type') and self.trip_type:
+                trip_type = dict(self._fields['trip_type'].selection).get(self.trip_type, '')
+            dates = self._get_travel_dates_info()
+            travel_date = str(dates[0]['date']) if dates else ''
+            return_date = str(dates[1]['date']) if len(dates) > 1 else ''
+            ticket = getattr(self, 'ticket_number', '') or ''
+            flight_no = getattr(self, 'flight_number', '') or ''
+            flight_ret = getattr(self, 'flight_number_return', '') or ''
+            travel_class = ''
+            if hasattr(self, 'travel_class') and self.travel_class:
+                travel_class = dict(self._fields['travel_class'].selection).get(self.travel_class, '')
+            airline = ''
+            if hasattr(self, 'airline') and self.airline:
+                field = self._fields.get('airline')
+                if field and field.type == 'selection':
+                    airline = dict(field.selection).get(self.airline, self.airline)
+                else:
+                    airline = self.airline
+            if annexure_kind == 'sc':
+                mid_headers = ['From Origin', 'To Destination', 'Travel Type', 'Travel Date',
+                               'Return Date', 'PNR / Ticket', 'PNR No.', 'Flight No.', 'Class', 'Airline']
+                mid_vals = [origin, dest, trip_type, travel_date, return_date,
+                            ticket or pnr, pnr, flight_no, travel_class, airline]
+            else:
+                mid_headers = ['From Origin', 'To Destination', 'Travel Type', 'Travel Date',
+                               'Return Date', 'PNR / Ticket', 'PNR No.',
+                               'Flight No. Onward', 'Flight No. Return', 'Class', 'Airline']
+                mid_vals = [origin, dest, trip_type, travel_date, return_date,
+                            ticket or pnr, pnr, flight_no, flight_ret, travel_class, airline]
+
+        elif booking_type == 'Train':
+            route = self._get_route_info()
+            origin = route.split(' → ')[0] if ' → ' in route else route
+            dest = route.split(' → ')[1] if ' → ' in route else ''
+            dates = self._get_travel_dates_info()
+            travel_date = str(dates[0]['date']) if dates else ''
+            train_no = getattr(self, 'train_number', '') or ''
+            travel_class = ''
+            if hasattr(self, 'travel_class') and self.travel_class:
+                travel_class = dict(self._fields['travel_class'].selection).get(self.travel_class, '')
+            quota = ''
+            if hasattr(self, 'quota') and self.quota:
+                quota = dict(self._fields['quota'].selection).get(self.quota, '')
+            mid_headers = ['From Origin', 'To Destination', 'Travel Date', 'PNR No.',
+                           'Train No.', 'Class', 'Quota']
+            mid_vals = [origin, dest, travel_date, pnr, train_no, travel_class, quota]
+
+        elif booking_type == 'Bus':
+            route = self._get_route_info()
+            origin = route.split(' → ')[0] if ' → ' in route else route
+            dest = route.split(' → ')[1] if ' → ' in route else ''
+            dates = self._get_travel_dates_info()
+            travel_date = str(dates[0]['date']) if dates else ''
+            bus_operator = getattr(self, 'bus_operator', '') or ''
+            mid_headers = ['From Origin', 'To Destination', 'Travel Date', 'PNR / Ref No.', 'Bus Operator']
+            mid_vals = [origin, dest, travel_date, pnr, bus_operator]
+
+        elif booking_type == 'Hotel':
+            hotel_name = getattr(self, 'hotel_name', '') or ''
+            location = getattr(self, 'location', '') or ''
+            checkin = str(self.checkin_date) if hasattr(self, 'checkin_date') and self.checkin_date else ''
+            checkout = str(self.checkout_date) if hasattr(self, 'checkout_date') and self.checkout_date else ''
+            num_rooms = getattr(self, 'num_rooms', '') or ''
+            room_type = ''
+            if hasattr(self, 'room_type') and self.room_type:
+                field = self._fields.get('room_type')
+                if field and field.type == 'selection':
+                    room_type = dict(field.selection).get(self.room_type, self.room_type)
+                else:
+                    room_type = self.room_type
+            mid_headers = ['Hotel Name', 'Location', 'Check-in', 'Check-out', 'No. of Rooms', 'Room Type']
+            mid_vals = [hotel_name, location, checkin, checkout, num_rooms, room_type]
+
+        elif booking_type == 'Car':
+            pickup_loc = getattr(self, 'pickup_location', '') or ''
+            drop_loc = getattr(self, 'drop_location', '') or ''
+            pickup_dt = str(self.pickup_date) if hasattr(self, 'pickup_date') and self.pickup_date else ''
+            drop_dt = str(self.drop_date) if hasattr(self, 'drop_date') and self.drop_date else ''
+            car_type = ''
+            if hasattr(self, 'car_type') and self.car_type:
+                car_type = dict(self._fields['car_type'].selection).get(self.car_type, '')
+            rental_type = ''
+            if hasattr(self, 'rental_type') and self.rental_type:
+                rental_type = dict(self._fields['rental_type'].selection).get(self.rental_type, '')
+            cab_vendor = getattr(self, 'cab_vendor', '') or ''
+            mid_headers = ['Pickup Location', 'Drop Location', 'Pickup Date', 'Drop Date',
+                           'Car Type', 'Rental Type', 'Cab Vendor']
+            mid_vals = [pickup_loc, drop_loc, pickup_dt, drop_dt, car_type, rental_type, cab_vendor]
+
+        elif booking_type == 'Event':
+            event_name = getattr(self, 'event_name', '') or ''
+            event_date = str(self.event_date) if hasattr(self, 'event_date') and self.event_date else ''
+            event_loc = getattr(self, 'event_location', '') or ''
+            mid_headers = ['Event Name', 'Event Date', 'Event Location']
+            mid_vals = [event_name, event_date, event_loc]
+
+        elif booking_type == 'Insurance':
+            ref_no = getattr(self, 'reference_number', '') or ''
+            desc = getattr(self, 'description', '') or ''
+            mid_headers = ['Reference No.', 'Description']
+            mid_vals = [ref_no, desc]
+
+        elif booking_type == 'Visa':
+            btype = ''
+            if hasattr(self, 'booking_type') and self.booking_type:
+                btype = dict(self._fields['booking_type'].selection).get(self.booking_type, '')
+            ref_no = getattr(self, 'reference_number', '') or ''
+            desc = getattr(self, 'description', '') or ''
+            mid_headers = ['Type', 'Reference No.', 'Description']
+            mid_vals = [btype, ref_no, desc]
+
+        elif booking_type == 'Package Tour':
+            btype = ''
+            if hasattr(self, 'booking_type') and self.booking_type:
+                btype = dict(self._fields['booking_type'].selection).get(self.booking_type, '')
+            loc_type = ''
+            if hasattr(self, 'location_type') and self.location_type:
+                loc_type = dict(self._fields['location_type'].selection).get(self.location_type, '')
+            ref_no = getattr(self, 'reference_number', '') or ''
+            desc = getattr(self, 'description', '') or ''
+            mid_headers = ['Type', 'Location', 'Reference No.', 'Description']
+            mid_vals = [btype, loc_type, ref_no, desc]
+
+        else:
+            # Fallback
+            dates = self._get_travel_dates_info()
+            travel_date = str(dates[0]['date']) if dates else ''
+            mid_headers = ['Travel Date', 'Ref No.']
+            mid_vals = [travel_date, pnr]
+
+        return common_headers, common_vals, mid_headers, mid_vals
+
     def _attach_annexure_to_so(self, so):
         """Generate detailed Excel annexures (service charge + fare) and attach to SO."""
         self.ensure_one()
@@ -521,58 +678,28 @@ class TravelSalePurchaseMixin(models.AbstractModel):
         booking_type = self._get_booking_type_label()
         customer = self._get_customer_partner()
         customer_name = customer.name if customer else ''
-
-        # Passenger info
-        pax = self._get_passenger_info()
-        pax_list = self._get_passenger_list()
-        num_pax = len(pax_list) if pax_list else 1
-        emp_code = getattr(self, 'employee_code', '') or ''
-        doc_no = getattr(self, 'document_number', '') or ''
-        origin = self._get_route_info().split(' → ')[0] if ' → ' in self._get_route_info() else self._get_route_info()
-        dest = self._get_route_info().split(' → ')[1] if ' → ' in self._get_route_info() else ''
-        pnr = self._get_pnr_info()
-        ticket = getattr(self, 'ticket_number', '') or ''
-        flight_no = getattr(self, 'flight_number', '') or ''
-        flight_ret = getattr(self, 'flight_number_return', '') or ''
-        travel_class = ''
-        if hasattr(self, 'travel_class') and self.travel_class:
-            travel_class = dict(self._fields['travel_class'].selection).get(self.travel_class, '')
-        airline = ''
-        if hasattr(self, 'airline') and self.airline:
-            field = self._fields.get('airline')
-            if field and field.type == 'selection':
-                airline = dict(field.selection).get(self.airline, self.airline)
-            else:
-                airline = self.airline
-        trip_type = ''
-        if hasattr(self, 'trip_type') and self.trip_type:
-            trip_type = dict(self._fields['trip_type'].selection).get(self.trip_type, '')
-
-        dates = self._get_travel_dates_info()
-        travel_date = str(dates[0]['date']) if dates else ''
-        return_date = str(dates[1]['date']) if len(dates) > 1 else ''
-
         total_fare = self._get_ticket_amount()
         sc = self._get_service_charge_amount()
 
         # --- Service Charge Annexure ---
         if sc > 0:
+            common_h, common_v, mid_h, mid_v = self._get_annexure_type_columns(booking_type, 'sc')
+            headers = common_h + mid_h + ['Service Charge', 'CGST 9%', 'SGST 9%', 'IGST', 'Total ₹', 'Remark']
+
+            cgst_amt = round(sc * 0.09, 2)
+            sgst_amt = round(sc * 0.09, 2)
+            line_total = round(sc + cgst_amt + sgst_amt, 2)
+            vals = common_v + mid_v + [sc, cgst_amt, sgst_amt, 0, line_total, '']
+
             wb = openpyxl.Workbook()
             ws = wb.active
             ws.title = 'Service Charge'
             ws.cell(row=1, column=1, value='THE EARTH').font = Font(bold=True, size=14)
-            company = self.env.company
-            ws.cell(row=2, column=1, value=f'GSTIN: {company.vat or ""}').font = Font(size=9)
+            ws.cell(row=2, column=1, value=f'GSTIN: {self.env.company.vat or ""}').font = Font(size=9)
             ws.cell(row=3, column=1, value=f'ANNEXURE - SERVICE CHARGE - {booking_type.upper()} BOOKING').font = Font(bold=True, size=11)
             ws.cell(row=4, column=1, value=f'To: {customer_name}').font = bold_font
-            ws.cell(row=4, column=8, value=str(self.booking_date) if hasattr(self, 'booking_date') and self.booking_date else '').font = Font(size=9)
 
             row = 6
-            headers = ['SR No.', 'Booking Date', 'No of', 'Passenger(s) Name', 'Emp. Code',
-                        'Doc. No.', 'From Origin', 'To Destination', 'Travel Type',
-                        'Travel Date', 'Return Date', 'PNR / Ticket', 'PNR No.',
-                        'Flight No.', 'Class', 'Airline',
-                        'Service Charge', 'CGST 9%', 'SGST 9%', 'IGST', 'Total ₹', 'Remark']
             for col, h in enumerate(headers, 1):
                 cell = ws.cell(row=row, column=col, value=h)
                 cell.font = header_font
@@ -581,22 +708,15 @@ class TravelSalePurchaseMixin(models.AbstractModel):
                 cell.border = thin_border
 
             row += 1
-            cgst_amt = round(sc * 0.09, 2)
-            sgst_amt = round(sc * 0.09, 2)
-            line_total = round(sc + cgst_amt + sgst_amt, 2)
-            vals = [1, str(self.booking_date) if hasattr(self, 'booking_date') and self.booking_date else '',
-                    num_pax, pax, emp_code, doc_no, origin, dest, trip_type,
-                    travel_date, return_date, ticket or pnr, pnr,
-                    flight_no, travel_class, airline,
-                    sc, cgst_amt, sgst_amt, 0, line_total, '']
             for col, v in enumerate(vals, 1):
                 cell = ws.cell(row=row, column=col, value=v)
                 cell.border = thin_border
 
             row += 1
+            sc_col = headers.index('Service Charge') + 1
             ws.cell(row=row, column=3, value='Grand Total').font = bold_font
-            for col, val in [(17, sc), (18, cgst_amt), (19, sgst_amt), (20, 0), (21, line_total)]:
-                cell = ws.cell(row=row, column=col, value=val)
+            for offset, val in enumerate([sc, cgst_amt, sgst_amt, 0, line_total]):
+                cell = ws.cell(row=row, column=sc_col + offset, value=val)
                 cell.font = bold_font
                 cell.border = thin_border
 
@@ -619,6 +739,10 @@ class TravelSalePurchaseMixin(models.AbstractModel):
 
         # --- Fare Charge Annexure ---
         if total_fare > 0:
+            common_h, common_v, mid_h, mid_v = self._get_annexure_type_columns(booking_type, 'fare')
+            headers2 = common_h + mid_h + ['Total Fare', 'Cancel Cost', 'Refund Amount', 'Inv No.', 'Remark']
+            vals2 = common_v + mid_v + [total_fare, 0, 0, so.name or '', '']
+
             wb2 = openpyxl.Workbook()
             ws2 = wb2.active
             ws2.title = 'Fare Charge'
@@ -628,11 +752,6 @@ class TravelSalePurchaseMixin(models.AbstractModel):
             ws2.cell(row=4, column=1, value=f'To: {customer_name}').font = bold_font
 
             row = 6
-            headers2 = ['SR No.', 'Booking Date', 'No of Pax.', 'Passenger(s) Name', 'Emp. Code',
-                         'Doc. No.', 'From Origin', 'To Destination', 'Travel Type',
-                         'Travel Date', 'Return Date', 'PNR / Ticket', 'PNR No.',
-                         'Flight No. Onward', 'Flight No. Return', 'Class', 'Airline',
-                         'Total Fare', 'Cancel Cost', 'Refund Amount', 'Inv No.', 'Remark']
             for col, h in enumerate(headers2, 1):
                 cell = ws2.cell(row=row, column=col, value=h)
                 cell.font = header_font
@@ -641,19 +760,15 @@ class TravelSalePurchaseMixin(models.AbstractModel):
                 cell.border = thin_border
 
             row += 1
-            vals2 = [1, str(self.booking_date) if hasattr(self, 'booking_date') and self.booking_date else '',
-                     num_pax, pax, emp_code, doc_no, origin, dest, trip_type,
-                     travel_date, return_date, ticket or pnr, pnr,
-                     flight_no, flight_ret, travel_class, airline,
-                     total_fare, 0, 0, so.name or '', '']
             for col, v in enumerate(vals2, 1):
                 cell = ws2.cell(row=row, column=col, value=v)
                 cell.border = thin_border
 
             row += 1
+            fare_col = headers2.index('Total Fare') + 1
             ws2.cell(row=row, column=3, value='Grand Total').font = bold_font
-            ws2.cell(row=row, column=18, value=total_fare).font = bold_font
-            ws2.cell(row=row, column=18).border = thin_border
+            ws2.cell(row=row, column=fare_col, value=total_fare).font = bold_font
+            ws2.cell(row=row, column=fare_col).border = thin_border
 
             for c in ws2.columns:
                 ml = max(len(str(cell.value or '')) for cell in c)

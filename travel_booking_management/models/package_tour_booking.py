@@ -22,8 +22,7 @@ class PackageTourBooking(models.Model):
         ('domestic', 'Domestic'),
         ('international', 'International'),
     ], string='Location Type', required=True, default='domestic', tracking=True)
-    passenger_names = fields.Text(string='Passenger Name(s)',
-                                  placeholder='Enter one passenger name per line...')
+    passenger_names = fields.Text(string='Passenger Name(s)')
     num_passengers = fields.Integer(string='Number of Passengers',
                                     compute='_compute_num_passengers', store=True, readonly=False)
     employee_code = fields.Char(string='Employee Code', compute='_compute_employee_code', store=True, readonly=False)
@@ -129,7 +128,7 @@ class PackageTourBooking(models.Model):
                 codes = []
                 for name in names:
                     records = self.env['travel.employee.code'].search([
-                        ('employee_name', 'ilike', name),
+                        ('employee_name', 'ilike', self._strip_name_prefix(name)),
                     ], limit=1)
                     if records:
                         codes.append(records[0].employee_code)
@@ -144,7 +143,7 @@ class PackageTourBooking(models.Model):
                 name = rec.passenger_names.strip().splitlines()[0].strip() if rec.passenger_names.strip() else False
                 if name:
                     emp = self.env['travel.employee.code'].search([
-                        ('employee_name', 'ilike', name),
+                        ('employee_name', 'ilike', self._strip_name_prefix(name)),
                     ], limit=1)
                     if emp:
                         entity = emp.entity

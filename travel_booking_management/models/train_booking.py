@@ -22,8 +22,8 @@ class TrainBooking(models.Model):
                                         domain=[('is_company', '=', True)],
                                         compute='_compute_billing_company', store=True, readonly=False)
     document_number = fields.Char(string='Doc. no./Req. by')
-    origin_station = fields.Char(string='From - Origin', required=True)
-    destination_station = fields.Char(string='To - Destination', required=True)
+    origin_station = fields.Many2one('travel.railway.station', string='From - Origin')
+    destination_station = fields.Many2one('travel.railway.station', string='To - Destination')
     travel_class = fields.Selection([
         ('sleeper', 'Sleeper'),
         ('ac_3tier', 'AC 3 Tier'),
@@ -182,7 +182,7 @@ class TrainBooking(models.Model):
                 codes = []
                 for name in names:
                     records = self.env['travel.employee.code'].search([
-                        ('employee_name', 'ilike', name),
+                        ('employee_name', 'ilike', self._strip_name_prefix(name)),
                     ], limit=1)
                     if records:
                         codes.append(records[0].employee_code)
@@ -197,7 +197,7 @@ class TrainBooking(models.Model):
                 name = rec.passenger_names.strip().splitlines()[0].strip() if rec.passenger_names.strip() else False
                 if name:
                     emp = self.env['travel.employee.code'].search([
-                        ('employee_name', 'ilike', name),
+                        ('employee_name', 'ilike', self._strip_name_prefix(name)),
                     ], limit=1)
                     if emp:
                         entity = emp.entity

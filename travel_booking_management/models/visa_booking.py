@@ -58,14 +58,13 @@ class VisaBooking(models.Model):
         ('icici_ketan_cc_9005', 'ICICI Ketan CC-9005'),
     ], string='Mode of Payment')
     confirmed_by = fields.Many2one('res.users', string='Confirmed By')
+    amount = fields.Float(string='Amount', tracking=True)
     currency_id = fields.Many2one('res.currency', string='Currency',
                                   default=lambda self: self.env.company.currency_id)
     state = fields.Selection([
         ('draft', 'Draft'),
-        ('submitted', 'Submitted'),
-        ('processing', 'Processing'),
-        ('approved', 'Approved'),
-        ('rejected', 'Rejected'),
+        ('confirmed', 'Confirmed'),
+        ('done', 'Done'),
         ('cancelled', 'Cancelled'),
     ], string='Status', default='draft', tracking=True)
     cancellation_id = fields.Many2one('travel.booking.cancellation', string='Cancellation', readonly=True)
@@ -77,21 +76,15 @@ class VisaBooking(models.Model):
                 vals['name'] = self.env['ir.sequence'].next_by_code('travel.visa.booking') or _('New')
         return super().create(vals_list)
 
-    def action_submit(self):
-        self.write({'state': 'submitted'})
-
-    def action_processing(self):
-        self.write({'state': 'processing'})
-
-    def action_approve(self):
-        self.write({'state': 'approved'})
+    def action_confirm(self):
+        self.write({'state': 'confirmed'})
         self._generate_sale_purchase_orders()
 
     def _get_booking_type_label(self):
         return 'Visa'
 
-    def action_reject(self):
-        self.write({'state': 'rejected'})
+    def action_done(self):
+        self.write({'state': 'done'})
 
     def action_cancel(self):
         return {
@@ -116,7 +109,7 @@ class VisaBooking(models.Model):
         for rec in self:
             if rec.passenger_name:
                 records = self.env['travel.employee.code'].search([
-                    ('employee_name', 'ilike', rec.passenger_name.strip()),
+                    ('employee_name', 'ilike', self._strip_name_prefix(rec.passenger_name.strip())),
                 ], limit=1)
                 rec.employee_code = records[0].employee_code if records else False
             else:
@@ -127,7 +120,7 @@ class VisaBooking(models.Model):
         for rec in self:
             if rec.passenger_name:
                 emp = self.env['travel.employee.code'].search([
-                    ('employee_name', 'ilike', rec.passenger_name.strip()),
+                    ('employee_name', 'ilike', self._strip_name_prefix(rec.passenger_name.strip())),
                 ], limit=1)
                 if emp:
                     entity = emp.entity

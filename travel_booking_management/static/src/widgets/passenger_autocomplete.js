@@ -81,7 +81,7 @@ class PassengerAutocomplete extends Component {
             const results = await this.orm.searchRead(
                 "travel.employee.code",
                 [["employee_name", "ilike", searchQuery]],
-                ["employee_name", "employee_code", "entity"],
+                ["employee_name", "employee_code", "entity", "initial"],
                 { limit: 10, order: "employee_name asc" }
             );
             this.state.suggestions = results.filter((r) => r.employee_name);
@@ -128,7 +128,9 @@ class PassengerAutocomplete extends Component {
         const name = suggestion.employee_name.toUpperCase();
         const currentLine = beforeCursor.substring(lastNewline + 1).trim();
         const prefixMatch = currentLine.match(/^(MR\s+|MRS\s+|MS\s+)/i);
-        const prefix = prefixMatch ? prefixMatch[0].toUpperCase() : "";
+        const typedPrefix = prefixMatch ? prefixMatch[0].toUpperCase() : "";
+        // Use typed prefix if present, otherwise use initial from employee record
+        const prefix = typedPrefix || (suggestion.initial ? suggestion.initial.toUpperCase() + " " : "");
 
         const newValue = beforeLine + prefix + name + afterLine;
         this.state.value = newValue;
@@ -220,7 +222,7 @@ class PassengerAutocompleteChar extends Component {
             const results = await this.orm.searchRead(
                 "travel.employee.code",
                 [["employee_name", "ilike", searchQuery]],
-                ["employee_name", "employee_code", "entity"],
+                ["employee_name", "employee_code", "entity", "initial"],
                 { limit: 10, order: "employee_name asc" }
             );
             this.state.suggestions = results.filter((r) => r.employee_name);
@@ -253,13 +255,19 @@ class PassengerAutocompleteChar extends Component {
 
     selectSuggestion(suggestion) {
         const name = suggestion.employee_name.toUpperCase();
-        this.state.value = name;
+        const currentValue = this.state.value.trim();
+        const prefixMatch = currentValue.match(/^(MR\s+|MRS\s+|MS\s+)/i);
+        const typedPrefix = prefixMatch ? prefixMatch[0].toUpperCase() : "";
+        // Use typed prefix if present, otherwise use initial from employee record
+        const prefix = typedPrefix || (suggestion.initial ? suggestion.initial.toUpperCase() + " " : "");
+        const fullName = prefix + name;
+        this.state.value = fullName;
         this.state.showDropdown = false;
         this.state.suggestions = [];
-        this.props.record.update({ [this.props.name]: name });
+        this.props.record.update({ [this.props.name]: fullName });
 
         if (this.inputRef.el) {
-            this.inputRef.el.value = name;
+            this.inputRef.el.value = fullName;
         }
     }
 }

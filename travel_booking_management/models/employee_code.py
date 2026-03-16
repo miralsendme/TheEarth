@@ -11,7 +11,8 @@ class TravelEmployeeCode(models.Model):
     entity = fields.Char(string='Entity / Company', required=True, index=True)
     employee_code = fields.Char(string='Employee Code', required=True, index=True)
     employee_name = fields.Char(string='Employee Name', index=True)
-    display_name_custom = fields.Char(string='Display Name', compute='_compute_display_name_custom', store=True)
+    initial = fields.Char(string='Initial', help='Mr., Mrs., Ms., Dr., etc.')
+    display_name_custom = fields.Char(string='Employee Display Name', compute='_compute_display_name_custom', store=True)
 
     @api.depends('employee_code', 'employee_name', 'entity')
     def _compute_display_name_custom(self):

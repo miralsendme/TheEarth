@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import re
 from odoo import models, fields, api, _
 
 
@@ -24,8 +25,8 @@ class TrainCancellation(models.Model):
                                          domain=[('is_company', '=', True)],
                                          compute='_compute_from_passenger', store=True, readonly=False)
     document_number = fields.Char(string='Doc. no./Req. by')
-    origin_station = fields.Char(string='From - Origin')
-    destination_station = fields.Char(string='To - Destination')
+    origin_station = fields.Many2one('travel.railway.station', string='From - Origin')
+    destination_station = fields.Many2one('travel.railway.station', string='To - Destination')
     quota = fields.Selection([
         ('general', 'General'),
         ('ladies', 'Ladies'),
@@ -105,8 +106,9 @@ class TrainCancellation(models.Model):
                 codes = []
                 first_emp = None
                 for name in names:
+                    clean_name = re.sub(r'^(MR\s+|MRS\s+|MS\s+|DR\s+)', '', name.strip(), flags=re.IGNORECASE).strip()
                     emp = self.env['travel.employee.code'].search([
-                        ('employee_name', 'ilike', name),
+                        ('employee_name', 'ilike', clean_name),
                     ], limit=1)
                     if emp:
                         codes.append(emp.employee_code)

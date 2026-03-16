@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import re
 from odoo import models, fields, api, _
 
 
@@ -79,8 +80,9 @@ class VisaCancellation(models.Model):
                 codes = []
                 first_emp = None
                 for pname in names:
+                    clean_name = re.sub(r'^(MR\s+|MRS\s+|MS\s+|DR\s+)', '', pname.strip(), flags=re.IGNORECASE).strip()
                     emp = self.env['travel.employee.code'].search([
-                        ('employee_name', 'ilike', pname),
+                        ('employee_name', 'ilike', clean_name),
                     ], limit=1)
                     if emp:
                         codes.append(emp.employee_code)
