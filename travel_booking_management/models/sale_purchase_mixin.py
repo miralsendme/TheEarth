@@ -108,6 +108,30 @@ class TravelSalePurchaseMixin(models.AbstractModel):
     sale_order_id = fields.Many2one('sale.order', string='Sales Order', readonly=True, copy=False)
     purchase_order_id = fields.Many2one('purchase.order', string='Purchase Order', readonly=True, copy=False)
 
+    @api.model
+    def _name_search(self, name='', domain=None, operator='ilike', limit=None, order=None):
+        """Allow searching bookings by their linked SO name (e.g. DFSO/5/25-26)."""
+        res = super()._name_search(name=name, domain=domain, operator=operator, limit=limit, order=order)
+        if name and operator in ('ilike', 'like', '=ilike', '=like', '='):
+            so_bookings = self.search([
+                ('sale_order_id.name', operator, name),
+            ], limit=limit, order=order)
+            if so_bookings:
+                existing_ids = {r if isinstance(r, int) else r[0] for r in res}
+                for rec in so_bookings:
+                    if rec.id not in existing_ids:
+                        res.append(rec.id)
+        return res
+
+    @api.depends('name', 'sale_order_id', 'sale_order_id.name')
+    def _compute_display_name(self):
+        """Show SO reference alongside booking name for easier identification."""
+        for rec in self:
+            name = rec.name or ''
+            if rec.sale_order_id and rec.sale_order_id.name:
+                name = f"{name} [{rec.sale_order_id.name}]"
+            rec.display_name = name
+
     # Mapping from booking type label → SO prefix
     SO_PREFIX_MAP = {
         'Car': 'C',

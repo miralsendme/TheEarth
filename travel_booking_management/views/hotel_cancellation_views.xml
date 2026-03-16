@@ -20,6 +20,7 @@
                     <div class="oe_title"><h1><field name="name" readonly="1"/></h1></div>
                     <group>
                         <group>
+                            <field name="hotel_booking_id"/>
                             <field name="cancellation_date"/>
                             <field name="booking_executive"/>
                             <field name="guest_names" widget="passenger_autocomplete"/>
@@ -34,7 +35,6 @@
                             <field name="checkin_date"/>
                             <field name="checkout_date"/>
                             <field name="hotel_name"/>
-                            <field name="hotel_booking_id"/>
                             <field name="booking_reference" readonly="1"/>
                             <field name="total_amount"/>
                             <field name="refund_amount"/>

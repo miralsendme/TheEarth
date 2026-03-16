@@ -90,6 +90,11 @@ class HotelBooking(models.Model):
     service_charge = fields.Float(string='Service Charge', compute='_compute_service_charge',
                                   store=True, readonly=False, tracking=True)
     mode_of_payment = fields.Selection([
+        ('air_asia', 'Air Asia (India) Limited'),
+        ('akasa_airline', 'Akasa Airline'),
+        ('akbar_offshore', 'AKBAR OFFSHORE PVT LTD'),
+        ('akbar_new', 'Akbar Online Booking Company Pvt Ltd - New'),
+        ('akbar_old', 'Akbar Online Booking Company Pvt Ltd - Old'),
         ('aman_travels', 'Aman Travels Ltd'),
         ('interglobe', 'Interglobe Aviation Limited'),
         ('mmt_wallet', 'MMT Wallet'),
