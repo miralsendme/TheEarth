@@ -146,6 +146,20 @@ class TravelSalePurchaseMixin(models.AbstractModel):
         'Package Tour': 'PT',
     }
 
+    # Mapping from booking type label → per-type sequence code
+    SO_SEQ_CODE_MAP = {
+        'Car': 'travel.so.car',
+        'Domestic Flight': 'travel.so.domestic.flight',
+        'International Flight': 'travel.so.international.flight',
+        'Train': 'travel.so.train',
+        'Bus': 'travel.so.bus',
+        'Hotel': 'travel.so.hotel',
+        'Event': 'travel.so.event',
+        'Visa': 'travel.so.visa',
+        'Insurance': 'travel.so.insurance',
+        'Package Tour': 'travel.so.package.tour',
+    }
+
     def _get_booking_description(self):
         """Override in each booking model to return a descriptive line name."""
         return self.name or 'Travel Booking'
@@ -172,13 +186,25 @@ class TravelSalePurchaseMixin(models.AbstractModel):
         else:
             return f"{(dt.year - 1) % 100}-{dt.year % 100:02d}"
 
-    def _get_next_so_number(self):
-        """Get the next sequence number from the shared travel.sale.order sequence,
+    @api.model
+    def _generate_booking_ref(self, booking_type_label):
+        """Generate booking reference in same format as SO: {prefix}SO/{number}/{FY}.
+        Uses a per-type sequence so each booking type has independent numbering.
+        """
+        prefix = self.SO_PREFIX_MAP.get(booking_type_label, '')
+        seq_code = self.SO_SEQ_CODE_MAP.get(booking_type_label)
+        if not prefix or not seq_code:
+            return False
+        fy = self._get_indian_fy_string()
+        number = self._get_next_number_for_seq(seq_code)
+        return f"{prefix}SO/{number}/{fy}"
+
+    def _get_next_number_for_seq(self, seq_code):
+        """Get the next sequence number from a specific sequence code,
         ensuring the date range is aligned to Indian FY (April 1 - March 31).
         """
         from datetime import date as dt_date
         today = dt_date.today()
-        # Determine current Indian FY boundaries
         if today.month >= 4:
             fy_start = dt_date(today.year, 4, 1)
             fy_end = dt_date(today.year + 1, 3, 31)
@@ -186,35 +212,24 @@ class TravelSalePurchaseMixin(models.AbstractModel):
             fy_start = dt_date(today.year - 1, 4, 1)
             fy_end = dt_date(today.year, 3, 31)
 
-        seq = self.env['ir.sequence'].search([('code', '=', 'travel.sale.order')], limit=1)
+        seq = self.env['ir.sequence'].sudo().search([('code', '=', seq_code)], limit=1)
         if not seq:
             return '1'
 
-        # Ensure a date_range record exists for this Indian FY
-        date_range = self.env['ir.sequence.date_range'].search([
+        date_range = self.env['ir.sequence.date_range'].sudo().search([
             ('sequence_id', '=', seq.id),
             ('date_from', '=', fy_start),
             ('date_to', '=', fy_end),
         ], limit=1)
         if not date_range:
-            date_range = self.env['ir.sequence.date_range'].create({
+            date_range = self.env['ir.sequence.date_range'].sudo().create({
                 'sequence_id': seq.id,
                 'date_from': fy_start,
                 'date_to': fy_end,
                 'number_next': 1,
             })
 
-        # Use the date range to get next number
-        return str(date_range._next())
-
-    def _generate_custom_so_name(self):
-        """Generate SO name like CSO/1/25-26."""
-        prefix = self._get_so_prefix()
-        if not prefix:
-            return False
-        number = self._get_next_so_number()
-        fy = self._get_indian_fy_string()
-        return f"{prefix}SO/{number}/{fy}"
+        return str(date_range.sudo()._next())
 
     def _get_ticket_amount(self):
         """Return the ticket/fare amount (non-taxable). Override if field name differs."""
@@ -530,13 +545,10 @@ class TravelSalePurchaseMixin(models.AbstractModel):
             'partner_id': customer.id,
             'currency_id': company_currency,
             'origin': self.name,
+            'name': self.name,
             'note': f"Auto-generated from {booking_type} booking {self.name}",
             'order_line': order_lines,
         })
-        # Rename SO with custom format: {Prefix}SO/{number}/{FY}
-        custom_name = self._generate_custom_so_name()
-        if custom_name:
-            so.write({'name': custom_name})
         self.sale_order_id = so.id
         return so
 
@@ -593,9 +605,7 @@ class TravelSalePurchaseMixin(models.AbstractModel):
                 so = rec._create_draft_sale_order()
                 if so:
                     rec._attach_annexure_to_so(so)
-                    # Auto-confirm the Sales Order
-                    so.action_confirm()
-                    # Create two separate invoices from specific SO lines
+                    # SO stays in draft — senior staff will confirm/post
                     rec._create_split_invoices(so)
             if not rec.purchase_order_id:
                 rec._create_draft_purchase_order()
@@ -612,35 +622,38 @@ class TravelSalePurchaseMixin(models.AbstractModel):
             lambda l: l.product_id.default_code == 'product_travel_fare'
         )
 
-        # Invoice 1: Service Charge (Tax Invoice)
+        # Invoice 1: Service Charge (Tax Invoice) — stays in draft
         if sc_lines:
             inv1 = self._create_invoice_from_so_lines(so, sc_lines)
-            if inv1:
-                inv1.action_post()
 
-        # Invoice 2: Fare (Debit Note)
+        # Invoice 2: Fare (Debit Note) — stays in draft
         if fare_lines:
             inv2 = self._create_invoice_from_so_lines(so, fare_lines)
-            if inv2:
-                inv2.action_post()
 
     def _create_invoice_from_so_lines(self, so, so_lines):
-        """Create a single invoice from specific SO lines."""
-        invoice_vals = so._prepare_invoice()
+        """Create a single draft invoice from specific SO lines.
+        Builds invoice lines directly from SO line data so the SO
+        can remain in draft state.
+        """
         invoice_line_vals = []
         for line in so_lines:
-            inv_line_vals = line._prepare_invoice_line()
-            # Use the clean SO line name (without [default_code] prefix)
-            inv_line_vals['name'] = line.name
-            invoice_line_vals.append((0, 0, inv_line_vals))
+            invoice_line_vals.append((0, 0, {
+                'product_id': line.product_id.id,
+                'name': line.name,
+                'quantity': line.product_uom_qty,
+                'price_unit': line.price_unit,
+                'tax_ids': [(6, 0, line.tax_id.ids)],
+            }))
 
         if not invoice_line_vals:
             return False
 
-        invoice_vals['invoice_line_ids'] = invoice_line_vals
-        invoice = self.env['account.move'].with_context(
-            default_move_type='out_invoice'
-        ).create(invoice_vals)
+        invoice = self.env['account.move'].sudo().create({
+            'move_type': 'out_invoice',
+            'partner_id': so.partner_id.id,
+            'invoice_origin': so.name,
+            'invoice_line_ids': invoice_line_vals,
+        })
 
         # Link invoice lines back to SO lines
         for inv_line in invoice.invoice_line_ids.filtered(lambda l: l.display_type == 'product'):
@@ -692,7 +705,9 @@ class TravelSalePurchaseMixin(models.AbstractModel):
             airline = ''
             if hasattr(self, 'airline') and self.airline:
                 field = self._fields.get('airline')
-                if field and field.type == 'selection':
+                if field and field.type == 'many2one':
+                    airline = self.airline.name or ''
+                elif field and field.type == 'selection':
                     airline = dict(field.selection).get(self.airline, self.airline)
                 else:
                     airline = self.airline
@@ -737,7 +752,10 @@ class TravelSalePurchaseMixin(models.AbstractModel):
 
         elif booking_type == 'Hotel':
             hotel_name = getattr(self, 'hotel_name', '') or ''
-            location = getattr(self, 'location', '') or ''
+            loc_field = getattr(self, 'location', False)
+            location = loc_field.name if loc_field and hasattr(loc_field, 'name') else ''
+            if not isinstance(location, str):
+                location = str(location) if location else ''
             checkin = str(self.checkin_date) if hasattr(self, 'checkin_date') and self.checkin_date else ''
             checkout = str(self.checkout_date) if hasattr(self, 'checkout_date') and self.checkout_date else ''
             num_rooms = getattr(self, 'num_rooms', '') or ''
@@ -864,6 +882,9 @@ class TravelSalePurchaseMixin(models.AbstractModel):
 
             row += 1
             for col, v in enumerate(vals, 1):
+                # Convert Odoo recordsets to display name for Excel compatibility
+                if hasattr(v, '_name'):
+                    v = v.display_name or '' if v else ''
                 cell = ws.cell(row=row, column=col, value=v)
                 cell.border = thin_border
 
@@ -916,6 +937,9 @@ class TravelSalePurchaseMixin(models.AbstractModel):
 
             row += 1
             for col, v in enumerate(vals2, 1):
+                # Convert Odoo recordsets to display name for Excel compatibility
+                if hasattr(v, '_name'):
+                    v = v.display_name or '' if v else ''
                 cell = ws2.cell(row=row, column=col, value=v)
                 cell.border = thin_border
 

@@ -42,7 +42,8 @@ class InternationalFlightBooking(models.Model):
         ('business', 'Business'),
         ('first', 'First'),
     ], string='Class of Booking', default='economy', required=True)
-    airline = fields.Char(string='Airline Name', required=True)
+    airline = fields.Many2one('travel.international.airline', string='Airline Name', required=True)
+    airline_return = fields.Many2one('travel.international.airline', string='Airline Name (Return)')
     gross_amount = fields.Float(string='Gross Amount (Total value)')
     total_amount = fields.Float(string='Net Amount (Total value)', tracking=True)
     service_charge = fields.Float(string='Service Charge', compute='_compute_service_charge',
@@ -127,7 +128,7 @@ class InternationalFlightBooking(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('travel.international.flight.booking') or _('New')
+                vals['name'] = self._generate_booking_ref('International Flight') or _('New')
         return super().create(vals_list)
 
     def action_confirm(self):

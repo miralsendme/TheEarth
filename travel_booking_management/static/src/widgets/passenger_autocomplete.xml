@@ -20,7 +20,7 @@
                         <div t-att-class="'autocomplete-item' + (state.selectedIndex === suggestion_index ? ' selected' : '')"
                              t-on-click.stop="() => this.selectSuggestion(suggestion)">
                             <strong>
-                                <t t-if="suggestion.initial"><t t-esc="suggestion.initial"/> </t><t t-esc="suggestion.employee_name"/>
+                                <t t-esc="suggestion.employee_name"/>
                             </strong>
                             <small class="text-muted ms-2" t-esc="suggestion.employee_code + ' - ' + suggestion.entity"/>
                         </div>
@@ -50,7 +50,7 @@
                         <div t-att-class="'autocomplete-item' + (state.selectedIndex === suggestion_index ? ' selected' : '')"
                              t-on-click.stop="() => this.selectSuggestion(suggestion)">
                             <strong>
-                                <t t-if="suggestion.initial"><t t-esc="suggestion.initial"/> </t><t t-esc="suggestion.employee_name"/>
+                                <t t-esc="suggestion.employee_name"/>
                             </strong>
                             <small class="text-muted ms-2" t-esc="suggestion.employee_code + ' - ' + suggestion.entity"/>
                         </div>

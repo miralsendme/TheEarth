@@ -94,9 +94,11 @@ class DebitCreditNoteWizard(models.TransientModel):
         }
 
     def _get_airline_label(self, rec):
-        """Get airline display name from selection or char field."""
+        """Get airline display name from selection, many2one, or char field."""
         if hasattr(rec, 'airline') and rec.airline:
             field = rec._fields.get('airline')
+            if field and field.type == 'many2one':
+                return rec.airline.name or ''
             if field and field.type == 'selection':
                 return dict(field.selection).get(rec.airline, rec.airline)
             return rec.airline

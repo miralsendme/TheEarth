@@ -41,7 +41,7 @@ class BusBookingExport(models.TransientModel):
             if self.state_filter and self.state_filter != 'all':
                 domain.append(('state', '=', self.state_filter))
 
-        bookings = self.env['travel.bus.booking'].search(domain, order='booking_date asc, departure_date asc')
+        bookings = self.env['travel.bus.booking'].search(domain, order='booking_date asc, travel_date asc')
 
         wb = openpyxl.Workbook()
         ws = wb.active
@@ -56,11 +56,11 @@ class BusBookingExport(models.TransientModel):
         )
 
         headers = [
-            'Booking Ref', 'Billing Company', 'Booking Date', 'Booking Executive',
-            'Employee Code', 'Document No / Requested By', 'Bus Operator', 'Bus Type',
-            'Boarding Point', 'Dropping Point', 'Departure', 'Arrival',
-            'Passenger(s)', 'No. of Passengers', 'Seat Numbers', 'PNR Number',
-            'Amount', 'Mode of Payment', 'Confirmed By', 'Status', 'Notes',
+            'Booking Ref', 'Billing Company', 'Booking Date', 'Travel Date',
+            'Booking Executive', 'Employee Code', 'Doc. No./Req. By',
+            'From - Origin', 'To - Destination', 'Bus Name', 'PNR Number',
+            'Passenger(s)', 'No. of Passengers', 'Total Amount',
+            'Mode of Payment', 'Confirmed By', 'Status', 'Remarks',
         ]
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -72,26 +72,23 @@ class BusBookingExport(models.TransientModel):
         for row_idx, bk in enumerate(bookings, 2):
             values = [
                 bk.name or '',
-                bk.billing_company_id.name or '',
+                bk.billing_company_id.name if bk.billing_company_id else '',
                 str(bk.booking_date) if bk.booking_date else '',
+                str(bk.travel_date) if bk.travel_date else '',
                 bk.booking_executive.name if bk.booking_executive else '',
                 bk.employee_code or '',
                 bk.document_number or '',
-                bk.operator_name or '',
-                dict(bk._fields['bus_type'].selection).get(bk.bus_type, ''),
-                bk.boarding_point or '',
-                bk.dropping_point or '',
-                str(bk.departure_date) if bk.departure_date else '',
-                str(bk.arrival_date) if bk.arrival_date else '',
+                bk.origin_station or '',
+                bk.destination_station or '',
+                bk.bus_name.name if bk.bus_name else '',
+                bk.pnr_number or '',
                 (bk.passenger_names or '').replace('\n', ', '),
                 bk.num_passengers or 0,
-                bk.seat_numbers or '',
-                bk.pnr_number or '',
                 bk.total_amount or 0.0,
                 dict(bk._fields['mode_of_payment'].selection).get(bk.mode_of_payment, '') if bk.mode_of_payment else '',
-                bk.confirmed_by or '',
+                bk.confirmed_by.name if bk.confirmed_by else '',
                 dict(bk._fields['state'].selection).get(bk.state, ''),
-                bk.notes or '',
+                bk.remarks or '',
             ]
             for col, val in enumerate(values, 1):
                 cell = ws.cell(row=row_idx, column=col, value=val)

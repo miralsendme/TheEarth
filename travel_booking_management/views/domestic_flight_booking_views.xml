@@ -41,12 +41,15 @@
                             <field name="document_number"/>
                         </group>
                         <group string="Flight Info">
-                            <field name="origin_city"/>
-                            <field name="destination_city"/>
+                            <field name="travel_date_onward" string="Travel Date" invisible="trip_type == 'round_trip'"/>
+                            <field name="travel_date_onward" string="Travel Date (Onward)" invisible="trip_type != 'round_trip'"/>
+                            <field name="trip_type"/>
+                            <field name="origin_city" string="Origin" invisible="trip_type == 'round_trip'"/>
+                            <field name="origin_city" string="Onward - Origin" invisible="trip_type != 'round_trip'"/>
+                            <field name="destination_city" string="Destination" invisible="trip_type == 'round_trip'"/>
+                            <field name="destination_city" string="Onward - Destination" invisible="trip_type != 'round_trip'"/>
                             <field name="return_origin" invisible="trip_type != 'round_trip'"/>
                             <field name="return_destination" invisible="trip_type != 'round_trip'"/>
-                            <field name="trip_type"/>
-                            <field name="travel_date_onward"/>
                             <field name="return_date" invisible="trip_type != 'round_trip'"/>
                         </group>
                     </group>
@@ -54,7 +57,8 @@
                         <group string="Ticket Details">
                             <field name="ticket_number"/>
                             <field name="pnr_number" placeholder="CRS PNR / BOOKING REF NO IF LCC AIRLINE"/>
-                            <field name="flight_number"/>
+                            <field name="flight_number" string="Flight Number" invisible="trip_type == 'round_trip'"/>
+                            <field name="flight_number" string="Flight Number Onward" invisible="trip_type != 'round_trip'"/>
                             <field name="flight_number_return" invisible="trip_type != 'round_trip'"/>
                             <field name="travel_class"/>
                             <field name="airline"/>

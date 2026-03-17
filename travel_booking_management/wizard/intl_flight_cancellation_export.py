@@ -82,7 +82,7 @@ class IntlFlightCancellationExport(models.TransientModel):
                 rc.return_destination or '',
                 str(rc.travel_date_onward) if rc.travel_date_onward else '',
                 str(rc.return_date) if rc.return_date else '',
-                rc.airline or '',
+                rc.airline.name if rc.airline else '',
                 rc.flight_number or '',
                 rc.flight_number_return or '',
                 dict(rc._fields['travel_class'].selection).get(rc.travel_class, '') if rc.travel_class else '',

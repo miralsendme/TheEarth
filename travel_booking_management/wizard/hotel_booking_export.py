@@ -36,7 +36,6 @@ class HotelBookingExport(models.TransientModel):
         if self.state_filter and self.state_filter != 'all':
             domain.append(('state', '=', self.state_filter))
 
-        # If opened from list view with active_ids, export only selected records
         if self.env.context.get('active_ids') and self.env.context.get('active_model') == 'travel.hotel.booking':
             domain = [('id', 'in', self.env.context['active_ids'])]
             if self.state_filter and self.state_filter != 'all':
@@ -48,7 +47,6 @@ class HotelBookingExport(models.TransientModel):
         ws = wb.active
         ws.title = 'Hotel Bookings'
 
-        # Header style
         header_font = Font(bold=True, color='FFFFFF', size=11)
         header_fill = PatternFill(start_color='4472C4', end_color='4472C4', fill_type='solid')
         header_align = Alignment(horizontal='center', vertical='center', wrap_text=True)
@@ -58,11 +56,12 @@ class HotelBookingExport(models.TransientModel):
         )
 
         headers = [
-            'Booking Ref', 'Billing Company', 'Employee Code',
-            'Booking Service Provider', 'Booking Date', 'Hotel Name', 'Location', 'Country',
-            'Check-in', 'Check-out', 'Nights', 'Room Type', 'Rooms',
-            'Guest(s)', 'No. of Guest(s)', 'Children', 'Meal Plan',
-            'Amount', 'Mode of Payment', 'Booking Executive', 'Status', 'Remark',
+            'Booking Ref', 'Billing Company', 'Employee Code', 'Doc. No./Req. By',
+            'Booking Service Provider', 'Booking Date', 'Booking Executive',
+            'Hotel Name', 'Location', 'Location Type',
+            'Check-in', 'Check-out', 'Nights',
+            'Guest(s)', 'No. of Guests',
+            'Total Amount', 'Mode of Payment', 'Confirmed By', 'Status', 'Remark',
         ]
         for col, header in enumerate(headers, 1):
             cell = ws.cell(row=1, column=col, value=header)
@@ -71,37 +70,33 @@ class HotelBookingExport(models.TransientModel):
             cell.alignment = header_align
             cell.border = thin_border
 
-        # Data rows
         for row_idx, bk in enumerate(bookings, 2):
             values = [
                 bk.name or '',
-                bk.billing_company_id.name or '',
+                bk.billing_company_id.name if bk.billing_company_id else '',
                 bk.employee_code or '',
-                bk.booking_service_provider or '',
+                bk.document_number or '',
+                dict(bk._fields['booking_service_provider'].selection).get(bk.booking_service_provider, '') if bk.booking_service_provider else '',
                 str(bk.booking_date) if bk.booking_date else '',
+                dict(bk._fields['booking_executive'].selection).get(bk.booking_executive, '') if bk.booking_executive else '',
                 bk.hotel_name or '',
-                bk.location or '',
-                bk.country_id.name or '',
+                bk.location.name if bk.location else '',
+                dict(bk._fields['location_type'].selection).get(bk.location_type, '') if bk.location_type else '',
                 str(bk.checkin_date) if bk.checkin_date else '',
                 str(bk.checkout_date) if bk.checkout_date else '',
                 bk.num_nights or 0,
-                dict(bk._fields['room_type'].selection).get(bk.room_type, ''),
-                bk.num_rooms or 0,
                 (bk.guest_names or '').replace('\n', ', '),
                 bk.num_adults or 0,
-                bk.num_children or 0,
-                dict(bk._fields['meal_plan'].selection).get(bk.meal_plan, ''),
                 bk.total_amount or 0.0,
                 dict(bk._fields['mode_of_payment'].selection).get(bk.mode_of_payment, '') if bk.mode_of_payment else '',
-                dict(bk._fields['booking_executive'].selection).get(bk.booking_executive, '') if bk.booking_executive else '',
+                bk.confirmed_by.name if bk.confirmed_by else '',
                 dict(bk._fields['state'].selection).get(bk.state, ''),
-                bk.remark or '',
+                dict(bk._fields['remark'].selection).get(bk.remark, '') if bk.remark else '',
             ]
             for col, val in enumerate(values, 1):
                 cell = ws.cell(row=row_idx, column=col, value=val)
                 cell.border = thin_border
 
-        # Auto-width
         for col in ws.columns:
             max_len = max(len(str(cell.value or '')) for cell in col)
             ws.column_dimensions[col[0].column_letter].width = min(max_len + 3, 40)

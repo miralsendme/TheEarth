@@ -74,7 +74,7 @@ class HotelCancellationExport(models.TransientModel):
                 rc.document_number or '',
                 (rc.guest_names or '').replace('\n', ', '),
                 rc.num_cancelled_guests or 0,
-                rc.location or '',
+                rc.location.name if rc.location else '',
                 rc.hotel_name or '',
                 str(rc.checkin_date) if rc.checkin_date else '',
                 str(rc.checkout_date) if rc.checkout_date else '',

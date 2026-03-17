@@ -2,6 +2,7 @@
 from . import sale_purchase_mixin
 from . import bus_name
 from . import hotel_city
+from . import international_airline
 from . import domestic_flight_booking
 from . import international_flight_booking
 from . import train_booking

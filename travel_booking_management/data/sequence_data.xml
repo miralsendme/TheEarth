@@ -68,6 +68,67 @@
             <field name="padding">0</field>
             <field name="use_date_range" eval="True"/>
         </record>
+        <!-- Per-type SO sequences, reset each Indian FY -->
+        <record id="seq_so_car" model="ir.sequence">
+            <field name="name">Car SO Sequence</field>
+            <field name="code">travel.so.car</field>
+            <field name="padding">0</field>
+            <field name="use_date_range" eval="True"/>
+        </record>
+        <record id="seq_so_domestic_flight" model="ir.sequence">
+            <field name="name">Domestic Flight SO Sequence</field>
+            <field name="code">travel.so.domestic.flight</field>
+            <field name="padding">0</field>
+            <field name="use_date_range" eval="True"/>
+        </record>
+        <record id="seq_so_international_flight" model="ir.sequence">
+            <field name="name">International Flight SO Sequence</field>
+            <field name="code">travel.so.international.flight</field>
+            <field name="padding">0</field>
+            <field name="use_date_range" eval="True"/>
+        </record>
+        <record id="seq_so_train" model="ir.sequence">
+            <field name="name">Train SO Sequence</field>
+            <field name="code">travel.so.train</field>
+            <field name="padding">0</field>
+            <field name="use_date_range" eval="True"/>
+        </record>
+        <record id="seq_so_bus" model="ir.sequence">
+            <field name="name">Bus SO Sequence</field>
+            <field name="code">travel.so.bus</field>
+            <field name="padding">0</field>
+            <field name="use_date_range" eval="True"/>
+        </record>
+        <record id="seq_so_hotel" model="ir.sequence">
+            <field name="name">Hotel SO Sequence</field>
+            <field name="code">travel.so.hotel</field>
+            <field name="padding">0</field>
+            <field name="use_date_range" eval="True"/>
+        </record>
+        <record id="seq_so_event" model="ir.sequence">
+            <field name="name">Event SO Sequence</field>
+            <field name="code">travel.so.event</field>
+            <field name="padding">0</field>
+            <field name="use_date_range" eval="True"/>
+        </record>
+        <record id="seq_so_visa" model="ir.sequence">
+            <field name="name">Visa SO Sequence</field>
+            <field name="code">travel.so.visa</field>
+            <field name="padding">0</field>
+            <field name="use_date_range" eval="True"/>
+        </record>
+        <record id="seq_so_insurance" model="ir.sequence">
+            <field name="name">Insurance SO Sequence</field>
+            <field name="code">travel.so.insurance</field>
+            <field name="padding">0</field>
+            <field name="use_date_range" eval="True"/>
+        </record>
+        <record id="seq_so_package_tour" model="ir.sequence">
+            <field name="name">Package Tour SO Sequence</field>
+            <field name="code">travel.so.package.tour</field>
+            <field name="padding">0</field>
+            <field name="use_date_range" eval="True"/>
+        </record>
         <!-- Shared cancellation counter, resets each Indian FY -->
         <record id="seq_travel_cancellation_ref" model="ir.sequence">
             <field name="name">Travel Cancellation Reference</field>

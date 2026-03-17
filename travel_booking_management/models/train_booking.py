@@ -99,19 +99,6 @@ class TrainBooking(models.Model):
         if self.passenger_names:
             self.passenger_names = self.passenger_names.upper()
 
-    @api.constrains('passenger_names')
-    def _check_passenger_name_initials(self):
-        valid_prefixes = ('MR ', 'MRS ', 'MS ')
-        for rec in self:
-            if not rec.passenger_names:
-                continue
-            for line in rec.passenger_names.strip().splitlines():
-                name = line.strip().upper()
-                if name and not name.startswith(valid_prefixes):
-                    raise ValidationError(
-                        _('Each passenger name must start with MR, MRS, or MS. '
-                          'Invalid entry: "%(name)s"', name=line.strip())
-                    )
 
     @api.constrains('pnr_number')
     def _check_pnr_unique(self):
@@ -142,7 +129,7 @@ class TrainBooking(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('travel.train.booking') or _('New')
+                vals['name'] = self._generate_booking_ref('Train') or _('New')
         return super().create(vals_list)
 
     def action_confirm(self):

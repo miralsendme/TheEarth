@@ -72,7 +72,7 @@ class PassengerAutocomplete extends Component {
 
     async _searchNames(query) {
         try {
-            let searchQuery = query.replace(/^(MR\s+|MRS\s+|MS\s+)/i, "").trim();
+            let searchQuery = query.trim();
             if (searchQuery.length < 2) {
                 this.state.suggestions = [];
                 this.state.showDropdown = false;
@@ -81,7 +81,7 @@ class PassengerAutocomplete extends Component {
             const results = await this.orm.searchRead(
                 "travel.employee.code",
                 [["employee_name", "ilike", searchQuery]],
-                ["employee_name", "employee_code", "entity", "initial"],
+                ["employee_name", "employee_code", "entity"],
                 { limit: 10, order: "employee_name asc" }
             );
             this.state.suggestions = results.filter((r) => r.employee_name);
@@ -126,13 +126,8 @@ class PassengerAutocomplete extends Component {
             : "";
 
         const name = suggestion.employee_name.toUpperCase();
-        const currentLine = beforeCursor.substring(lastNewline + 1).trim();
-        const prefixMatch = currentLine.match(/^(MR\s+|MRS\s+|MS\s+)/i);
-        const typedPrefix = prefixMatch ? prefixMatch[0].toUpperCase() : "";
-        // Use typed prefix if present, otherwise use initial from employee record
-        const prefix = typedPrefix || (suggestion.initial ? suggestion.initial.toUpperCase() + " " : "");
 
-        const newValue = beforeLine + prefix + name + afterLine;
+        const newValue = beforeLine + name + afterLine;
         this.state.value = newValue;
         this.state.showDropdown = false;
         this.state.suggestions = [];
@@ -213,7 +208,7 @@ class PassengerAutocompleteChar extends Component {
 
     async _searchNames(query) {
         try {
-            let searchQuery = query.replace(/^(MR\s+|MRS\s+|MS\s+)/i, "").trim();
+            let searchQuery = query.trim();
             if (searchQuery.length < 2) {
                 this.state.suggestions = [];
                 this.state.showDropdown = false;
@@ -222,7 +217,7 @@ class PassengerAutocompleteChar extends Component {
             const results = await this.orm.searchRead(
                 "travel.employee.code",
                 [["employee_name", "ilike", searchQuery]],
-                ["employee_name", "employee_code", "entity", "initial"],
+                ["employee_name", "employee_code", "entity"],
                 { limit: 10, order: "employee_name asc" }
             );
             this.state.suggestions = results.filter((r) => r.employee_name);
@@ -255,19 +250,13 @@ class PassengerAutocompleteChar extends Component {
 
     selectSuggestion(suggestion) {
         const name = suggestion.employee_name.toUpperCase();
-        const currentValue = this.state.value.trim();
-        const prefixMatch = currentValue.match(/^(MR\s+|MRS\s+|MS\s+)/i);
-        const typedPrefix = prefixMatch ? prefixMatch[0].toUpperCase() : "";
-        // Use typed prefix if present, otherwise use initial from employee record
-        const prefix = typedPrefix || (suggestion.initial ? suggestion.initial.toUpperCase() + " " : "");
-        const fullName = prefix + name;
-        this.state.value = fullName;
+        this.state.value = name;
         this.state.showDropdown = false;
         this.state.suggestions = [];
-        this.props.record.update({ [this.props.name]: fullName });
+        this.props.record.update({ [this.props.name]: name });
 
         if (this.inputRef.el) {
-            this.inputRef.el.value = fullName;
+            this.inputRef.el.value = name;
         }
     }
 }

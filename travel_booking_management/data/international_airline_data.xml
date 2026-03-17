@@ -1,0 +1,878 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="intl_airline_25americanairlines" model="travel.international.airline">
+            <field name="name">25AMERICANAIRLINES</field>
+        </record>
+        <record id="intl_airline_acelatrain" model="travel.international.airline">
+            <field name="name">ACELATRAIN</field>
+        </record>
+        <record id="intl_airline_aegean" model="travel.international.airline">
+            <field name="name">AEGEAN</field>
+        </record>
+        <record id="intl_airline_aegeanair" model="travel.international.airline">
+            <field name="name">AEGEANAIR</field>
+        </record>
+        <record id="intl_airline_aegeanairline" model="travel.international.airline">
+            <field name="name">AEGEANAIRLINE</field>
+        </record>
+        <record id="intl_airline_aegeanairlines" model="travel.international.airline">
+            <field name="name">AEGEANAIRLINES</field>
+        </record>
+        <record id="intl_airline_aer0regional" model="travel.international.airline">
+            <field name="name">AER0REGIONAL</field>
+        </record>
+        <record id="intl_airline_aereusairline" model="travel.international.airline">
+            <field name="name">AEREUSAIRLINE</field>
+        </record>
+        <record id="intl_airline_aerlingus" model="travel.international.airline">
+            <field name="name">AERLINGUS</field>
+        </record>
+        <record id="intl_airline_aeroenlacesnacionaless" model="travel.international.airline">
+            <field name="name">AEROENLACESNACIONALESS</field>
+        </record>
+        <record id="intl_airline_aeroflotair" model="travel.international.airline">
+            <field name="name">AEROFLOTAIR</field>
+        </record>
+        <record id="intl_airline_aeroflotrussianairlines" model="travel.international.airline">
+            <field name="name">AEROFLOTRUSSIANAIRLINES</field>
+        </record>
+        <record id="intl_airline_aeroitali" model="travel.international.airline">
+            <field name="name">AEROITALI</field>
+        </record>
+        <record id="intl_airline_aeroitalia" model="travel.international.airline">
+            <field name="name">AEROITALIA</field>
+        </record>
+        <record id="intl_airline_aeroitaliapurchase" model="travel.international.airline">
+            <field name="name">AEROITALIAPURCHASE</field>
+        </record>
+        <record id="intl_airline_aerolineasargentina" model="travel.international.airline">
+            <field name="name">AEROLINEASARGENTINA</field>
+        </record>
+        <record id="intl_airline_aerolineasargentinas" model="travel.international.airline">
+            <field name="name">AEROLINEASARGENTINAS</field>
+        </record>
+        <record id="intl_airline_aeromexico" model="travel.international.airline">
+            <field name="name">AEROMEXICO</field>
+        </record>
+        <record id="intl_airline_africaworldairlines" model="travel.international.airline">
+            <field name="name">AFRICAWORLDAIRLINES</field>
+        </record>
+        <record id="intl_airline_ageanairline" model="travel.international.airline">
+            <field name="name">AGEANAIRLINE</field>
+        </record>
+        <record id="intl_airline_airalgerie" model="travel.international.airline">
+            <field name="name">AIRALGERIE</field>
+        </record>
+        <record id="intl_airline_airalgeries" model="travel.international.airline">
+            <field name="name">AIRALGERIES</field>
+        </record>
+        <record id="intl_airline_airalm" model="travel.international.airline">
+            <field name="name">AIRALM</field>
+        </record>
+        <record id="intl_airline_airarabia" model="travel.international.airline">
+            <field name="name">AIRARABIA</field>
+        </record>
+        <record id="intl_airline_airarabiamaroc" model="travel.international.airline">
+            <field name="name">AIRARABIAMAROC</field>
+        </record>
+        <record id="intl_airline_airasia" model="travel.international.airline">
+            <field name="name">AIRASIA</field>
+        </record>
+        <record id="intl_airline_airasiaindonesia" model="travel.international.airline">
+            <field name="name">AIRASIAINDONESIA</field>
+        </record>
+        <record id="intl_airline_airastana" model="travel.international.airline">
+            <field name="name">AIRASTANA</field>
+        </record>
+        <record id="intl_airline_airbaltic" model="travel.international.airline">
+            <field name="name">AIRBALTIC</field>
+        </record>
+        <record id="intl_airline_airbostwana" model="travel.international.airline">
+            <field name="name">AIRBOSTWANA</field>
+        </record>
+        <record id="intl_airline_airbotswana" model="travel.international.airline">
+            <field name="name">AIRBOTSWANA</field>
+        </record>
+        <record id="intl_airline_aircairo" model="travel.international.airline">
+            <field name="name">AIRCAIRO</field>
+        </record>
+        <record id="intl_airline_aircanada" model="travel.international.airline">
+            <field name="name">AIRCANADA</field>
+        </record>
+        <record id="intl_airline_airchina" model="travel.international.airline">
+            <field name="name">AIRCHINA</field>
+        </record>
+        <record id="intl_airline_airchinalimited" model="travel.international.airline">
+            <field name="name">AIRCHINALIMITED</field>
+        </record>
+        <record id="intl_airline_aircoted_ivoire" model="travel.international.airline">
+            <field name="name">AIRCOTED'IVOIRE</field>
+        </record>
+        <record id="intl_airline_aircotedivoire" model="travel.international.airline">
+            <field name="name">AIRCOTEDIVOIRE</field>
+        </record>
+        <record id="intl_airline_airdolmiti" model="travel.international.airline">
+            <field name="name">AIRDOLMITI</field>
+        </record>
+        <record id="intl_airline_airdolomiti" model="travel.international.airline">
+            <field name="name">AIRDOLOMITI</field>
+        </record>
+        <record id="intl_airline_aireuropa" model="travel.international.airline">
+            <field name="name">AIREUROPA</field>
+        </record>
+        <record id="intl_airline_airfare" model="travel.international.airline">
+            <field name="name">AIRFARE</field>
+        </record>
+        <record id="intl_airline_airfrance" model="travel.international.airline">
+            <field name="name">AIRFRANCE</field>
+        </record>
+        <record id="intl_airline_airindiaexpress" model="travel.international.airline">
+            <field name="name">AIRINDIAEXPRESS</field>
+        </record>
+        <record id="intl_airline_airlingus" model="travel.international.airline">
+            <field name="name">AIRLINGUS</field>
+        </record>
+        <record id="intl_airline_airlink" model="travel.international.airline">
+            <field name="name">AIRLINK</field>
+        </record>
+        <record id="intl_airline_airmauritius" model="travel.international.airline">
+            <field name="name">AIRMAURITIUS</field>
+        </record>
+        <record id="intl_airline_airmontenegro" model="travel.international.airline">
+            <field name="name">AIRMONTENEGRO</field>
+        </record>
+        <record id="intl_airline_airmontengro" model="travel.international.airline">
+            <field name="name">AIRMONTENGRO</field>
+        </record>
+        <record id="intl_airline_airmoroc" model="travel.international.airline">
+            <field name="name">AIRMOROC</field>
+        </record>
+        <record id="intl_airline_airnewzealand" model="travel.international.airline">
+            <field name="name">AIRNEWZEALAND</field>
+        </record>
+        <record id="intl_airline_airnewzealandlimited" model="travel.international.airline">
+            <field name="name">AIRNEWZEALANDLIMITED</field>
+        </record>
+        <record id="intl_airline_airpeace" model="travel.international.airline">
+            <field name="name">AIRPEACE</field>
+        </record>
+        <record id="intl_airline_airpegasus" model="travel.international.airline">
+            <field name="name">AIRPEGASUS</field>
+        </record>
+        <record id="intl_airline_airportugal" model="travel.international.airline">
+            <field name="name">AIRPORTUGAL</field>
+        </record>
+        <record id="intl_airline_airsenegal" model="travel.international.airline">
+            <field name="name">AIRSENEGAL</field>
+        </record>
+        <record id="intl_airline_airserbia" model="travel.international.airline">
+            <field name="name">AIRSERBIA</field>
+        </record>
+        <record id="intl_airline_airtanzania" model="travel.international.airline">
+            <field name="name">AIRTANZANIA</field>
+        </record>
+        <record id="intl_airline_airtransat" model="travel.international.airline">
+            <field name="name">AIRTRANSAT</field>
+        </record>
+        <record id="intl_airline_airzimbabwe" model="travel.international.airline">
+            <field name="name">AIRZIMBABWE</field>
+        </record>
+        <record id="intl_airline_ajetair" model="travel.international.airline">
+            <field name="name">AJETAIR</field>
+        </record>
+        <record id="intl_airline_akasa" model="travel.international.airline">
+            <field name="name">AKASA</field>
+        </record>
+        <record id="intl_airline_akasaair" model="travel.international.airline">
+            <field name="name">AKASAAIR</field>
+        </record>
+        <record id="intl_airline_akashaair" model="travel.international.airline">
+            <field name="name">AKASHAAIR</field>
+        </record>
+        <record id="intl_airline_akashair" model="travel.international.airline">
+            <field name="name">AKASHAIR</field>
+        </record>
+        <record id="intl_airline_alitalia" model="travel.international.airline">
+            <field name="name">ALITALIA</field>
+        </record>
+        <record id="intl_airline_allianceair" model="travel.international.airline">
+            <field name="name">ALLIANCEAIR</field>
+        </record>
+        <record id="intl_airline_allnipponairways" model="travel.international.airline">
+            <field name="name">ALLNIPPONAIRWAYS</field>
+        </record>
+        <record id="intl_airline_americanairlines" model="travel.international.airline">
+            <field name="name">AMERICANAIRLINES</field>
+        </record>
+        <record id="intl_airline_angolaairlines" model="travel.international.airline">
+            <field name="name">ANGOLAAIRLINES</field>
+        </record>
+        <record id="intl_airline_animawings" model="travel.international.airline">
+            <field name="name">ANIMAWINGS</field>
+        </record>
+        <record id="intl_airline_animawingsaviation" model="travel.international.airline">
+            <field name="name">ANIMAWINGSAVIATION</field>
+        </record>
+        <record id="intl_airline_ap_alfapendular" model="travel.international.airline">
+            <field name="name">AP-ALFAPENDULAR</field>
+        </record>
+        <record id="intl_airline_arajet" model="travel.international.airline">
+            <field name="name">ARAJET</field>
+        </record>
+        <record id="intl_airline_arkiaisraeliairlines" model="travel.international.airline">
+            <field name="name">ARKIAISRAELIAIRLINES</field>
+        </record>
+        <record id="intl_airline_asianaairlines" model="travel.international.airline">
+            <field name="name">ASIANAAIRLINES</field>
+        </record>
+        <record id="intl_airline_asky" model="travel.international.airline">
+            <field name="name">ASKY</field>
+        </record>
+        <record id="intl_airline_askyairlines" model="travel.international.airline">
+            <field name="name">ASKYAIRLINES</field>
+        </record>
+        <record id="intl_airline_austrian" model="travel.international.airline">
+            <field name="name">AUSTRIAN</field>
+        </record>
+        <record id="intl_airline_austrianairlines" model="travel.international.airline">
+            <field name="name">AUSTRIANAIRLINES</field>
+        </record>
+        <record id="intl_airline_avetrainline" model="travel.international.airline">
+            <field name="name">AVETRAINLINE</field>
+        </record>
+        <record id="intl_airline_avianca" model="travel.international.airline">
+            <field name="name">AVIANCA</field>
+        </record>
+        <record id="intl_airline_aviatrafficcompany" model="travel.international.airline">
+            <field name="name">AVIATRAFFICCOMPANY</field>
+        </record>
+        <record id="intl_airline_aviorairlines" model="travel.international.airline">
+            <field name="name">AVIORAIRLINES</field>
+        </record>
+        <record id="intl_airline_avlotrain" model="travel.international.airline">
+            <field name="name">AVLOTRAIN</field>
+        </record>
+        <record id="intl_airline_az_itaairways" model="travel.international.airline">
+            <field name="name">AZ-ITAAIRWAYS</field>
+        </record>
+        <record id="intl_airline_azerbaijanairlines" model="travel.international.airline">
+            <field name="name">AZERBAIJANAIRLINES</field>
+        </record>
+        <record id="intl_airline_azulairline" model="travel.international.airline">
+            <field name="name">AZULAIRLINE</field>
+        </record>
+        <record id="intl_airline_azulairlines" model="travel.international.airline">
+            <field name="name">AZULAIRLINES</field>
+        </record>
+        <record id="intl_airline_azulairways" model="travel.international.airline">
+            <field name="name">AZULAIRWAYS</field>
+        </record>
+        <record id="intl_airline_azullinhasaereas" model="travel.international.airline">
+            <field name="name">AZULLINHASAEREAS</field>
+        </record>
+        <record id="intl_airline_azullinhasaereasbrasi" model="travel.international.airline">
+            <field name="name">AZULLINHASAEREASBRASI</field>
+        </record>
+        <record id="intl_airline_batikair" model="travel.international.airline">
+            <field name="name">BATIKAIR</field>
+        </record>
+        <record id="intl_airline_batikairindonesia_bati" model="travel.international.airline">
+            <field name="name">BATIKAIRINDONESIA/BATI</field>
+        </record>
+        <record id="intl_airline_batikairmalaysia" model="travel.international.airline">
+            <field name="name">BATIKAIRMALAYSIA</field>
+        </record>
+        <record id="intl_airline_belaviabelarusianairlines" model="travel.international.airline">
+            <field name="name">BELAVIABELARUSIANAIRLINES</field>
+        </record>
+        <record id="intl_airline_bhutanairlines" model="travel.international.airline">
+            <field name="name">BHUTANAIRLINES</field>
+        </record>
+        <record id="intl_airline_bimanbangladesh" model="travel.international.airline">
+            <field name="name">BIMANBANGLADESH</field>
+        </record>
+        <record id="intl_airline_binterairline" model="travel.international.airline">
+            <field name="name">BINTERAIRLINE</field>
+        </record>
+        <record id="intl_airline_bintercanarias" model="travel.international.airline">
+            <field name="name">BINTERCANARIAS</field>
+        </record>
+        <record id="intl_airline_bolivianadeaviacion" model="travel.international.airline">
+            <field name="name">BOLIVIANADEAVIACION</field>
+        </record>
+        <record id="intl_airline_bolivianairline" model="travel.international.airline">
+            <field name="name">BOLIVIANAIRLINE</field>
+        </record>
+        <record id="intl_airline_britishairways" model="travel.international.airline">
+            <field name="name">BRITISHAIRWAYS</field>
+        </record>
+        <record id="intl_airline_brusselsairlines" model="travel.international.airline">
+            <field name="name">BRUSSELSAIRLINES</field>
+        </record>
+        <record id="intl_airline_buddhaair" model="travel.international.airline">
+            <field name="name">BUDDHAAIR</field>
+        </record>
+        <record id="intl_airline_budhaair" model="travel.international.airline">
+            <field name="name">BUDHAAIR</field>
+        </record>
+        <record id="intl_airline_bulgariaair" model="travel.international.airline">
+            <field name="name">BULGARIAAIR</field>
+        </record>
+        <record id="intl_airline_cambodiaangkorairltd" model="travel.international.airline">
+            <field name="name">CAMBODIAANGKORAIRLTD.</field>
+        </record>
+        <record id="intl_airline_carabianairline" model="travel.international.airline">
+            <field name="name">CARABIANAIRLINE</field>
+        </record>
+        <record id="intl_airline_caribbeanair" model="travel.international.airline">
+            <field name="name">CARIBBEANAIR</field>
+        </record>
+        <record id="intl_airline_caribbeanairlines" model="travel.international.airline">
+            <field name="name">CARIBBEANAIRLINES</field>
+        </record>
+        <record id="intl_airline_cathaypacificairways" model="travel.international.airline">
+            <field name="name">CATHAYPACIFICAIRWAYS</field>
+        </record>
+        <record id="intl_airline_caymanairways" model="travel.international.airline">
+            <field name="name">CAYMANAIRWAYS</field>
+        </record>
+        <record id="intl_airline_cebgo" model="travel.international.airline">
+            <field name="name">CEBGO</field>
+        </record>
+        <record id="intl_airline_cebupacificair" model="travel.international.airline">
+            <field name="name">CEBUPACIFICAIR</field>
+        </record>
+        <record id="intl_airline_cebupecific" model="travel.international.airline">
+            <field name="name">CEBUPECIFIC</field>
+        </record>
+        <record id="intl_airline_cemair" model="travel.international.airline">
+            <field name="name">CEMAIR</field>
+        </record>
+        <record id="intl_airline_cemairline" model="travel.international.airline">
+            <field name="name">CEMAIRLINE</field>
+        </record>
+        <record id="intl_airline_centrumair" model="travel.international.airline">
+            <field name="name">CENTRUMAIR</field>
+        </record>
+        <record id="intl_airline_chinaairline" model="travel.international.airline">
+            <field name="name">CHINAAIRLINE</field>
+        </record>
+        <record id="intl_airline_chinaeastern" model="travel.international.airline">
+            <field name="name">CHINAEASTERN</field>
+        </record>
+        <record id="intl_airline_chinaeasternairlines" model="travel.international.airline">
+            <field name="name">CHINAEASTERNAIRLINES</field>
+        </record>
+        <record id="intl_airline_chinasouthernairlines" model="travel.international.airline">
+            <field name="name">CHINASOUTHERNAIRLINES</field>
+        </record>
+        <record id="intl_airline_chinaunitedairlines" model="travel.international.airline">
+            <field name="name">CHINAUNITEDAIRLINES</field>
+        </record>
+        <record id="intl_airline_chukongferry" model="travel.international.airline">
+            <field name="name">CHUKONGFERRY</field>
+        </record>
+        <record id="intl_airline_chukongpassenger" model="travel.international.airline">
+            <field name="name">CHUKONGPASSENGER</field>
+        </record>
+        <record id="intl_airline_citilink" model="travel.international.airline">
+            <field name="name">CITILINK</field>
+        </record>
+        <record id="intl_airline_companiapanamena" model="travel.international.airline">
+            <field name="name">COMPANIAPANAMENA</field>
+        </record>
+        <record id="intl_airline_condor" model="travel.international.airline">
+            <field name="name">CONDOR</field>
+        </record>
+        <record id="intl_airline_condorair" model="travel.international.airline">
+            <field name="name">CONDORAIR</field>
+        </record>
+        <record id="intl_airline_copaairline" model="travel.international.airline">
+            <field name="name">COPAAIRLINE</field>
+        </record>
+        <record id="intl_airline_croatiaair" model="travel.international.airline">
+            <field name="name">CROATIAAIR</field>
+        </record>
+        <record id="intl_airline_crotiaairline" model="travel.international.airline">
+            <field name="name">CROTIAAIRLINE</field>
+        </record>
+        <record id="intl_airline_cyprusairways" model="travel.international.airline">
+            <field name="name">CYPRUSAIRWAYS</field>
+        </record>
+        <record id="intl_airline_danishairtransport" model="travel.international.airline">
+            <field name="name">DANISHAIRTRANSPORT</field>
+        </record>
+        <record id="intl_airline_datairlines" model="travel.international.airline">
+            <field name="name">DATAIRLINES</field>
+        </record>
+        <record id="intl_airline_dbtrainline" model="travel.international.airline">
+            <field name="name">DBTRAINLINE</field>
+        </record>
+        <record id="intl_airline_deltaairlines" model="travel.international.airline">
+            <field name="name">DELTAAIRLINES</field>
+        </record>
+        <record id="intl_airline_deutschebahntrain" model="travel.international.airline">
+            <field name="name">DEUTSCHEBAHNTRAIN</field>
+        </record>
+        <record id="intl_airline_drukairline" model="travel.international.airline">
+            <field name="name">DRUKAIRLINE</field>
+        </record>
+        <record id="intl_airline_easemytrip_com" model="travel.international.airline">
+            <field name="name">EASEMYTRIP.COM</field>
+        </record>
+        <record id="intl_airline_easyjet" model="travel.international.airline">
+            <field name="name">EASYJET</field>
+        </record>
+        <record id="intl_airline_egypt" model="travel.international.airline">
+            <field name="name">EGYPT</field>
+        </record>
+        <record id="intl_airline_egyptair" model="travel.international.airline">
+            <field name="name">EGYPTAIR</field>
+        </record>
+        <record id="intl_airline_elalisraelairlines" model="travel.international.airline">
+            <field name="name">ELALISRAELAIRLINES</field>
+        </record>
+        <record id="intl_airline_emirates" model="travel.international.airline">
+            <field name="name">EMIRATES</field>
+        </record>
+        <record id="intl_airline_ethiopianairlines" model="travel.international.airline">
+            <field name="name">ETHIOPIANAIRLINES</field>
+        </record>
+        <record id="intl_airline_ethopianairline" model="travel.international.airline">
+            <field name="name">ETHOPIANAIRLINE</field>
+        </record>
+        <record id="intl_airline_etihadairways" model="travel.international.airline">
+            <field name="name">ETIHADAIRWAYS</field>
+        </record>
+        <record id="intl_airline_euroairlines" model="travel.international.airline">
+            <field name="name">EUROAIRLINES</field>
+        </record>
+        <record id="intl_airline_eurorail" model="travel.international.airline">
+            <field name="name">EURORAIL</field>
+        </record>
+        <record id="intl_airline_eurostar" model="travel.international.airline">
+            <field name="name">EUROSTAR</field>
+        </record>
+        <record id="intl_airline_eurostartrain" model="travel.international.airline">
+            <field name="name">EUROSTARTRAIN</field>
+        </record>
+        <record id="intl_airline_eurowings" model="travel.international.airline">
+            <field name="name">EUROWINGS</field>
+        </record>
+        <record id="intl_airline_evaairways" model="travel.international.airline">
+            <field name="name">EVAAIRWAYS</field>
+        </record>
+        <record id="intl_airline_fastjet" model="travel.international.airline">
+            <field name="name">FASTJET</field>
+        </record>
+        <record id="intl_airline_ferry" model="travel.international.airline">
+            <field name="name">FERRY</field>
+        </record>
+        <record id="intl_airline_finnair" model="travel.international.airline">
+            <field name="name">FINNAIR</field>
+        </record>
+        <record id="intl_airline_firefly" model="travel.international.airline">
+            <field name="name">FIREFLY</field>
+        </record>
+        <record id="intl_airline_flanas" model="travel.international.airline">
+            <field name="name">FLANAS</field>
+        </record>
+        <record id="intl_airline_flexibus" model="travel.international.airline">
+            <field name="name">FLEXIBUS</field>
+        </record>
+        <record id="intl_airline_flibco" model="travel.international.airline">
+            <field name="name">FLIBCO</field>
+        </record>
+        <record id="intl_airline_flixbus" model="travel.international.airline">
+            <field name="name">FLIXBUS</field>
+        </record>
+        <record id="intl_airline_flyadeal" model="travel.international.airline">
+            <field name="name">FLYADEAL</field>
+        </record>
+        <record id="intl_airline_flyarystan" model="travel.international.airline">
+            <field name="name">FLYARYSTAN</field>
+        </record>
+        <record id="intl_airline_flydeal" model="travel.international.airline">
+            <field name="name">FLYDEAL</field>
+        </record>
+        <record id="intl_airline_flydubai" model="travel.international.airline">
+            <field name="name">FLYDUBAI</field>
+        </record>
+        <record id="intl_airline_flynas" model="travel.international.airline">
+            <field name="name">FLYNAS</field>
+        </record>
+        <record id="intl_airline_flynasair" model="travel.international.airline">
+            <field name="name">FLYNASAIR</field>
+        </record>
+        <record id="intl_airline_flyone" model="travel.international.airline">
+            <field name="name">FLYONE</field>
+        </record>
+        <record id="intl_airline_flysafair" model="travel.international.airline">
+            <field name="name">FLYSAFAIR</field>
+        </record>
+        <record id="intl_airline_flysaffair" model="travel.international.airline">
+            <field name="name">FLYSAFFAIR</field>
+        </record>
+        <record id="intl_airline_golairline" model="travel.international.airline">
+            <field name="name">GOLAIRLINE</field>
+        </record>
+        <record id="intl_airline_gollinhasaereas" model="travel.international.airline">
+            <field name="name">GOLLINHASAEREAS</field>
+        </record>
+        <record id="intl_airline_goltransportesaereos" model="travel.international.airline">
+            <field name="name">GOLTRANSPORTESAEREOS</field>
+        </record>
+        <record id="intl_airline_gpaviation" model="travel.international.airline">
+            <field name="name">GPAVIATION</field>
+        </record>
+        <record id="intl_airline_gulfair" model="travel.international.airline">
+            <field name="name">GULFAIR</field>
+        </record>
+        <record id="intl_airline_hainanairlines" model="travel.international.airline">
+            <field name="name">HAINANAIRLINES</field>
+        </record>
+        <record id="intl_airline_haramainhighspeedrailway" model="travel.international.airline">
+            <field name="name">HARAMAINHIGHSPEEDRAILWAY</field>
+        </record>
+        <record id="intl_airline_hebeiairline" model="travel.international.airline">
+            <field name="name">HEBEIAIRLINE</field>
+        </record>
+        <record id="intl_airline_hiskyeurope" model="travel.international.airline">
+            <field name="name">HISKYEUROPE</field>
+        </record>
+        <record id="intl_airline_hiskyeuropeairline" model="travel.international.airline">
+            <field name="name">HISKYEUROPEAIRLINE</field>
+        </record>
+        <record id="intl_airline_holidaysczechairlines" model="travel.international.airline">
+            <field name="name">HOLIDAYSCZECHAIRLINES</field>
+        </record>
+        <record id="intl_airline_iberia" model="travel.international.airline">
+            <field name="name">IBERIA</field>
+        </record>
+        <record id="intl_airline_iberialineas" model="travel.international.airline">
+            <field name="name">IBERIALINEAS</field>
+        </record>
+        <record id="intl_airline_indigo" model="travel.international.airline">
+            <field name="name">INDIGO</field>
+        </record>
+        <record id="intl_airline_iryo" model="travel.international.airline">
+            <field name="name">IRYO</field>
+        </record>
+        <record id="intl_airline_itaairways" model="travel.international.airline">
+            <field name="name">ITAAIRWAYS</field>
+        </record>
+        <record id="intl_airline_italia" model="travel.international.airline">
+            <field name="name">ITALIA</field>
+        </record>
+        <record id="intl_airline_jet2airline" model="travel.international.airline">
+            <field name="name">JET2AIRLINE</field>
+        </record>
+        <record id="intl_airline_jetblue" model="travel.international.airline">
+            <field name="name">JETBLUE</field>
+        </record>
+        <record id="intl_airline_jetblueairways" model="travel.international.airline">
+            <field name="name">JETBLUEAIRWAYS</field>
+        </record>
+        <record id="intl_airline_jetsmart" model="travel.international.airline">
+            <field name="name">JETSMART</field>
+        </record>
+        <record id="intl_airline_jetsmartairlines" model="travel.international.airline">
+            <field name="name">JETSMARTAIRLINES</field>
+        </record>
+        <record id="intl_airline_jetstar" model="travel.international.airline">
+            <field name="name">JETSTAR</field>
+        </record>
+        <record id="intl_airline_kenyaairline" model="travel.international.airline">
+            <field name="name">KENYAAIRLINE</field>
+        </record>
+        <record id="intl_airline_kuwaitairways" model="travel.international.airline">
+            <field name="name">KUWAITAIRWAYS</field>
+        </record>
+        <record id="intl_airline_latam" model="travel.international.airline">
+            <field name="name">LATAM</field>
+        </record>
+        <record id="intl_airline_lift" model="travel.international.airline">
+            <field name="name">LIFT</field>
+        </record>
+        <record id="intl_airline_liftair" model="travel.international.airline">
+            <field name="name">LIFTAIR</field>
+        </record>
+        <record id="intl_airline_loganair" model="travel.international.airline">
+            <field name="name">LOGANAIR</field>
+        </record>
+        <record id="intl_airline_lotpolishairlines" model="travel.international.airline">
+            <field name="name">LOTPOLISHAIRLINES</field>
+        </record>
+        <record id="intl_airline_lufthansa" model="travel.international.airline">
+            <field name="name">LUFTHANSA</field>
+        </record>
+        <record id="intl_airline_luxair" model="travel.international.airline">
+            <field name="name">LUXAIR</field>
+        </record>
+        <record id="intl_airline_malaysiaairlines" model="travel.international.airline">
+            <field name="name">MALAYSIAAIRLINES</field>
+        </record>
+        <record id="intl_airline_miat_mongolianairline" model="travel.international.airline">
+            <field name="name">MIAT-MONGOLIANAIRLINE</field>
+        </record>
+        <record id="intl_airline_middleeastairliines" model="travel.international.airline">
+            <field name="name">MIDDLEEASTAIRLIINES</field>
+        </record>
+        <record id="intl_airline_middleeastairlines" model="travel.international.airline">
+            <field name="name">MIDDLEEASTAIRLINES</field>
+        </record>
+        <record id="intl_airline_norwegianair" model="travel.international.airline">
+            <field name="name">NORWEGIANAIR</field>
+        </record>
+        <record id="intl_airline_omanair" model="travel.international.airline">
+            <field name="name">OMANAIR</field>
+        </record>
+        <record id="intl_airline_ouigotrain" model="travel.international.airline">
+            <field name="name">OUIGOTRAIN</field>
+        </record>
+        <record id="intl_airline_paranair" model="travel.international.airline">
+            <field name="name">PARANAIR</field>
+        </record>
+        <record id="intl_airline_paranairairline" model="travel.international.airline">
+            <field name="name">PARANAIRAIRLINE</field>
+        </record>
+        <record id="intl_airline_pegasusairlines" model="travel.international.airline">
+            <field name="name">PEGASUSAIRLINES</field>
+        </record>
+        <record id="intl_airline_philippineair" model="travel.international.airline">
+            <field name="name">PHILIPPINEAIR</field>
+        </record>
+        <record id="intl_airline_philippineairlines" model="travel.international.airline">
+            <field name="name">PHILIPPINEAIRLINES</field>
+        </record>
+        <record id="intl_airline_philippineairways" model="travel.international.airline">
+            <field name="name">PHILIPPINEAIRWAYS</field>
+        </record>
+        <record id="intl_airline_philippinesairasia" model="travel.international.airline">
+            <field name="name">PHILIPPINESAIRASIA</field>
+        </record>
+        <record id="intl_airline_polishtrains" model="travel.international.airline">
+            <field name="name">POLISHTRAINS</field>
+        </record>
+        <record id="intl_airline_qantas" model="travel.international.airline">
+            <field name="name">QANTAS</field>
+        </record>
+        <record id="intl_airline_qatarairways" model="travel.international.airline">
+            <field name="name">QATARAIRWAYS</field>
+        </record>
+        <record id="intl_airline_qazaqair" model="travel.international.airline">
+            <field name="name">QAZAQAIR</field>
+        </record>
+        <record id="intl_airline_qazaqairline" model="travel.international.airline">
+            <field name="name">QAZAQAIRLINE</field>
+        </record>
+        <record id="intl_airline_raileurope" model="travel.international.airline">
+            <field name="name">RAILEUROPE</field>
+        </record>
+        <record id="intl_airline_railninja" model="travel.international.airline">
+            <field name="name">RAILNINJA</field>
+        </record>
+        <record id="intl_airline_renfealvia" model="travel.international.airline">
+            <field name="name">RENFEALVIA</field>
+        </record>
+        <record id="intl_airline_rwandair" model="travel.international.airline">
+            <field name="name">RWANDAIR</field>
+        </record>
+        <record id="intl_airline_ryanair" model="travel.international.airline">
+            <field name="name">RYANAIR</field>
+        </record>
+        <record id="intl_airline_safair" model="travel.international.airline">
+            <field name="name">SAFAIR</field>
+        </record>
+        <record id="intl_airline_salamair" model="travel.international.airline">
+            <field name="name">SALAMAIR</field>
+        </record>
+        <record id="intl_airline_saudiarabianairlines" model="travel.international.airline">
+            <field name="name">SAUDIARABIANAIRLINES</field>
+        </record>
+        <record id="intl_airline_scandinavianairlines" model="travel.international.airline">
+            <field name="name">SCANDINAVIANAIRLINES</field>
+        </record>
+        <record id="intl_airline_scandinavianairlinessy" model="travel.international.airline">
+            <field name="name">SCANDINAVIANAIRLINESSY</field>
+        </record>
+        <record id="intl_airline_scatair" model="travel.international.airline">
+            <field name="name">SCATAIR</field>
+        </record>
+        <record id="intl_airline_scatairline" model="travel.international.airline">
+            <field name="name">SCATAIRLINE</field>
+        </record>
+        <record id="intl_airline_scatairlines" model="travel.international.airline">
+            <field name="name">SCATAIRLINES</field>
+        </record>
+        <record id="intl_airline_scootairline" model="travel.international.airline">
+            <field name="name">SCOOTAIRLINE</field>
+        </record>
+        <record id="intl_airline_shenzhenairlines" model="travel.international.airline">
+            <field name="name">SHENZHENAIRLINES</field>
+        </record>
+        <record id="intl_airline_shrilankan" model="travel.international.airline">
+            <field name="name">SHRILANKAN</field>
+        </record>
+        <record id="intl_airline_singaporeairlines" model="travel.international.airline">
+            <field name="name">SINGAPOREAIRLINES</field>
+        </record>
+        <record id="intl_airline_skyexpressairline" model="travel.international.airline">
+            <field name="name">SKYEXPRESSAIRLINE</field>
+        </record>
+        <record id="intl_airline_smartwings" model="travel.international.airline">
+            <field name="name">SMARTWINGS</field>
+        </record>
+        <record id="intl_airline_southafricanairways" model="travel.international.airline">
+            <field name="name">SOUTHAFRICANAIRWAYS</field>
+        </record>
+        <record id="intl_airline_southwestairline" model="travel.international.airline">
+            <field name="name">SOUTHWESTAIRLINE</field>
+        </record>
+        <record id="intl_airline_spicejet" model="travel.international.airline">
+            <field name="name">SPICEJET</field>
+        </record>
+        <record id="intl_airline_srilankan" model="travel.international.airline">
+            <field name="name">SRILANKAN</field>
+        </record>
+        <record id="intl_airline_srilankanairlines" model="travel.international.airline">
+            <field name="name">SRILANKANAIRLINES</field>
+        </record>
+        <record id="intl_airline_swissairline" model="travel.international.airline">
+            <field name="name">SWISSAIRLINE</field>
+        </record>
+        <record id="intl_airline_swissinternationalair" model="travel.international.airline">
+            <field name="name">SWISSINTERNATIONALAIR</field>
+        </record>
+        <record id="intl_airline_taagangolaairlines" model="travel.international.airline">
+            <field name="name">TAAGANGOLAAIRLINES</field>
+        </record>
+        <record id="intl_airline_tagairline" model="travel.international.airline">
+            <field name="name">TAGAIRLINE</field>
+        </record>
+        <record id="intl_airline_taromromanian" model="travel.international.airline">
+            <field name="name">TAROMROMANIAN</field>
+        </record>
+        <record id="intl_airline_tezjet" model="travel.international.airline">
+            <field name="name">TEZJET</field>
+        </record>
+        <record id="intl_airline_thai" model="travel.international.airline">
+            <field name="name">THAI</field>
+        </record>
+        <record id="intl_airline_thaiairways" model="travel.international.airline">
+            <field name="name">THAIAIRWAYS</field>
+        </record>
+        <record id="intl_airline_thaivietjetair" model="travel.international.airline">
+            <field name="name">THAIVIETJETAIR</field>
+        </record>
+        <record id="intl_airline_trainline" model="travel.international.airline">
+            <field name="name">TRAINLINE</field>
+        </record>
+        <record id="intl_airline_trenoitalo" model="travel.international.airline">
+            <field name="name">TRENOITALO</field>
+        </record>
+        <record id="intl_airline_trinline" model="travel.international.airline">
+            <field name="name">TRINLINE</field>
+        </record>
+        <record id="intl_airline_trip_com" model="travel.international.airline">
+            <field name="name">TRIP.COM</field>
+        </record>
+        <record id="intl_airline_tunisair" model="travel.international.airline">
+            <field name="name">TUNISAIR</field>
+        </record>
+        <record id="intl_airline_tunisairexpress" model="travel.international.airline">
+            <field name="name">TUNISAIREXPRESS</field>
+        </record>
+        <record id="intl_airline_turkish" model="travel.international.airline">
+            <field name="name">TURKISH</field>
+        </record>
+        <record id="intl_airline_turkishairlines" model="travel.international.airline">
+            <field name="name">TURKISHAIRLINES</field>
+        </record>
+        <record id="intl_airline_twinjet" model="travel.international.airline">
+            <field name="name">TWINJET</field>
+        </record>
+        <record id="intl_airline_unitedairlines" model="travel.international.airline">
+            <field name="name">UNITEDAIRLINES,</field>
+        </record>
+        <record id="intl_airline_us_banglaairlines" model="travel.international.airline">
+            <field name="name">US-BANGLAAIRLINES</field>
+        </record>
+        <record id="intl_airline_uzbekistanairways" model="travel.international.airline">
+            <field name="name">UZBEKISTANAIRWAYS</field>
+        </record>
+        <record id="intl_airline_uzbekistanhavo" model="travel.international.airline">
+            <field name="name">UZBEKISTANHAVO</field>
+        </record>
+        <record id="intl_airline_veitnamairline" model="travel.international.airline">
+            <field name="name">VEITNAMAIRLINE</field>
+        </record>
+        <record id="intl_airline_velvetskyaviation" model="travel.international.airline">
+            <field name="name">VELVETSKYAVIATION</field>
+        </record>
+        <record id="intl_airline_viejetair" model="travel.international.airline">
+            <field name="name">VIEJETAIR</field>
+        </record>
+        <record id="intl_airline_vietjetair" model="travel.international.airline">
+            <field name="name">VIETJETAIR</field>
+        </record>
+        <record id="intl_airline_vietjetairline" model="travel.international.airline">
+            <field name="name">VIETJETAIRLINE</field>
+        </record>
+        <record id="intl_airline_vietnam" model="travel.international.airline">
+            <field name="name">VIETNAM</field>
+        </record>
+        <record id="intl_airline_vietnamairlines" model="travel.international.airline">
+            <field name="name">VIETNAMAIRLINES</field>
+        </record>
+        <record id="intl_airline_virginaustralia" model="travel.international.airline">
+            <field name="name">VIRGINAUSTRALIA</field>
+        </record>
+        <record id="intl_airline_virginaustraliainterna" model="travel.international.airline">
+            <field name="name">VIRGINAUSTRALIAINTERNA</field>
+        </record>
+        <record id="intl_airline_vistaraairlines" model="travel.international.airline">
+            <field name="name">VISTARAAIRLINES</field>
+        </record>
+        <record id="intl_airline_viva" model="travel.international.airline">
+            <field name="name">VIVA</field>
+        </record>
+        <record id="intl_airline_vivaaerobus" model="travel.international.airline">
+            <field name="name">VIVAAEROBUS</field>
+        </record>
+        <record id="intl_airline_volotea" model="travel.international.airline">
+            <field name="name">VOLOTEA</field>
+        </record>
+        <record id="intl_airline_vrglinhasaereasairlines" model="travel.international.airline">
+            <field name="name">VRGLINHASAEREASAIRLINES</field>
+        </record>
+        <record id="intl_airline_vuelingairline" model="travel.international.airline">
+            <field name="name">VUELINGAIRLINE</field>
+        </record>
+        <record id="intl_airline_vuelingairlinessa" model="travel.international.airline">
+            <field name="name">VUELINGAIRLINESSA</field>
+        </record>
+        <record id="intl_airline_westjet" model="travel.international.airline">
+            <field name="name">WESTJET</field>
+        </record>
+        <record id="intl_airline_wideroeairline" model="travel.international.airline">
+            <field name="name">WIDEROEAIRLINE</field>
+        </record>
+        <record id="intl_airline_wingo" model="travel.international.airline">
+            <field name="name">WINGO</field>
+        </record>
+        <record id="intl_airline_wizzair" model="travel.international.airline">
+            <field name="name">WIZZAIR</field>
+        </record>
+        <record id="intl_airline_xiamenairlines" model="travel.international.airline">
+            <field name="name">XIAMENAIRLINES</field>
+        </record>
+        <record id="intl_airline_yetiairline" model="travel.international.airline">
+            <field name="name">YETIAIRLINE</field>
+        </record>
+        <record id="intl_airline_yetiairlines" model="travel.international.airline">
+            <field name="name">YETIAIRLINES</field>
+        </record>
+    </data>
+</odoo>

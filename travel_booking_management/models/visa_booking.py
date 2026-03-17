@@ -73,7 +73,7 @@ class VisaBooking(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('travel.visa.booking') or _('New')
+                vals['name'] = self._generate_booking_ref('Visa') or _('New')
         return super().create(vals_list)
 
     def action_confirm(self):

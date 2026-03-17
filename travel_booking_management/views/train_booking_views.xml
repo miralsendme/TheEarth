@@ -34,7 +34,7 @@
                         <group string="Booking Info">
                             <field name="booking_date"/>
                             <field name="booking_executive"/>
-                            <field name="passenger_names" widget="passenger_autocomplete" placeholder="USE MR / MRS / MS  BEFORE NAME"/>
+                            <field name="passenger_names" widget="passenger_autocomplete"/>
                             <field name="num_passengers"/>
                             <field name="employee_code" placeholder="Do not put NA"/>
                             <field name="billing_company_id"/>

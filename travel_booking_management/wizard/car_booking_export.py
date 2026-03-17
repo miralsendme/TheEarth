@@ -74,7 +74,7 @@ class CarBookingExport(models.TransientModel):
                 bk.booking_executive.name if bk.booking_executive else '',
                 bk.employee_code or '',
                 bk.document_number or '',
-                bk.confirmed_by or '',
+                bk.confirmed_by.name if bk.confirmed_by else '',
                 bk.cab_vendor or '',
                 bk.reference_number or '',
                 dict(bk._fields['car_type'].selection).get(bk.car_type, ''),

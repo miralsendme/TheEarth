@@ -69,7 +69,7 @@ class InternationalFlightCancellation(models.Model):
     split_pnr = fields.Char(string='Split PNR')
     flight_number = fields.Char(string='Flight Number Onward')
     flight_number_return = fields.Char(string='Flight Number Return')
-    airline = fields.Char(string='Airline Name')
+    airline = fields.Many2one('travel.international.airline', string='Airline Name')
     fare = fields.Float(string='Fare', tracking=True)
     service_charge = fields.Float(string='Service Charge', compute='_compute_service_charge',
                                   store=True, readonly=False, tracking=True)

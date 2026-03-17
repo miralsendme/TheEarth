@@ -81,7 +81,7 @@ class IntlFlightExport(models.TransientModel):
                 bk.return_destination or '',
                 str(bk.travel_date_onward) if bk.travel_date_onward else '',
                 str(bk.return_date) if bk.return_date else '',
-                bk.airline or '',
+                bk.airline.name if bk.airline else '',
                 bk.flight_number or '',
                 bk.flight_number_return or '',
                 dict(bk._fields['travel_class'].selection).get(bk.travel_class, ''),

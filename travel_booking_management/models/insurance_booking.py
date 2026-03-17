@@ -70,7 +70,7 @@ class InsuranceBooking(models.Model):
     def create(self, vals_list):
         for vals in vals_list:
             if vals.get('name', _('New')) == _('New'):
-                vals['name'] = self.env['ir.sequence'].next_by_code('travel.insurance.booking') or _('New')
+                vals['name'] = self._generate_booking_ref('Insurance') or _('New')
         return super().create(vals_list)
 
     def action_confirm(self):
