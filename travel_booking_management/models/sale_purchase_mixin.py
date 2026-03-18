@@ -2,7 +2,7 @@
 import base64
 from datetime import date as _date
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 # Cancellation type → prefix mapping
 CANCELLATION_PREFIX_MAP = {
@@ -107,6 +107,15 @@ class TravelSalePurchaseMixin(models.AbstractModel):
 
     sale_order_id = fields.Many2one('sale.order', string='Sales Order', readonly=True, copy=False)
     purchase_order_id = fields.Many2one('purchase.order', string='Purchase Order', readonly=True, copy=False)
+    ticket_pdf = fields.Binary(string='Original Ticket (PDF)', copy=False)
+    ticket_pdf_filename = fields.Char(string='Ticket Filename', copy=False)
+
+    @api.constrains('ticket_pdf_filename')
+    def _check_ticket_pdf_type(self):
+        for rec in self:
+            fname = (rec.ticket_pdf_filename or '').lower()
+            if fname and not fname.endswith('.pdf'):
+                raise ValidationError(_('Only PDF files are allowed for the ticket attachment.'))
 
     @api.model
     def _name_search(self, name='', domain=None, operator='ilike', limit=None, order=None):

@@ -87,6 +87,8 @@ class PackageTourBooking(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
+            if not vals.get('ticket_pdf'):
+                raise ValidationError(_('Please upload the original ticket PDF before saving.'))
             if vals.get('name', _('New')) == _('New'):
                 vals['name'] = self._generate_booking_ref('Package Tour') or _('New')
         return super().create(vals_list)

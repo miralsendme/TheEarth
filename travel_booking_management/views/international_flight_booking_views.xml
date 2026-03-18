@@ -79,6 +79,11 @@
                             <field name="cancellation_id"/>
                         </page>
                     </notebook>
+                    <separator string="Mandatory Attachment"/>
+                    <group>
+                        <field name="ticket_pdf" filename="ticket_pdf_filename" widget="binary" required="1"/>
+                        <field name="ticket_pdf_filename" invisible="1"/>
+                    </group>
                 </sheet>
                 <chatter/>
             </form>
